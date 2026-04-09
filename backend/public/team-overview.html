@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Team Overview - Premium MLM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+--glass: rgba(255,255,255,0.05);
+--border: rgba(255,255,255,0.1);
+--text:white;
+--accent:#00ffcc;
+--muted:#a0cfcf;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+
+body{
+display:flex;
+background: radial-gradient(circle at top,#042f2f,#010909);
+color:white;
+overflow:hidden;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:230px;
+height:100vh;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(15px);
+padding:20px;
+border-right:1px solid var(--border);
+}
+
+.sidebar h2{color:var(--accent);margin-bottom:20px;}
+
+.sidebar a{
+display:block;
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{background:var(--glass);}
+
+/* MAIN */
+.main{
+flex:1;
+padding:30px;
+position:relative;
+}
+
+/* FLOATING GRAPH LINES */
+.graph{
+position:absolute;
+top:40px;
+right:50px;
+width:250px;
+height:120px;
+}
+
+.line{
+position:absolute;
+width:100%;
+height:2px;
+background:linear-gradient(to right,transparent,#00ffcc);
+animation:moveLine 3s linear infinite;
+}
+
+.line:nth-child(2){top:40px;animation-delay:1s;}
+.line:nth-child(3){top:80px;animation-delay:2s;}
+
+@keyframes moveLine{
+0%{transform:translateX(-100%);}
+100%{transform:translateX(100%);}
+}
+
+/* FLOATING DOTS */
+.dot{
+position:absolute;
+width:8px;
+height:8px;
+background:#00ffcc;
+border-radius:50%;
+animation:moveDot 4s infinite;
+}
+
+.dot:nth-child(4){top:10px;}
+.dot:nth-child(5){top:50px;}
+.dot:nth-child(6){top:90px;}
+
+@keyframes moveDot{
+0%{left:0;}
+100%{left:100%;}
+}
+
+/* HERO */
+.hero{
+background:linear-gradient(135deg,#0b5f5f,#012b2b);
+padding:30px;
+border-radius:20px;
+margin-bottom:25px;
+box-shadow:0 0 40px rgba(0,255,204,0.2);
+}
+
+.hero h1{font-size:36px;}
+.hero p{color:var(--muted);margin-top:10px;}
+
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:var(--glass);
+border:1px solid var(--border);
+padding:20px;
+border-radius:15px;
+backdrop-filter:blur(10px);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px) scale(1.05);
+}
+
+/* PROGRESS BAR */
+.bar{
+height:8px;
+background:rgba(255,255,255,0.1);
+border-radius:10px;
+margin-top:10px;
+overflow:hidden;
+}
+
+.bar span{
+display:block;
+height:100%;
+background:#00ffcc;
+width:70%;
+animation:grow 2s ease;
+}
+
+@keyframes grow{
+0%{width:0;}
+100%{width:70%;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>MLM Panel</h2>
+<a href="dashboard.html">Dashboard</a>
+<a href="my-team.html">My Team</a>
+<a href="my-directs.html">My Directs</a>
+<a href="team-overview.html">Team Overview</a>
+</div>
+
+<div class="main">
+
+<!-- FLOAT GRAPH -->
+<div class="graph">
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+</div>
+
+<div class="hero">
+<h1>📊 Team Overview Analytics</h1>
+<p>Real-time performance, growth tracking and network insights in a premium SaaS dashboard.</p>
+</div>
+
+<div class="stats">
+<div class="card"><h3>120</h3><span>Total Team</span></div>
+<div class="card"><h3>35</h3><span>Direct Members</span></div>
+<div class="card"><h3>₹45,000</h3><span>Total Income</span></div>
+<div class="card"><h3>92%</h3><span>Growth Rate</span></div>
+</div>
+
+<div class="card">
+<h3>Growth Progress</h3>
+<div class="bar"><span></span></div>
+</div>
+
+</div>
+
+</body>
+</html>

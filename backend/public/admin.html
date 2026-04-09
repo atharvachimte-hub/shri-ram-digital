@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium MLM Admin Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --bg-1: #06111d;
+      --bg-2: #0b1928;
+      --bg-3: #081624;
+      --text-main: #ffffff;
+      --text-soft: #a9c4de;
+      --line: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.05);
+      --glass-strong: rgba(255,255,255,0.08);
+      --blue-1: #00c6ff;
+      --blue-2: #0072ff;
+      --green-1: #00e676;
+      --green-2: #00c853;
+      --red-1: #ff6b6b;
+      --red-2: #ff1744;
+      --gold-1: #ffd166;
+      --gold-2: #ffb703;
+      --purple-1: #b388ff;
+      --purple-2: #7c4dff;
+      --shadow: 0 12px 34px rgba(0,0,0,0.30);
+      --shadow-heavy: 0 20px 60px rgba(0,0,0,0.42);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(0,255,200,0.14), transparent 24%),
+        radial-gradient(circle at top right, rgba(0,140,255,0.14), transparent 24%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      color: var(--text-main);
+      padding: 24px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .shell {
+      max-width: 1450px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      padding: 22px;
+      border-radius: 26px;
+      background: var(--glass);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      font-size: 12px;
+      font-weight: 800;
+      color: #dff1ff;
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .input,
+    .select,
+    .btn {
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      outline: none;
+      font-size: 14px;
+    }
+
+    .input,
+    .select {
+      min-width: 220px;
+      padding: 0 14px;
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .input::placeholder {
+      color: #9db8cf;
+    }
+
+    .select option {
+      color: #000;
+    }
+
+    .btn {
+      padding: 0 18px;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 10px 28px rgba(0,114,255,0.28);
+      transition: 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,0.06);
+      box-shadow: none;
+    }
+
+    .grid-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .card-label {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .card-note {
+      margin-top: 8px;
+      color: #bdd2e5;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dff1ff;
+    }
+
+    .recent-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .recent-item {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .recent-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .recent-id {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .recent-name {
+      font-size: 12px;
+      color: #c5d8ea;
+      margin-bottom: 5px;
+    }
+
+    .recent-meta {
+      font-size: 12px;
+      color: #98b2ca;
+      line-height: 1.5;
+    }
+
+    .status-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .status-pill.active {
+      color: #8bffb8;
+    }
+
+    .status-pill.inactive {
+      color: #ffb1b1;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #d6eaff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    td {
+      color: #e8f4ff;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mini-btn.green {
+      color: #8bffb8;
+    }
+
+    .mini-btn.red {
+      color: #ffb1b1;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      color: #b9cfe4;
+      font-size: 13px;
+    }
+
+    .message {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-weight: 800;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(0,230,118,0.10);
+      color: #98ffc1;
+      border: 1px solid rgba(0,230,118,0.22);
+    }
+
+    .message.error {
+      background: rgba(255,55,95,0.10);
+      color: #ffb0c1;
+      border: 1px solid rgba(255,55,95,0.22);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 12, 24, 0.65);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .login-card,
+    .modal-card {
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+      border-radius: 26px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .modal-card {
+      max-width: 820px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .login-title,
+    .modal-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle,
+    .modal-subtitle {
+      color: #bdd2e5;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .detail-panel {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .detail-panel-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 13px;
+    }
+
+    .info-label {
+      color: #a8c0d7;
+    }
+
+    .info-value {
+      font-weight: 800;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .footer-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1100px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .input,
+      .select,
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginOverlay" class="overlay show">
+    <div class="login-card">
+      <div class="login-title">🔐 Admin Login</div>
+      <div class="login-subtitle">
+        Premium MLM admin panel access. Login first to manage users, stats and income overview.
+      </div>
+
+      <div class="form-grid">
+        <input id="adminUsername" class="input" type="text" placeholder="Admin username" />
+        <input id="adminPassword" class="input" type="password" placeholder="Admin password" />
+        <button id="adminLoginBtn" class="btn" type="button">Login to Admin</button>
+      </div>
+
+      <div style="margin-top:12px;color:#b6cde3;font-size:12px;line-height:1.6;">
+        Default login: <strong>admin</strong> / <strong>admin123</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell hidden" id="adminApp">
+    <div class="topbar">
+      <div class="title-row">
+        <div>
+          <div class="title">👑 Premium MLM Admin Panel</div>
+          <div class="subtitle">
+            User control • Income overview • Company profit • Activate / deactivate users • Search + recent joins
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="badge-pill">REAL ADMIN CONTROL</div>
+          <button id="logoutBtn" class="btn secondary" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="searchInput" class="input" type="text" placeholder="Search by userId / name / sponsor / mobile" />
+        <select id="statusFilter" class="select">
+          <option value="all">All Users</option>
+          <option value="active">Active Users</option>
+          <option value="inactive">Inactive Users</option>
+        </select>
+        <select id="limitFilter" class="select">
+          <option value="10">10 Per Page</option>
+          <option value="20">20 Per Page</option>
+          <option value="50">50 Per Page</option>
+        </select>
+        <button id="filterBtn" class="btn" type="button">Load Users</button>
+        <button id="refreshBtn" class="btn secondary" type="button">Refresh Dashboard</button>
+      </div>
+    </div>
+
+    <div id="messageBox" class="message"></div>
+
+    <div class="grid-stats">
+      <div class="card">
+        <div class="card-label">Total Users</div>
+        <div id="totalUsers" class="card-value">0</div>
+        <div class="card-note">All registered users in current MLM system</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Active Users</div>
+        <div id="activeUsers" class="card-value">0</div>
+        <div class="card-note">Currently active MLM members</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Inactive Users</div>
+        <div id="inactiveUsers" class="card-value">0</div>
+        <div class="card-note">Users not active yet</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Total Income</div>
+        <div id="totalIncome" class="card-value">₹0</div>
+        <div class="card-note">Combined MLM income across all users</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Direct Income</div>
+        <div id="directIncome" class="card-value">₹0</div>
+        <div class="card-note">Referral income total</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Pair Income</div>
+        <div id="pairIncome" class="card-value">₹0</div>
+        <div class="card-note">Binary pair match income total</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Company Joining</div>
+        <div id="totalJoining" class="card-value">₹0</div>
+        <div class="card-note">Total joining amount collected</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Company Profit</div>
+        <div id="companyProfit" class="card-value">₹0</div>
+        <div class="card-note">Joining - payout</div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
+        <div class="section-head">
+          <div class="section-title">Recent Joins</div>
+          <div class="chip">LATEST USERS</div>
+        </div>
+        <div id="recentList" class="recent-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <div class="section-title">Business Overview</div>
+          <div class="chip">COMPANY VIEW</div>
+        </div>
+
+        <div class="recent-list">
+          <div class="recent-item">
+            <div class="recent-top">
+              <div class="recent-id">Carry Left</div>
+              <div class="status-pill active">LIVE</div>
+            </div>
+            <div id="carryLeftBox" class="card-value" style="font-size:24px;">0</div>
+            <div class="card-note">Total left carry business</div>
+          </div>
+
+          <div class="recent-item">
+            <div class="recent-top">
+              <div class="recent-id">Carry Right</div>
+              <div class="status-pill active">LIVE</div>
+            </div>
+            <div id="carryRightBox" class="card-value" style="font-size:24px;">0</div>
+            <div class="card-note">Total right carry business</div>
+          </div>
+
+          <div class="recent-item">
+            <div class="recent-top">
+              <div class="recent-id">Admin Quick Note</div>
+              <div class="status-pill inactive">INFO</div>
+            </div>
+            <div id="quickAdminNote" class="recent-meta">
+              Use table actions to inspect user details or activate / deactivate instantly.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="section-head">
+        <div class="section-title">User Management Table</div>
+        <div class="chip">ADMIN USERS</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Sponsor</th>
+            <th>Position</th>
+            <th>Status</th>
+            <th>Direct</th>
+            <th>Pair</th>
+            <th>Total</th>
+            <th>Referrals</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
+
+      <div class="pagination">
+        <div id="paginationText">Page 1</div>
+        <div style="display:flex;gap:10px;">
+          <button id="prevPageBtn" class="btn secondary" type="button">Prev</button>
+          <button id="nextPageBtn" class="btn secondary" type="button">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="userModal" class="overlay">
+    <div class="modal-card">
+      <button id="modalCloseBtn" class="modal-close">✕</button>
+
+      <div class="modal-title" id="modalTitle">User Detail</div>
+      <div class="modal-subtitle" id="modalSubtitle">Premium admin user summary</div>
+
+      <div class="detail-grid">
+        <div class="detail-panel">
+          <div class="detail-panel-title">Basic User Info</div>
+          <div class="info-list">
+            <div class="info-row"><div class="info-label">User ID</div><div id="mUserId" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Full Name</div><div id="mFullName" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Email</div><div id="mEmail" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Mobile</div><div id="mMobile" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Sponsor ID</div><div id="mSponsorId" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Sponsor Name</div><div id="mSponsorName" class="info-value">--</div></div>
+          </div>
+        </div>
+
+        <div class="detail-panel">
+          <div class="detail-panel-title">Network Info</div>
+          <div class="info-list">
+            <div class="info-row"><div class="info-label">Parent ID</div><div id="mParentId" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Position</div><div id="mPosition" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Left User</div><div id="mLeftUser" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Right User</div><div id="mRightUser" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Left Count</div><div id="mLeftCount" class="info-value">0</div></div>
+            <div class="info-row"><div class="info-label">Right Count</div><div id="mRightCount" class="info-value">0</div></div>
+          </div>
+        </div>
+
+        <div class="detail-panel">
+          <div class="detail-panel-title">Income Info</div>
+          <div class="info-list">
+            <div class="info-row"><div class="info-label">Joining Amount</div><div id="mJoiningAmount" class="info-value">₹0</div></div>
+            <div class="info-row"><div class="info-label">Direct Income</div><div id="mDirectIncome" class="info-value">₹0</div></div>
+            <div class="info-row"><div class="info-label">Pair Income</div><div id="mPairIncome" class="info-value">₹0</div></div>
+            <div class="info-row"><div class="info-label">Total Income</div><div id="mTotalIncome" class="info-value">₹0</div></div>
+            <div class="info-row"><div class="info-label">Carry Left</div><div id="mCarryLeft" class="info-value">0</div></div>
+            <div class="info-row"><div class="info-label">Carry Right</div><div id="mCarryRight" class="info-value">0</div></div>
+          </div>
+        </div>
+
+        <div class="detail-panel">
+          <div class="detail-panel-title">Status + Summary</div>
+          <div class="info-list">
+            <div class="info-row"><div class="info-label">Status</div><div id="mStatus" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Business Status</div><div id="mBusinessStatus" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Referral Count</div><div id="mReferralCount" class="info-value">0</div></div>
+            <div class="info-row"><div class="info-label">Daily Cap</div><div id="mDailyCap" class="info-value">₹0</div></div>
+            <div class="info-row"><div class="info-label">Created</div><div id="mCreatedAt" class="info-value">--</div></div>
+            <div class="info-row"><div class="info-label">Updated</div><div id="mUpdatedAt" class="info-value">--</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <button id="toggleStatusBtn" class="btn" type="button">Toggle Status</button>
+        <button id="openTreeBtn" class="btn secondary" type="button">Open Tree</button>
+        <button id="closeModalBtn" class="btn secondary" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginOverlay = document.getElementById("loginOverlay");
+    const adminApp = document.getElementById("adminApp");
+    const adminUsername = document.getElementById("adminUsername");
+    const adminPassword = document.getElementById("adminPassword");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const messageBox = document.getElementById("messageBox");
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const limitFilter = document.getElementById("limitFilter");
+    const filterBtn = document.getElementById("filterBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    const totalUsers = document.getElementById("totalUsers");
+    const activeUsers = document.getElementById("activeUsers");
+    const inactiveUsers = document.getElementById("inactiveUsers");
+    const totalIncome = document.getElementById("totalIncome");
+    const directIncome = document.getElementById("directIncome");
+    const pairIncome = document.getElementById("pairIncome");
+    const totalJoining = document.getElementById("totalJoining");
+    const companyProfit = document.getElementById("companyProfit");
+    const carryLeftBox = document.getElementById("carryLeftBox");
+    const carryRightBox = document.getElementById("carryRightBox");
+    const quickAdminNote = document.getElementById("quickAdminNote");
+
+    const recentList = document.getElementById("recentList");
+    const userTableBody = document.getElementById("userTableBody");
+    const paginationText = document.getElementById("paginationText");
+    const prevPageBtn = document.getElementById("prevPageBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
+
+    const userModal = document.getElementById("userModal");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const toggleStatusBtn = document.getElementById("toggleStatusBtn");
+    const openTreeBtn = document.getElementById("openTreeBtn");
+
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const mUserId = document.getElementById("mUserId");
+    const mFullName = document.getElementById("mFullName");
+    const mEmail = document.getElementById("mEmail");
+    const mMobile = document.getElementById("mMobile");
+    const mSponsorId = document.getElementById("mSponsorId");
+    const mSponsorName = document.getElementById("mSponsorName");
+    const mParentId = document.getElementById("mParentId");
+    const mPosition = document.getElementById("mPosition");
+    const mLeftUser = document.getElementById("mLeftUser");
+    const mRightUser = document.getElementById("mRightUser");
+    const mLeftCount = document.getElementById("mLeftCount");
+    const mRightCount = document.getElementById("mRightCount");
+    const mJoiningAmount = document.getElementById("mJoiningAmount");
+    const mDirectIncome = document.getElementById("mDirectIncome");
+    const mPairIncome = document.getElementById("mPairIncome");
+    const mTotalIncome = document.getElementById("mTotalIncome");
+    const mCarryLeft = document.getElementById("mCarryLeft");
+    const mCarryRight = document.getElementById("mCarryRight");
+    const mStatus = document.getElementById("mStatus");
+    const mBusinessStatus = document.getElementById("mBusinessStatus");
+    const mReferralCount = document.getElementById("mReferralCount");
+    const mDailyCap = document.getElementById("mDailyCap");
+    const mCreatedAt = document.getElementById("mCreatedAt");
+    const mUpdatedAt = document.getElementById("mUpdatedAt");
+
+    let currentPage = 1;
+    let currentTotalPages = 1;
+    let currentSelectedUser = null;
+
+    function showMessage(text, type = "success") {
+      messageBox.textContent = text;
+      messageBox.className = `message show ${type}`;
+      setTimeout(() => {
+        messageBox.className = "message";
+      }, 3000);
+    }
+
+    function formatCurrency(value) {
+      const num = Number(value) || 0;
+      return `₹${num.toLocaleString("en-IN")}`;
+    }
+
+    function safeText(value, fallback = "--") {
+      if (value === null || value === undefined) return fallback;
+      const text = String(value).trim();
+      return text || fallback;
+    }
+
+    function formatDate(value) {
+      if (!value) return "--";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "--";
+      return date.toLocaleString("en-IN");
+    }
+
+    function getStatusPill(isActive) {
+      return `<span class="status-pill ${isActive ? "active" : "inactive"}">${isActive ? "Active" : "Inactive"}</span>`;
+    }
+
+    function getAdminAuth() {
+      return localStorage.getItem("mlmAdminLoggedIn") === "true";
+    }
+
+    function setAdminAuth(value) {
+      localStorage.setItem("mlmAdminLoggedIn", value ? "true" : "false");
+    }
+
+    async function adminLogin() {
+      try {
+        const username = adminUsername.value.trim();
+        const password = adminPassword.value.trim();
+
+        if (!username || !password) {
+          showMessage("Please enter admin username and password", "error");
+          return;
+        }
+
+        adminLoginBtn.disabled = true;
+        adminLoginBtn.textContent = "Logging in...";
+
+        const response = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          showMessage(data.message || "Admin login failed", "error");
+          return;
+        }
+
+        setAdminAuth(true);
+        loginOverlay.classList.remove("show");
+        adminApp.classList.remove("hidden");
+
+        await loadDashboardData();
+        showMessage("Admin login successful", "success");
+      } catch (error) {
+        console.error(error);
+        showMessage("Admin login error", "error");
+      } finally {
+        adminLoginBtn.disabled = false;
+        adminLoginBtn.textContent = "Login to Admin";
+      }
+    }
+
+    function logoutAdmin() {
+      setAdminAuth(false);
+      adminApp.classList.add("hidden");
+      loginOverlay.classList.add("show");
+      adminUsername.value = "";
+      adminPassword.value = "";
+      showMessage("Logged out successfully", "success");
+    }
+
+    async function loadAdminStats() {
+      const response = await fetch("/api/admin/stats");
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to load admin stats");
+      }
+
+      const stats = data.stats;
+
+      totalUsers.textContent = stats.totalUsers || 0;
+      activeUsers.textContent = stats.activeUsers || 0;
+      inactiveUsers.textContent = stats.inactiveUsers || 0;
+      totalIncome.textContent = formatCurrency(stats.totalIncome);
+      directIncome.textContent = formatCurrency(stats.directIncome);
+      pairIncome.textContent = formatCurrency(stats.pairIncome);
+      totalJoining.textContent = formatCurrency(stats.totalJoining);
+      companyProfit.textContent = formatCurrency(stats.companyProfit);
+      carryLeftBox.textContent = stats.totalCarryLeft || 0;
+      carryRightBox.textContent = stats.totalCarryRight || 0;
+
+      quickAdminNote.textContent =
+        `System मध्ये ${stats.totalUsers} total users आहेत, त्यात ${stats.activeUsers} active आणि ${stats.inactiveUsers} inactive आहेत.`;
+
+      renderRecentUsers(stats.recentUsers || []);
+    }
+
+    function renderRecentUsers(users) {
+      if (!users.length) {
+        recentList.innerHTML = `<div class="recent-item"><div class="recent-meta">No recent joins found</div></div>`;
+        return;
+      }
+
+      recentList.innerHTML = users
+        .map((user) => {
+          return `
+            <div class="recent-item">
+              <div class="recent-top">
+                <div class="recent-id">${safeText(user.userId)}</div>
+                ${getStatusPill(user.isActive)}
+              </div>
+              <div class="recent-name">${safeText(user.fullName, "No Name")}</div>
+              <div class="recent-meta">
+                Sponsor: ${safeText(user.sponsorId)}<br />
+                Joined: ${formatDate(user.createdAt)}
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    async function loadUsers(page = 1) {
+      const search = searchInput.value.trim();
+      const status = statusFilter.value;
+      const limit = limitFilter.value;
+
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+        status,
+      });
+
+      if (search) {
+        params.append("search", search);
+      }
+
+      const response = await fetch(`/api/admin/users?${params.toString()}`);
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to load users");
+      }
+
+      currentPage = data.pagination.page;
+      currentTotalPages = data.pagination.totalPages;
+
+      renderUsersTable(data.users || []);
+      paginationText.textContent = `Page ${currentPage} of ${currentTotalPages} • Total ${data.pagination.total} users`;
+    }
+
+    function renderUsersTable(users) {
+      if (!users.length) {
+        userTableBody.innerHTML = `
+          <tr>
+            <td colspan="11" style="text-align:center;color:#a9c3da;">No users found</td>
+          </tr>
+        `;
+        return;
+      }
+
+      userTableBody.innerHTML = users
+        .map((user) => {
+          const referrals = (Number(user.leftCount) || 0) + (Number(user.rightCount) || 0);
+
+          return `
+            <tr>
+              <td>${safeText(user.userId)}</td>
+              <td>${safeText(user.fullName, "No Name")}</td>
+              <td>${safeText(user.sponsorId)}</td>
+              <td>${safeText(user.position)}</td>
+              <td>${getStatusPill(user.isActive)}</td>
+              <td>${formatCurrency(user.directIncome)}</td>
+              <td>${formatCurrency(user.pairIncome)}</td>
+              <td>${formatCurrency(user.totalIncome)}</td>
+              <td>${referrals}</td>
+              <td>${formatDate(user.createdAt)}</td>
+              <td>
+                <div class="table-actions">
+                  <button class="mini-btn" onclick="viewUserDetail('${user.userId}')">View</button>
+                  <button class="mini-btn ${user.isActive ? "red" : "green"}" onclick="toggleUserStatus('${user.userId}', ${!user.isActive})">
+                    ${user.isActive ? "Deactivate" : "Activate"}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    async function loadDashboardData() {
+      try {
+        await loadAdminStats();
+        await loadUsers(currentPage);
+      } catch (error) {
+        console.error(error);
+        showMessage(error.message || "Failed to load dashboard data", "error");
+      }
+    }
+
+    async function viewUserDetail(userId) {
+      try {
+        const response = await fetch(`/api/admin/user/${encodeURIComponent(userId)}`);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          showMessage(data.message || "Failed to load user detail", "error");
+          return;
+        }
+
+        const user = data.user;
+        currentSelectedUser = user;
+
+        modalTitle.textContent = `${safeText(user.fullName, "No Name")} (${safeText(user.userId)})`;
+        modalSubtitle.textContent = `Premium admin detail • ${user.isActive ? "Active user" : "Inactive user"}`;
+
+        mUserId.textContent = safeText(user.userId);
+        mFullName.textContent = safeText(user.fullName, "No Name");
+        mEmail.textContent = safeText(user.email);
+        mMobile.textContent = safeText(user.mobile);
+        mSponsorId.textContent = safeText(user.sponsorId);
+        mSponsorName.textContent = safeText(user.sponsorName);
+        mParentId.textContent = safeText(user.parentId);
+        mPosition.textContent = safeText(user.position || "ROOT");
+        mLeftUser.textContent = safeText(user.leftUserId);
+        mRightUser.textContent = safeText(user.rightUserId);
+        mLeftCount.textContent = Number(user.leftCount) || 0;
+        mRightCount.textContent = Number(user.rightCount) || 0;
+        mJoiningAmount.textContent = formatCurrency(user.joiningAmount);
+        mDirectIncome.textContent = formatCurrency(user.directIncome);
+        mPairIncome.textContent = formatCurrency(user.pairIncome);
+        mTotalIncome.textContent = formatCurrency(user.totalIncome);
+        mCarryLeft.textContent = Number(user.carryLeft) || 0;
+        mCarryRight.textContent = Number(user.carryRight) || 0;
+        mStatus.textContent = user.isActive ? "Active" : "Inactive";
+        mBusinessStatus.textContent = safeText(user.businessStatus);
+        mReferralCount.textContent = Number(user.referralCount) || 0;
+        mDailyCap.textContent = formatCurrency(user.dailyCap);
+        mCreatedAt.textContent = formatDate(user.createdAt);
+        mUpdatedAt.textContent = formatDate(user.updatedAt);
+
+        toggleStatusBtn.textContent = user.isActive ? "Deactivate User" : "Activate User";
+
+        userModal.classList.add("show");
+      } catch (error) {
+        console.error(error);
+        showMessage("User detail load error", "error");
+      }
+    }
+
+    async function toggleUserStatus(userId, isActive) {
+      try {
+        const response = await fetch(`/api/admin/user/${encodeURIComponent(userId)}/status`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isActive }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          showMessage(data.message || "Status update failed", "error");
+          return;
+        }
+
+        showMessage(data.message || "Status updated successfully", "success");
+        await loadDashboardData();
+
+        if (currentSelectedUser && currentSelectedUser.userId === userId) {
+          await viewUserDetail(userId);
+        }
+      } catch (error) {
+        console.error(error);
+        showMessage("Status update error", "error");
+      }
+    }
+
+    function closeUserModal() {
+      userModal.classList.remove("show");
+    }
+
+    function openTreeForSelectedUser() {
+      if (!currentSelectedUser || !currentSelectedUser.userId) {
+        showMessage("No user selected", "error");
+        return;
+      }
+
+      window.open(`/tree-dashboard.html?userId=${encodeURIComponent(currentSelectedUser.userId)}`, "_blank");
+    }
+
+    adminLoginBtn.addEventListener("click", adminLogin);
+    logoutBtn.addEventListener("click", logoutAdmin);
+
+    adminPassword.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") adminLogin();
+    });
+
+    filterBtn.addEventListener("click", async () => {
+      currentPage = 1;
+      await loadDashboardData();
+    });
+
+    refreshBtn.addEventListener("click", async () => {
+      await loadDashboardData();
+      showMessage("Dashboard refreshed", "success");
+    });
+
+    prevPageBtn.addEventListener("click", async () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        await loadUsers(currentPage);
+      }
+    });
+
+    nextPageBtn.addEventListener("click", async () => {
+      if (currentPage < currentTotalPages) {
+        currentPage += 1;
+        await loadUsers(currentPage);
+      }
+    });
+
+    modalCloseBtn.addEventListener("click", closeUserModal);
+    closeModalBtn.addEventListener("click", closeUserModal);
+    openTreeBtn.addEventListener("click", openTreeForSelectedUser);
+
+    toggleStatusBtn.addEventListener("click", async () => {
+      if (!currentSelectedUser) {
+        showMessage("No user selected", "error");
+        return;
+      }
+
+      await toggleUserStatus(currentSelectedUser.userId, !currentSelectedUser.isActive);
+    });
+
+    userModal.addEventListener("click", (e) => {
+      if (e.target === userModal) closeUserModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeUserModal();
+    });
+
+    if (getAdminAuth()) {
+      loginOverlay.classList.remove("show");
+      adminApp.classList.remove("hidden");
+      loadDashboardData();
+    }
+
+    window.viewUserDetail = viewUserDetail;
+    window.toggleUserStatus = toggleUserStatus;
+  </script>
+</body>
+</html>

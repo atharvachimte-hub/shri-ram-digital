@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f2027;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Premium Glow Background */
+body::before {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0,255,200,0.4), transparent);
+  top: -100px;
+  left: -100px;
+  filter: blur(100px);
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0,150,255,0.3), transparent);
+  bottom: -150px;
+  right: -150px;
+  filter: blur(120px);
+}
+
+/* Floating Tags (Front) */
+.floating-tag {
+  position: absolute;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  animation: float 4s infinite ease-in-out;
+  z-index: 3;
+}
+
+.tag1 {
+  top: 80px;
+  right: 60px;
+  background: linear-gradient(45deg,#ff4d4d,#ff7a7a);
+}
+
+.tag2 {
+  bottom: 100px;
+  left: 80px;
+  background: linear-gradient(45deg,#00c896,#00e6b8);
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Form Card */
+.container {
+  position: relative;
+  z-index: 2;
+  width: 420px;
+  margin: 60px auto;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+/* Section Title */
+.section-title {
+  margin-top: 20px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  transition: 0.3s;
+}
+
+input:focus {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: linear-gradient(45deg,#00c896,#00e6b8);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.03);
+}
+
+/* Heading */
+h2 {
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Floating Front Elements -->
+<div class="floating-tag tag1">🔥 Limited Offer</div>
+<div class="floating-tag tag2">✨ Premium System</div>
+
+<!-- Form -->
+<div class="container">
+  <h2>New Member Registration</h2>
+
+  <!-- Sponsor -->
+  <div class="section-title">SPONSOR INFO</div>
+  <input placeholder="Sponsor ID">
+  <input placeholder="Sponsor Name">
+
+  <!-- Personal -->
+  <div class="section-title">PERSONAL DETAILS</div>
+  <input placeholder="Full Name">
+  <input placeholder="Date of Birth">
+  <input placeholder="Mobile">
+  <input placeholder="Email">
+
+  <!-- Security -->
+  <div class="section-title">SECURITY</div>
+  <input placeholder="Password" type="password">
+  <input placeholder="Confirm Password" type="password">
+
+  <button onclick="alert('Registered Successfully 🚀')">
+    Register Member
+  </button>
+</div>
+
+</body>
+</html>

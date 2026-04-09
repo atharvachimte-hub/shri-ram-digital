@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payout - Premium MLM</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(52,211,153,0.12), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(16,185,129,0.12), transparent 24%),
+    linear-gradient(135deg,#020617,#04132a,#020617);
+  color:#fff;
+  min-height:100vh;
+}
+
+/* layout */
+.container{max-width:1400px;margin:auto;padding:20px}
+
+/* hero */
+.hero{
+  background:rgba(255,255,255,.05);
+  padding:30px;
+  border-radius:25px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* 💼 FLOATING WALLET IMAGE */
+.wallet-float{
+  position:absolute;
+  right:40px;
+  top:30px;
+  animation:floaty 5s ease-in-out infinite;
+}
+
+.wallet-float img{
+  width:130px;
+  filter:drop-shadow(0 25px 40px rgba(0,0,0,0.6));
+}
+
+@keyframes floaty{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-18px) rotate(5deg)}
+}
+
+/* 💸 FLOATING MONEY PARTICLES */
+.money{
+  position:absolute;
+  width:30px;
+  height:18px;
+  background:linear-gradient(135deg,#00c896,#34d399);
+  border-radius:4px;
+  opacity:.7;
+  animation:moneyFloat linear infinite;
+}
+
+.m1{right:120px;top:80px;animation-duration:5s}
+.m2{right:200px;top:120px;animation-duration:6s}
+.m3{right:160px;top:40px;animation-duration:4.5s}
+
+@keyframes moneyFloat{
+  0%{transform:translateY(0);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-80px);opacity:0}
+}
+
+/* cards */
+.card{
+  background:rgba(255,255,255,.05);
+  padding:20px;
+  border-radius:20px;
+  margin-top:20px;
+  backdrop-filter:blur(10px);
+}
+
+/* form */
+input,select{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+}
+
+button{
+  margin-top:15px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#00c896,#34d399);
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* table */
+table{width:100%;margin-top:15px;border-collapse:collapse}
+td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Withdraw Money 💸</h1>
+  <p>Premium wallet withdraw system with live money flow</p>
+
+  <!-- FLOATING WALLET -->
+  <div class="wallet-float">
+    <img src="https://cdn-icons-png.flaticon.com/512/1041/1041883.png">
+  </div>
+
+  <!-- FLOATING MONEY -->
+  <div class="money m1"></div>
+  <div class="money m2"></div>
+  <div class="money m3"></div>
+</div>
+
+<!-- FORM -->
+<div class="card">
+  <h2>Withdraw Request</h2>
+
+  <input placeholder="User ID" value="MLM10234">
+  <input placeholder="Amount ₹">
+  <select>
+    <option>Bank Transfer</option>
+    <option>UPI</option>
+  </select>
+
+  <button>Request Withdraw 🚀</button>
+</div>
+
+<!-- HISTORY -->
+<div class="card">
+  <h2>Payout History</h2>
+
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Amount</th>
+      <th>Status</th>
+    </tr>
+
+    <tr>
+      <td>#PAY101</td>
+      <td>₹2000</td>
+      <td>Success</td>
+    </tr>
+
+    <tr>
+      <td>#PAY102</td>
+      <td>₹500</td>
+      <td>Pending</td>
+    </tr>
+  </table>
+
+</div>
+
+</div>
+
+</body>
+</html>

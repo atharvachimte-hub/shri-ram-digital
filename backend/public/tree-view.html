@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium MLM Tree Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --bg-1: #07111f;
+      --bg-2: #0d1b2a;
+      --bg-3: #081420;
+      --text-main: #ffffff;
+      --text-soft: #a8c2dd;
+      --text-muted: #7f97ae;
+      --line: rgba(255,255,255,0.08);
+      --line-soft: rgba(255,255,255,0.10);
+      --glass: rgba(255,255,255,0.05);
+      --glass-strong: rgba(255,255,255,0.08);
+      --blue-1: #00c6ff;
+      --blue-2: #0072ff;
+      --green-1: #00e676;
+      --green-2: #00c853;
+      --red-1: #ff6b6b;
+      --red-2: #ff1744;
+      --gold-1: #ffd166;
+      --gold-2: #ffb703;
+      --purple-1: #b388ff;
+      --purple-2: #7c4dff;
+      --teal-1: #00f5d4;
+      --teal-2: #00b4d8;
+      --shadow: 0 10px 30px rgba(0,0,0,0.28);
+      --shadow-heavy: 0 20px 60px rgba(0,0,0,0.45);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(0, 255, 200, 0.15), transparent 25%),
+        radial-gradient(circle at top right, rgba(0, 140, 255, 0.15), transparent 25%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      color: var(--text-main);
+      overflow-x: auto;
+      padding: 24px;
+    }
+
+    .page-shell {
+      width: 100%;
+    }
+
+    .topbar {
+      max-width: 1400px;
+      margin: 0 auto 24px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      pointer-events: none;
+    }
+
+    .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .title-wrap {
+      min-width: 260px;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .top-right-badge {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      font-size: 12px;
+      font-weight: 800;
+      color: #d8ebff;
+      white-space: nowrap;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.20);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .input,
+    .select,
+    .btn,
+    .btn-outline,
+    .mini-btn {
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      outline: none;
+      font-size: 15px;
+    }
+
+    .input,
+    .select {
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      padding: 0 14px;
+      min-width: 220px;
+    }
+
+    .input::placeholder {
+      color: #9cb7ce;
+    }
+
+    .select option {
+      color: #000;
+    }
+
+    .btn,
+    .btn-outline,
+    .mini-btn {
+      cursor: pointer;
+      padding: 0 20px;
+      font-weight: 700;
+      color: #fff;
+      transition: 0.25s ease;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 8px 30px rgba(0, 114, 255, 0.35);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 12px 36px rgba(0, 114, 255, 0.45);
+    }
+
+    .btn-outline {
+      background: rgba(255,255,255,0.05);
+      color: #d8ebff;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .btn-outline:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .quick-info-grid {
+      max-width: 1400px;
+      margin: 0 auto 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .quick-panel {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quick-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto -40% -80% auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,198,255,0.14), transparent 65%);
+      pointer-events: none;
+    }
+
+    .quick-panel-title {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .quick-panel-main {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .quick-panel-sub {
+      font-size: 13px;
+      color: #bdd0e2;
+      line-height: 1.5;
+    }
+
+    .legend-bar {
+      max-width: 1400px;
+      margin: 0 auto 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.20);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      font-weight: 700;
+      color: #d6eaff;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-dot.green {
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      box-shadow: 0 0 12px rgba(0,230,118,0.45);
+    }
+
+    .legend-dot.red {
+      background: linear-gradient(135deg, var(--red-1), var(--red-2));
+      box-shadow: 0 0 12px rgba(255,23,68,0.35);
+    }
+
+    .legend-dot.blue {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 0 12px rgba(0,114,255,0.35);
+    }
+
+    .legend-dot.gold {
+      background: linear-gradient(135deg, var(--gold-1), var(--gold-2));
+      box-shadow: 0 0 12px rgba(255,183,3,0.35);
+    }
+
+    .legend-dot.purple {
+      background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+      box-shadow: 0 0 12px rgba(124,77,255,0.35);
+    }
+
+    .stats {
+      max-width: 1400px;
+      margin: 0 auto 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), transparent 35%);
+      pointer-events: none;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+      line-height: 1.2;
+    }
+
+    .stat-subtext {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #bdd0e2;
+      position: relative;
+      z-index: 1;
+      line-height: 1.5;
+    }
+
+    .summary-section {
+      max-width: 1400px;
+      margin: 0 auto 24px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+    }
+
+    .summary-card,
+    .side-insight-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.2px;
+    }
+
+    .section-chip {
+      font-size: 11px;
+      font-weight: 800;
+      color: #cde8ff;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .mini-info-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mini-info-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    .mini-info-value {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .mini-info-note {
+      margin-top: 6px;
+      color: #bdd0e2;
+      font-size: 12px;
+    }
+
+    .insight-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .insight-item {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .insight-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      background: linear-gradient(135deg, rgba(0,198,255,0.20), rgba(0,114,255,0.22));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .insight-text {
+      font-size: 13px;
+      color: #d0e4f7;
+      line-height: 1.55;
+    }
+
+    .message {
+      max-width: 1400px;
+      margin: 0 auto 18px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      display: none;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    }
+
+    .message.show {
+      display: block;
+      animation: fadeUp 0.25s ease;
+    }
+
+    .message.error {
+      background: rgba(255, 55, 95, 0.12);
+      border: 1px solid rgba(255, 55, 95, 0.25);
+      color: #ff9fb1;
+    }
+
+    .message.success {
+      background: rgba(0, 230, 118, 0.10);
+      border: 1px solid rgba(0, 230, 118, 0.22);
+      color: #98ffc1;
+    }
+
+    .message.info {
+      background: rgba(0, 198, 255, 0.10);
+      border: 1px solid rgba(0, 198, 255, 0.20);
+      color: #a9e8ff;
+    }
+
+    .tree-wrapper {
+      max-width: 100%;
+      min-width: max-content;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.32);
+      position: relative;
+      overflow: auto;
+    }
+
+    .tree-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(0,198,255,0.08), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(179,136,255,0.08), transparent 28%);
+      pointer-events: none;
+    }
+
+    .tree {
+      display: inline-block;
+      min-width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tree ul {
+      position: relative;
+      padding-top: 30px;
+      white-space: nowrap;
+      transition: all 0.5s;
+    }
+
+    .tree li {
+      display: inline-block;
+      vertical-align: top;
+      text-align: center;
+      list-style-type: none;
+      position: relative;
+      padding: 30px 10px 0 10px;
+    }
+
+    .tree li::before,
+    .tree li::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 50%;
+      border-top: 2px solid rgba(127, 179, 255, 0.45);
+      width: 50%;
+      height: 30px;
+    }
+
+    .tree li::after {
+      right: auto;
+      left: 50%;
+      border-left: 2px solid rgba(127, 179, 255, 0.45);
+    }
+
+    .tree li:only-child::after,
+    .tree li:only-child::before {
+      display: none;
+    }
+
+    .tree li:only-child {
+      padding-top: 0;
+    }
+
+    .tree li:first-child::before,
+    .tree li:last-child::after {
+      border: 0 none;
+    }
+
+    .tree li:last-child::before {
+      border-right: 2px solid rgba(127, 179, 255, 0.45);
+      border-radius: 0 10px 0 0;
+    }
+
+    .tree li:first-child::after {
+      border-radius: 10px 0 0 0;
+    }
+
+    .tree ul ul::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      border-left: 2px solid rgba(127, 179, 255, 0.45);
+      width: 0;
+      height: 30px;
+    }
+
+    .node {
+      min-width: 210px;
+      max-width: 240px;
+      padding: 16px 14px;
+      border-radius: 20px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.30);
+      transition: 0.28s ease;
+      animation: fadeUp 0.45s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .node::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), transparent 35%);
+      pointer-events: none;
+    }
+
+    .node:hover {
+      transform: translateY(-6px) scale(1.03);
+    }
+
+    .node.active {
+      box-shadow:
+        0 0 0 1px rgba(0, 255, 163, 0.22),
+        0 0 24px rgba(0, 255, 163, 0.20),
+        0 12px 30px rgba(0,0,0,0.34);
+    }
+
+    .node.inactive {
+      box-shadow:
+        0 0 0 1px rgba(255, 88, 88, 0.15),
+        0 0 18px rgba(255, 88, 88, 0.15),
+        0 12px 30px rgba(0,0,0,0.34);
+    }
+
+    .node.root-highlight {
+      box-shadow:
+        0 0 0 1px rgba(255, 209, 102, 0.22),
+        0 0 26px rgba(255, 209, 102, 0.22),
+        0 12px 34px rgba(0,0,0,0.36);
+    }
+
+    .node-top-ribbon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 9px;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.08);
+      color: #dff2ff;
+    }
+
+    .icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .node.active .icon {
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      box-shadow: 0 0 24px rgba(0,230,118,0.35);
+    }
+
+    .node.inactive .icon {
+      background: linear-gradient(135deg, var(--red-1), var(--red-2));
+      box-shadow: 0 0 24px rgba(255,23,68,0.28);
+    }
+
+    .user-id {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+      word-break: break-word;
+      position: relative;
+      z-index: 1;
+    }
+
+    .user-name {
+      font-size: 13px;
+      color: #bdd0e2;
+      margin-bottom: 10px;
+      min-height: 18px;
+      word-break: break-word;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .badge.green {
+      color: #8bffb8;
+    }
+
+    .badge.red {
+      color: #ffb1b1;
+    }
+
+    .badge.blue {
+      color: #9ecbff;
+    }
+
+    .badge.gold {
+      color: #ffe08b;
+    }
+
+    .node-meta-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .node-mini-box {
+      padding: 8px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+    }
+
+    .node-mini-label {
+      font-size: 10px;
+      color: #9cb7ce;
+      margin-bottom: 4px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .node-mini-value {
+      font-size: 12px;
+      color: #ffffff;
+      font-weight: 800;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .empty-box {
+      min-width: 210px;
+      max-width: 240px;
+      padding: 20px 14px;
+      border-radius: 20px;
+      border: 1px dashed rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-muted);
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+      min-height: 120px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .empty-box strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #aac3d8;
+      font-size: 13px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 10, 20, 0.78);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 760px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(22px);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--shadow-heavy);
+      position: relative;
+      animation: fadeUp 0.25s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .modal-top {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      border-radius: 50%;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 0 30px rgba(0, 114, 255, 0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .modal-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .modal-subtitle {
+      color: #b9cde0;
+      font-size: 14px;
+      margin-bottom: 14px;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+
+    .modal-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .modal-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: #d7ecff;
+    }
+
+    .modal-badge.green {
+      color: #8bffb8;
+    }
+
+    .modal-badge.red {
+      color: #ffb1b1;
+    }
+
+    .modal-badge.gold {
+      color: #ffe08b;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .modal-panel {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .modal-panel-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .modal-info {
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .info-label {
+      color: #9eb8cf;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .info-value {
+      font-weight: 700;
+      font-size: 14px;
+      text-align: right;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    .modal-action-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      height: 44px;
+      padding: 0 16px;
+      background: rgba(255,255,255,0.06);
+      color: #e8f5ff;
+    }
+
+    .mini-btn.primary {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 8px 24px rgba(0,114,255,0.28);
+    }
+
+    .mini-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 12, 24, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      backdrop-filter: blur(6px);
+    }
+
+    .loading-overlay.show {
+      display: flex;
+    }
+
+    .loading-card {
+      min-width: 240px;
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-heavy);
+      text-align: center;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      border: 4px solid rgba(255,255,255,0.12);
+      border-top-color: #00c6ff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      font-weight: 800;
+      color: #d8ecff;
+      letter-spacing: 0.3px;
+    }
+
+    .footer-note {
+      max-width: 1400px;
+      margin: 18px auto 0;
+      text-align: center;
+      color: #8fa7be;
+      font-size: 12px;
+      line-height: 1.7;
+      padding-bottom: 6px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .summary-section {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .input,
+      .select,
+      .btn,
+      .btn-outline {
+        width: 100%;
+      }
+
+      .modal-card {
+        padding: 20px;
+      }
+
+      .modal-top {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .modal-badges {
+        justify-content: center;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .legend-bar {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="topbar">
+      <div class="title-row">
+        <div class="title-wrap">
+          <div class="title">🔥 Premium MLM Tree Dashboard</div>
+          <div class="subtitle">
+            Dynamic Binary Tree • Premium Glass UI • Live MongoDB Data • Referral + Income View • Popup Detail Upgrade
+          </div>
+        </div>
+        <div class="top-right-badge">REAL MLM NETWORK VIEW</div>
+      </div>
+
+      <div class="controls">
+        <input
+          id="userIdInput"
+          class="input"
+          type="text"
+          placeholder="Enter Root User ID (example: AC1001)"
+        />
+
+        <select id="depthSelect" class="select">
+          <option value="3">Level 3</option>
+          <option value="4">Level 4</option>
+          <option value="5" selected>Level 5</option>
+          <option value="6">Level 6</option>
+          <option value="7">Level 7</option>
+        </select>
+
+        <button id="loadBtn" class="btn">Load Tree</button>
+        <button id="reloadBtn" class="btn-outline" type="button">Reload Current</button>
+      </div>
+    </div>
+
+    <div class="quick-info-grid">
+      <div class="quick-panel">
+        <div class="quick-panel-title">Current Root Summary</div>
+        <div id="quickRootMain" class="quick-panel-main">--</div>
+        <div id="quickRootSub" class="quick-panel-sub">
+          Enter a user ID and load tree to see live network summary.
+        </div>
+      </div>
+
+      <div class="quick-panel">
+        <div class="quick-panel-title">Income Engine</div>
+        <div id="quickIncomeMain" class="quick-panel-main">₹0</div>
+        <div id="quickIncomeSub" class="quick-panel-sub">
+          Direct + Pair + Carry Forward + Breakage summary will show here.
+        </div>
+      </div>
+
+      <div class="quick-panel">
+        <div class="quick-panel-title">Referral Engine</div>
+        <div id="quickReferralMain" class="quick-panel-main">0</div>
+        <div id="quickReferralSub" class="quick-panel-sub">
+          Total visible referrals and placement insight will show here.
+        </div>
+      </div>
+    </div>
+
+    <div class="legend-bar">
+      <div class="legend-item">
+        <span class="legend-dot green"></span>
+        <span>Active User</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot red"></span>
+        <span>Inactive User</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot blue"></span>
+        <span>Position Badge</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot gold"></span>
+        <span>Income Summary</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot purple"></span>
+        <span>Referral Count</span>
+      </div>
+    </div>
+
+    <div id="messageBox" class="message"></div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Root User</div>
+        <div id="statRoot" class="stat-value">--</div>
+        <div class="stat-subtext">Currently loaded top node ID</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Total Nodes Loaded</div>
+        <div id="statNodes" class="stat-value">0</div>
+        <div class="stat-subtext">Visible nodes in current tree response</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Active Users</div>
+        <div id="statActive" class="stat-value">0</div>
+        <div class="stat-subtext">Users marked active in loaded network</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Inactive Users</div>
+        <div id="statInactive" class="stat-value">0</div>
+        <div class="stat-subtext">Users marked inactive in loaded network</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Total Income</div>
+        <div id="statTotalIncome" class="stat-value">₹0</div>
+        <div class="stat-subtext">Combined visible income from loaded nodes</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Direct Income</div>
+        <div id="statDirectIncome" class="stat-value">₹0</div>
+        <div class="stat-subtext">Direct referral income total</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Pair Income</div>
+        <div id="statPairIncome" class="stat-value">₹0</div>
+        <div class="stat-subtext">Pair match income total</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Total Referrals</div>
+        <div id="statReferrals" class="stat-value">0</div>
+        <div class="stat-subtext">Visible referral count across loaded tree</div>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <div class="summary-card">
+        <div class="section-head">
+          <div class="section-title">Live Root Business Summary</div>
+          <div class="section-chip">ROOT FOCUS</div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="mini-info-card">
+            <div class="mini-info-label">Root Full Name</div>
+            <div id="rootNameCard" class="mini-info-value">--</div>
+            <div class="mini-info-note">User profile / registered name</div>
+          </div>
+
+          <div class="mini-info-card">
+            <div class="mini-info-label">Sponsor ID</div>
+            <div id="rootSponsorCard" class="mini-info-value">--</div>
+            <div class="mini-info-note">Who placed / sponsored this user</div>
+          </div>
+
+          <div class="mini-info-card">
+            <div class="mini-info-label">Root Total Income</div>
+            <div id="rootIncomeCard" class="mini-info-value">₹0</div>
+            <div class="mini-info-note">Direct + pair + carry forward totals</div>
+          </div>
+
+          <div class="mini-info-card">
+            <div class="mini-info-label">Root Referral Count</div>
+            <div id="rootReferralCard" class="mini-info-value">0</div>
+            <div class="mini-info-note">Direct referral / visible referral number</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-insight-card">
+        <div class="section-head">
+          <div class="section-title">Network Insight</div>
+          <div class="section-chip">SMART VIEW</div>
+        </div>
+
+        <div class="insight-list">
+          <div class="insight-item">
+            <div class="insight-icon">01</div>
+            <div id="insightOne" class="insight-text">
+              Load a root user to see active / inactive and income distribution.
+            </div>
+          </div>
+
+          <div class="insight-item">
+            <div class="insight-icon">02</div>
+            <div id="insightTwo" class="insight-text">
+              Click any node to open full popup details with referral and income summary.
+            </div>
+          </div>
+
+          <div class="insight-item">
+            <div class="insight-icon">03</div>
+            <div id="insightThree" class="insight-text">
+              This panel will auto-update using currently loaded tree response.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tree-wrapper">
+      <div class="tree" id="treeContainer"></div>
+    </div>
+
+    <div class="footer-note">
+      Premium MLM Dynamic Tree Dashboard • Same base UI feel retained • Income + Referral + Popup upgrade integrated
+    </div>
+  </div>
+
+  <div id="userModal" class="modal">
+    <div class="modal-card">
+      <button id="modalCloseBtn" class="modal-close">✕</button>
+
+      <div class="modal-top">
+        <div id="modalAvatar" class="modal-avatar">👤</div>
+
+        <div>
+          <div id="modalTitle" class="modal-title">No Name</div>
+          <div id="modalSubtitle" class="modal-subtitle">AC000000</div>
+
+          <div class="modal-badges">
+            <span id="modalStatusBadge" class="modal-badge">Status</span>
+            <span id="modalPositionBadge" class="modal-badge">Position</span>
+            <span id="modalReferralBadge" class="modal-badge">Referrals</span>
+            <span id="modalIncomeBadge" class="modal-badge gold">Income</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-grid">
+        <div class="modal-panel">
+          <div class="modal-panel-title">Basic User Info</div>
+          <div class="modal-info">
+            <div class="info-row">
+              <div class="info-label">User ID</div>
+              <div id="modalUserId" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Full Name</div>
+              <div id="modalName" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Status</div>
+              <div id="modalStatus" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Position</div>
+              <div id="modalPosition" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Sponsor ID</div>
+              <div id="modalSponsorId" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Sponsor Name</div>
+              <div id="modalSponsorName" class="info-value">--</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-panel">
+          <div class="modal-panel-title">Referral + Tree Info</div>
+          <div class="modal-info">
+            <div class="info-row">
+              <div class="info-label">Referral Count</div>
+              <div id="modalReferralCount" class="info-value">0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Left Member</div>
+              <div id="modalLeftUser" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Right Member</div>
+              <div id="modalRightUser" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Left Count</div>
+              <div id="modalLeftCount" class="info-value">0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Right Count</div>
+              <div id="modalRightCount" class="info-value">0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Current Depth View</div>
+              <div id="modalDepthInfo" class="info-value">--</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-panel">
+          <div class="modal-panel-title">Income Details</div>
+          <div class="modal-info">
+            <div class="info-row">
+              <div class="info-label">Joining Amount</div>
+              <div id="modalJoiningAmount" class="info-value">₹0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Direct Income</div>
+              <div id="modalDirectIncome" class="info-value">₹0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Pair Income</div>
+              <div id="modalPairIncome" class="info-value">₹0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Carry Forward</div>
+              <div id="modalCarryForward" class="info-value">0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Breakage</div>
+              <div id="modalBreakage" class="info-value">0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Daily Cap</div>
+              <div id="modalDailyCap" class="info-value">₹0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-panel">
+          <div class="modal-panel-title">Final Summary</div>
+          <div class="modal-info">
+            <div class="info-row">
+              <div class="info-label">Total Income</div>
+              <div id="modalTotalIncome" class="info-value">₹0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Potential Pair Match</div>
+              <div id="modalPotentialPair" class="info-value">0</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Activity Note</div>
+              <div id="modalActivityNote" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Business Status</div>
+              <div id="modalBusinessStatus" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Root Match</div>
+              <div id="modalRootMatch" class="info-value">--</div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-label">Visible Team Size</div>
+              <div id="modalTeamSize" class="info-value">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-action-row">
+        <button id="modalLoadAsRootBtn" class="mini-btn primary" type="button">Load As Root</button>
+        <button id="modalCloseActionBtn" class="mini-btn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading MLM Tree...</div>
+    </div>
+  </div>
+
+  <script>
+    const userIdInput = document.getElementById("userIdInput");
+    const depthSelect = document.getElementById("depthSelect");
+    const loadBtn = document.getElementById("loadBtn");
+    const reloadBtn = document.getElementById("reloadBtn");
+    const treeContainer = document.getElementById("treeContainer");
+    const messageBox = document.getElementById("messageBox");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+
+    const statRoot = document.getElementById("statRoot");
+    const statNodes = document.getElementById("statNodes");
+    const statActive = document.getElementById("statActive");
+    const statInactive = document.getElementById("statInactive");
+    const statTotalIncome = document.getElementById("statTotalIncome");
+    const statDirectIncome = document.getElementById("statDirectIncome");
+    const statPairIncome = document.getElementById("statPairIncome");
+    const statReferrals = document.getElementById("statReferrals");
+
+    const quickRootMain = document.getElementById("quickRootMain");
+    const quickRootSub = document.getElementById("quickRootSub");
+    const quickIncomeMain = document.getElementById("quickIncomeMain");
+    const quickIncomeSub = document.getElementById("quickIncomeSub");
+    const quickReferralMain = document.getElementById("quickReferralMain");
+    const quickReferralSub = document.getElementById("quickReferralSub");
+
+    const rootNameCard = document.getElementById("rootNameCard");
+    const rootSponsorCard = document.getElementById("rootSponsorCard");
+    const rootIncomeCard = document.getElementById("rootIncomeCard");
+    const rootReferralCard = document.getElementById("rootReferralCard");
+
+    const insightOne = document.getElementById("insightOne");
+    const insightTwo = document.getElementById("insightTwo");
+    const insightThree = document.getElementById("insightThree");
+
+    const userModal = document.getElementById("userModal");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const modalCloseActionBtn = document.getElementById("modalCloseActionBtn");
+    const modalLoadAsRootBtn = document.getElementById("modalLoadAsRootBtn");
+
+    const modalAvatar = document.getElementById("modalAvatar");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+
+    const modalStatusBadge = document.getElementById("modalStatusBadge");
+    const modalPositionBadge = document.getElementById("modalPositionBadge");
+    const modalReferralBadge = document.getElementById("modalReferralBadge");
+    const modalIncomeBadge = document.getElementById("modalIncomeBadge");
+
+    const modalUserId = document.getElementById("modalUserId");
+    const modalName = document.getElementById("modalName");
+    const modalStatus = document.getElementById("modalStatus");
+    const modalPosition = document.getElementById("modalPosition");
+    const modalSponsorId = document.getElementById("modalSponsorId");
+    const modalSponsorName = document.getElementById("modalSponsorName");
+
+    const modalReferralCount = document.getElementById("modalReferralCount");
+    const modalLeftUser = document.getElementById("modalLeftUser");
+    const modalRightUser = document.getElementById("modalRightUser");
+    const modalLeftCount = document.getElementById("modalLeftCount");
+    const modalRightCount = document.getElementById("modalRightCount");
+    const modalDepthInfo = document.getElementById("modalDepthInfo");
+
+    const modalJoiningAmount = document.getElementById("modalJoiningAmount");
+    const modalDirectIncome = document.getElementById("modalDirectIncome");
+    const modalPairIncome = document.getElementById("modalPairIncome");
+    const modalCarryForward = document.getElementById("modalCarryForward");
+    const modalBreakage = document.getElementById("modalBreakage");
+    const modalDailyCap = document.getElementById("modalDailyCap");
+
+    const modalTotalIncome = document.getElementById("modalTotalIncome");
+    const modalPotentialPair = document.getElementById("modalPotentialPair");
+    const modalActivityNote = document.getElementById("modalActivityNote");
+    const modalBusinessStatus = document.getElementById("modalBusinessStatus");
+    const modalRootMatch = document.getElementById("modalRootMatch");
+    const modalTeamSize = document.getElementById("modalTeamSize");
+
+    let currentRootTree = null;
+    let currentPopupUserId = null;
+
+    function showMessage(text, type = "success") {
+      messageBox.textContent = text;
+      messageBox.className = `message show ${type}`;
+    }
+
+    function hideMessage() {
+      messageBox.className = "message";
+      messageBox.textContent = "";
+    }
+
+    function showLoader() {
+      loadingOverlay.classList.add("show");
+    }
+
+    function hideLoader() {
+      loadingOverlay.classList.remove("show");
+    }
+
+    function safeText(value, fallback = "--") {
+      if (value === null || value === undefined) return fallback;
+      const text = String(value).trim();
+      return text ? text : fallback;
+    }
+
+    function toNumber(value, fallback = 0) {
+      const num = Number(value);
+      return Number.isFinite(num) ? num : fallback;
+    }
+
+    function formatCurrency(value) {
+      const amount = toNumber(value, 0);
+      return `₹${amount.toLocaleString("en-IN")}`;
+    }
+
+    function getValueByKeys(obj, keys, fallback = null) {
+      for (const key of keys) {
+        if (obj && obj[key] !== undefined && obj[key] !== null) {
+          return obj[key];
+        }
+      }
+      return fallback;
+    }
+
+    function getUserStatus(node) {
+      const statusValue = getValueByKeys(node, ["isActive", "active", "status"], false);
+
+      if (typeof statusValue === "boolean") return statusValue;
+
+      if (typeof statusValue === "string") {
+        const normalized = statusValue.toLowerCase();
+        return normalized === "active" || normalized === "true" || normalized === "1";
+      }
+
+      return Boolean(statusValue);
+    }
+
+    function getReferralCount(node) {
+      const directCount = getValueByKeys(node, [
+        "referralCount",
+        "directReferralCount",
+        "directCount",
+        "totalReferrals",
+        "referralsCount"
+      ], null);
+
+      if (directCount !== null) return toNumber(directCount, 0);
+
+      const referralArray = getValueByKeys(node, [
+        "referrals",
+        "directReferrals",
+        "childrenList",
+        "directUsers"
+      ], null);
+
+      if (Array.isArray(referralArray)) return referralArray.length;
+
+      return 0;
+    }
+
+    function getLeftCount(node) {
+      return toNumber(getValueByKeys(node, [
+        "leftCount",
+        "leftBusinessCount",
+        "leftMembers",
+        "leftTeamCount"
+      ], 0), 0);
+    }
+
+    function getRightCount(node) {
+      return toNumber(getValueByKeys(node, [
+        "rightCount",
+        "rightBusinessCount",
+        "rightMembers",
+        "rightTeamCount"
+      ], 0), 0);
+    }
+
+    function getJoiningAmount(node) {
+      return toNumber(getValueByKeys(node, [
+        "joiningAmount",
+        "joinAmount",
+        "registrationAmount"
+      ], 500), 500);
+    }
+
+    function getDirectIncome(node) {
+      return toNumber(getValueByKeys(node, [
+        "directIncome",
+        "direct_income",
+        "referralIncome"
+      ], 0), 0);
+    }
+
+    function getPairIncome(node) {
+      return toNumber(getValueByKeys(node, [
+        "pairIncome",
+        "pair_income",
+        "binaryIncome"
+      ], 0), 0);
+    }
+
+    function getCarryForward(node) {
+      return toNumber(getValueByKeys(node, [
+        "carryForward",
+        "carry_forward",
+        "carry",
+        "carryAmount"
+      ], 0), 0);
+    }
+
+    function getBreakage(node) {
+      return toNumber(getValueByKeys(node, [
+        "breakage",
+        "breakageAmount"
+      ], 0), 0);
+    }
+
+    function getDailyCap(node) {
+      return toNumber(getValueByKeys(node, [
+        "dailyCap",
+        "daily_cap",
+        "incomeCap"
+      ], 1000), 1000);
+    }
+
+    function getSponsorId(node) {
+      return safeText(getValueByKeys(node, [
+        "sponsorId",
+        "sponsorUserId",
+        "referrerId",
+        "parentUserId"
+      ], "--"));
+    }
+
+    function getSponsorName(node) {
+      return safeText(getValueByKeys(node, [
+        "sponsorName",
+        "referrerName",
+        "sponsorFullName"
+      ], "--"));
+    }
+
+    function getPosition(node) {
+      return safeText(getValueByKeys(node, [
+        "position",
+        "side",
+        "placement"
+      ], "ROOT"));
+    }
+
+    function getFullName(node) {
+      return safeText(getValueByKeys(node, [
+        "fullName",
+        "name",
+        "userName"
+      ], "No Name"));
+    }
+
+    function getProfilePic(node) {
+      return getValueByKeys(node, [
+        "profilePic",
+        "profile",
+        "image",
+        "avatar"
+      ], null);
+    }
+
+    function getTotalIncome(node) {
+      const explicit = getValueByKeys(node, [
+        "totalIncome",
+        "income",
+        "wallet",
+        "earning",
+        "earnings"
+      ], null);
+
+      if (explicit !== null) return toNumber(explicit, 0);
+
+      return getDirectIncome(node) + getPairIncome(node);
+    }
+
+    function getPotentialPair(node) {
+      const leftCount = getLeftCount(node);
+      const rightCount = getRightCount(node);
+
+      if (leftCount > 0 || rightCount > 0) {
+        return Math.min(leftCount, rightCount);
+      }
+
+      const leftExists = node && node.left ? 1 : 0;
+      const rightExists = node && node.right ? 1 : 0;
+      return Math.min(leftExists, rightExists);
+    }
+
+    function escapeSingleQuotes(text) {
+      return String(text || "").replace(/'/g, "\\'");
+    }
+
+    function countAllVisibleUsers(node) {
+      let count = 0;
+
+      function walk(n) {
+        if (!n) return;
+        count += 1;
+        if (n.left) walk(n.left);
+        if (n.right) walk(n.right);
+      }
+
+      walk(node);
+      return count;
+    }
+
+    function countStats(node) {
+      const stats = {
+        total: 0,
+        active: 0,
+        inactive: 0,
+        totalIncome: 0,
+        directIncome: 0,
+        pairIncome: 0,
+        referrals: 0
+      };
+
+      function walk(n) {
+        if (!n) return;
+
+        const activeStatus = getUserStatus(n);
+
+        stats.total += 1;
+        if (activeStatus) stats.active += 1;
+        else stats.inactive += 1;
+
+        stats.totalIncome += getTotalIncome(n);
+        stats.directIncome += getDirectIncome(n);
+        stats.pairIncome += getPairIncome(n);
+        stats.referrals += getReferralCount(n);
+
+        if (n.left) walk(n.left);
+        if (n.right) walk(n.right);
+      }
+
+      walk(node);
+      return stats;
+    }
+
+    function createNodeCard(node, isRootNode = false) {
+      const isActive = getUserStatus(node);
+      const statusClass = isActive ? "active" : "inactive";
+      const statusText = isActive ? "Active" : "Inactive";
+      const safeUserId = escapeSingleQuotes(node.userId || "");
+      const fullName = getFullName(node);
+      const referralCount = getReferralCount(node);
+      const totalIncome = getTotalIncome(node);
+      const position = getPosition(node);
+      const profilePic = getProfilePic(node);
+      const teamLeft = getLeftCount(node);
+      const teamRight = getRightCount(node);
+
+      const avatarHtml = profilePic
+        ? `<img src="${profilePic}" alt="${fullName}" />`
+        : "👤";
+
+      return `
+        <div class="node ${statusClass} ${isRootNode ? "root-highlight" : ""}" onclick="openUserPopup('${safeUserId}')">
+          <div class="node-top-ribbon">${isRootNode ? "ROOT" : "NODE"}</div>
+          <div class="icon">${avatarHtml}</div>
+          <div class="user-id">${safeText(node.userId)}</div>
+          <div class="user-name">${fullName}</div>
+
+          <div class="badge-row">
+            <span class="badge ${isActive ? "green" : "red"}">${statusText}</span>
+            <span class="badge blue">${position}</span>
+            <span class="badge gold">${formatCurrency(totalIncome)}</span>
+          </div>
+
+          <div class="node-meta-grid">
+            <div class="node-mini-box">
+              <div class="node-mini-label">Referrals</div>
+              <div class="node-mini-value">${referralCount}</div>
+            </div>
+
+            <div class="node-mini-box">
+              <div class="node-mini-label">Direct</div>
+              <div class="node-mini-value">${formatCurrency(getDirectIncome(node))}</div>
+            </div>
+
+            <div class="node-mini-box">
+              <div class="node-mini-label">Left</div>
+              <div class="node-mini-value">${teamLeft}</div>
+            </div>
+
+            <div class="node-mini-box">
+              <div class="node-mini-label">Right</div>
+              <div class="node-mini-value">${teamRight}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function createEmptyNode(label, description = "No user found") {
+      return `
+        <div class="empty-box">
+          <div>
+            <strong>${label}</strong>
+            <div>${description}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTree(node, currentDepth, maxDepth, isRootNode = false) {
+      if (!node) return "";
+
+      let html = `<ul><li>${createNodeCard(node, isRootNode)}`;
+
+      if (currentDepth < maxDepth) {
+        html += "<ul>";
+
+        html += "<li>";
+        if (node.left) {
+          html += renderTree(node.left, currentDepth + 1, maxDepth, false);
+        } else {
+          html += createEmptyNode("Left Empty", "No left placement");
+        }
+        html += "</li>";
+
+        html += "<li>";
+        if (node.right) {
+          html += renderTree(node.right, currentDepth + 1, maxDepth, false);
+        } else {
+          html += createEmptyNode("Right Empty", "No right placement");
+        }
+        html += "</li>";
+
+        html += "</ul>";
+      }
+
+      html += "</li></ul>";
+      return html;
+    }
+
+    function updateHeaderQuickPanels(tree, stats) {
+      const rootName = getFullName(tree);
+      const sponsorId = getSponsorId(tree);
+      const totalIncome = getTotalIncome(tree);
+      const referralCount = getReferralCount(tree);
+
+      quickRootMain.textContent = safeText(tree.userId);
+      quickRootSub.textContent = `${rootName} • Sponsor: ${sponsorId} • Visible team: ${stats.total}`;
+
+      quickIncomeMain.textContent = formatCurrency(stats.totalIncome);
+      quickIncomeSub.textContent = `Root income ${formatCurrency(totalIncome)} • Direct ${formatCurrency(stats.directIncome)} • Pair ${formatCurrency(stats.pairIncome)}`;
+
+      quickReferralMain.textContent = String(stats.referrals);
+      quickReferralSub.textContent = `Root direct referrals ${referralCount} • Active ${stats.active} • Inactive ${stats.inactive}`;
+    }
+
+    function updateRootSummaryCards(tree) {
+      rootNameCard.textContent = getFullName(tree);
+      rootSponsorCard.textContent = getSponsorId(tree);
+      rootIncomeCard.textContent = formatCurrency(getTotalIncome(tree));
+      rootReferralCard.textContent = String(getReferralCount(tree));
+    }
+
+    function updateInsights(tree, stats) {
+      const rootName = getFullName(tree);
+      const pairPotential = getPotentialPair(tree);
+      const carryForward = getCarryForward(tree);
+
+      insightOne.textContent = `${safeText(tree.userId)} / ${rootName} network मध्ये ${stats.active} active आणि ${stats.inactive} inactive users visible आहेत.`;
+      insightTwo.textContent = `Loaded tree मधून total ${stats.referrals} referrals दिसत आहेत आणि root pair potential ${pairPotential} आहे.`;
+      insightThree.textContent = `Root carry forward ${carryForward}, root total income ${formatCurrency(getTotalIncome(tree))}, visible team size ${stats.total}.`;
+    }
+
+    function updateStatCards(tree, stats) {
+      statRoot.textContent = safeText(tree.userId);
+      statNodes.textContent = String(stats.total);
+      statActive.textContent = String(stats.active);
+      statInactive.textContent = String(stats.inactive);
+      statTotalIncome.textContent = formatCurrency(stats.totalIncome);
+      statDirectIncome.textContent = formatCurrency(stats.directIncome);
+      statPairIncome.textContent = formatCurrency(stats.pairIncome);
+      statReferrals.textContent = String(stats.referrals);
+    }
+
+    function resetDashboard() {
+      currentRootTree = null;
+      treeContainer.innerHTML = "";
+      statRoot.textContent = "--";
+      statNodes.textContent = "0";
+      statActive.textContent = "0";
+      statInactive.textContent = "0";
+      statTotalIncome.textContent = "₹0";
+      statDirectIncome.textContent = "₹0";
+      statPairIncome.textContent = "₹0";
+      statReferrals.textContent = "0";
+
+      quickRootMain.textContent = "--";
+      quickRootSub.textContent = "Enter a user ID and load tree to see live network summary.";
+      quickIncomeMain.textContent = "₹0";
+      quickIncomeSub.textContent = "Direct + Pair + Carry Forward + Breakage summary will show here.";
+      quickReferralMain.textContent = "0";
+      quickReferralSub.textContent = "Total visible referrals and placement insight will show here.";
+
+      rootNameCard.textContent = "--";
+      rootSponsorCard.textContent = "--";
+      rootIncomeCard.textContent = "₹0";
+      rootReferralCard.textContent = "0";
+
+      insightOne.textContent = "Load a root user to see active / inactive and income distribution.";
+      insightTwo.textContent = "Click any node to open full popup details with referral and income summary.";
+      insightThree.textContent = "This panel will auto-update using currently loaded tree response.";
+    }
+
+    function setModalBadgeState(isActive) {
+      modalStatusBadge.className = `modal-badge ${isActive ? "green" : "red"}`;
+      modalPositionBadge.className = "modal-badge";
+      modalReferralBadge.className = "modal-badge";
+      modalIncomeBadge.className = "modal-badge gold";
+    }
+
+    function fillUserModal(user) {
+      const isActive = getUserStatus(user);
+      const fullName = getFullName(user);
+      const userId = safeText(user.userId);
+      const statusText = isActive ? "Active" : "Inactive";
+      const position = getPosition(user);
+      const referralCount = getReferralCount(user);
+      const totalIncome = getTotalIncome(user);
+      const directIncome = getDirectIncome(user);
+      const pairIncome = getPairIncome(user);
+      const carryForward = getCarryForward(user);
+      const breakage = getBreakage(user);
+      const dailyCap = getDailyCap(user);
+      const joiningAmount = getJoiningAmount(user);
+      const sponsorId = getSponsorId(user);
+      const sponsorName = getSponsorName(user);
+      const leftId = user.left ? safeText(user.left.userId) : "--";
+      const rightId = user.right ? safeText(user.right.userId) : "--";
+      const leftCount = getLeftCount(user);
+      const rightCount = getRightCount(user);
+      const potentialPair = getPotentialPair(user);
+      const visibleTeamSize = countAllVisibleUsers(user);
+
+      modalTitle.textContent = fullName;
+      modalSubtitle.textContent = `${userId} • Sponsor ${sponsorId}`;
+
+      modalUserId.textContent = userId;
+      modalName.textContent = fullName;
+      modalStatus.textContent = statusText;
+      modalPosition.textContent = position;
+      modalSponsorId.textContent = sponsorId;
+      modalSponsorName.textContent = sponsorName;
+
+      modalReferralCount.textContent = String(referralCount);
+      modalLeftUser.textContent = leftId;
+      modalRightUser.textContent = rightId;
+      modalLeftCount.textContent = String(leftCount);
+      modalRightCount.textContent = String(rightCount);
+      modalDepthInfo.textContent = `Level ${depthSelect.value} View`;
+
+      modalJoiningAmount.textContent = formatCurrency(joiningAmount);
+      modalDirectIncome.textContent = formatCurrency(directIncome);
+      modalPairIncome.textContent = formatCurrency(pairIncome);
+      modalCarryForward.textContent = String(carryForward);
+      modalBreakage.textContent = String(breakage);
+      modalDailyCap.textContent = formatCurrency(dailyCap);
+
+      modalTotalIncome.textContent = formatCurrency(totalIncome);
+      modalPotentialPair.textContent = String(potentialPair);
+      modalActivityNote.textContent = isActive ? "User is active in current network" : "User currently inactive in network";
+      modalBusinessStatus.textContent = totalIncome > 0 ? "Income generated" : "No visible income yet";
+      modalRootMatch.textContent = currentRootTree && currentRootTree.userId === user.userId ? "This is current root user" : "This is child / nested user";
+      modalTeamSize.textContent = String(visibleTeamSize);
+
+      modalStatusBadge.textContent = statusText;
+      modalPositionBadge.textContent = position;
+      modalReferralBadge.textContent = `Referrals ${referralCount}`;
+      modalIncomeBadge.textContent = `${formatCurrency(totalIncome)}`;
+
+      setModalBadgeState(isActive);
+
+      const profilePic = getProfilePic(user);
+      if (profilePic) {
+        modalAvatar.innerHTML = `<img src="${profilePic}" alt="${fullName}" />`;
+      } else {
+        modalAvatar.innerHTML = "👤";
+      }
+
+      currentPopupUserId = user.userId || null;
+    }
+
+    function showUserModal() {
+      userModal.classList.add("show");
+    }
+
+    function hideUserModal() {
+      userModal.classList.remove("show");
+    }
+
+    function findNodeByUserId(node, userId) {
+      if (!node || !userId) return null;
+      if (node.userId === userId) return node;
+
+      const leftResult = node.left ? findNodeByUserId(node.left, userId) : null;
+      if (leftResult) return leftResult;
+
+      const rightResult = node.right ? findNodeByUserId(node.right, userId) : null;
+      if (rightResult) return rightResult;
+
+      return null;
+    }
+
+    async function openUserPopup(userId) {
+      try {
+        hideMessage();
+
+        if (!userId) {
+          showMessage("Invalid user ID for popup", "error");
+          return;
+        }
+
+        if (currentRootTree) {
+          const localNode = findNodeByUserId(currentRootTree, userId);
+          if (localNode) {
+            fillUserModal(localNode);
+            showUserModal();
+            return;
+          }
+        }
+
+        showLoader();
+
+        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=2`);
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.tree) {
+          showMessage("Failed to load user details", "error");
+          return;
+        }
+
+        fillUserModal(data.tree);
+        showUserModal();
+      } catch (error) {
+        console.error(error);
+        showMessage("Popup load error", "error");
+      } finally {
+        hideLoader();
+      }
+    }
+
+    function normalizeTreeResponse(data) {
+      if (!data) return null;
+
+      if (data.tree) return data.tree;
+      if (data.user) return data.user;
+      return data;
+    }
+
+    async function loadTree() {
+      try {
+        hideMessage();
+
+        const userId = userIdInput.value.trim().toUpperCase();
+        const depth = depthSelect.value;
+
+        if (!userId) {
+          showMessage("Please enter user ID first", "error");
+          return;
+        }
+
+        loadBtn.disabled = true;
+        reloadBtn.disabled = true;
+        loadBtn.textContent = "Loading...";
+        showLoader();
+
+        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=${depth}`);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          resetDashboard();
+          showMessage(data.message || "Failed to load tree", "error");
+          return;
+        }
+
+        const tree = normalizeTreeResponse(data);
+
+        if (!tree || !tree.userId) {
+          resetDashboard();
+          showMessage("Invalid tree data received", "error");
+          return;
+        }
+
+        currentRootTree = tree;
+        treeContainer.innerHTML = renderTree(tree, 1, Number(depth), true);
+
+        const stats = countStats(tree);
+
+        updateStatCards(tree, stats);
+        updateHeaderQuickPanels(tree, stats);
+        updateRootSummaryCards(tree);
+        updateInsights(tree, stats);
+
+        showMessage(`Tree loaded successfully for ${safeText(tree.userId)}`, "success");
+      } catch (error) {
+        console.error(error);
+        resetDashboard();
+        showMessage("Server error while loading tree", "error");
+      } finally {
+        hideLoader();
+        loadBtn.disabled = false;
+        reloadBtn.disabled = false;
+        loadBtn.textContent = "Load Tree";
+      }
+    }
+
+    function reloadCurrentTree() {
+      if (!userIdInput.value.trim()) {
+        showMessage("Please enter user ID first", "error");
+        return;
+      }
+
+      loadTree();
+    }
+
+    function loadPopupUserAsRoot() {
+      if (!currentPopupUserId) {
+        showMessage("No popup user selected", "error");
+        return;
+      }
+
+      userIdInput.value = String(currentPopupUserId).toUpperCase();
+      hideUserModal();
+      loadTree();
+    }
+
+    loadBtn.addEventListener("click", loadTree);
+    reloadBtn.addEventListener("click", reloadCurrentTree);
+
+    userIdInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        loadTree();
+      }
+    });
+
+    modalCloseBtn.addEventListener("click", hideUserModal);
+    modalCloseActionBtn.addEventListener("click", hideUserModal);
+    modalLoadAsRootBtn.addEventListener("click", loadPopupUserAsRoot);
+
+    userModal.addEventListener("click", function (e) {
+      if (e.target === userModal) {
+        hideUserModal();
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        hideUserModal();
+      }
+    });
+
+    userIdInput.value = "AC1001";
+    resetDashboard();
+
+    window.openUserPopup = openUserPopup;
+  </script>
+</body>
+</html>

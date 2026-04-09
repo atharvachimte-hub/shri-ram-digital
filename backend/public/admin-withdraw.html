@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Withdraw Panel</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background: #1e293b;
+}
+
+tr:nth-child(even) {
+    background: rgba(255,255,255,0.03);
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.approve {
+    background: #22c55e;
+    color: white;
+}
+
+.reject {
+    background: #ef4444;
+    color: white;
+}
+
+.pending {
+    color: yellow;
+}
+
+.approved {
+    color: lightgreen;
+}
+
+.rejected {
+    color: red;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>Withdraw Requests</h1>
+
+<table id="withdrawTable">
+<thead>
+<tr>
+    <th>User ID</th>
+    <th>Amount</th>
+    <th>Method</th>
+    <th>Details</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+</table>
+
+<script>
+
+const API = "https://shri-ram-digital-1.onrender.com/api";
+
+// Fetch Withdraw Requests
+async function loadWithdraws() {
+    const res = await fetch(`${API}/admin/withdraws`);
+    const data = await res.json();
+
+    const tbody = document.querySelector("#withdrawTable tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(w => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${w.userId}</td>
+            <td>₹${w.amount}</td>
+            <td>${w.method}</td>
+            <td>${w.details}</td>
+            <td class="${w.status}">${w.status}</td>
+            <td>
+                ${w.status === "pending" ? `
+                    <button class="approve" onclick="approve('${w._id}')">Approve</button>
+                    <button class="reject" onclick="reject('${w._id}')">Reject</button>
+                ` : "Done"}
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+// Approve
+async function approve(id) {
+    await fetch(`${API}/admin/approve/${id}`, { method: "POST" });
+    loadWithdraws();
+}
+
+// Reject
+async function reject(id) {
+    await fetch(`${API}/admin/reject/${id}`, { method: "POST" });
+    loadWithdraws();
+}
+
+// Auto refresh
+setInterval(loadWithdraws, 3000);
+
+// Initial load
+loadWithdraws();
+
+</script>
+
+</body>
+</html>

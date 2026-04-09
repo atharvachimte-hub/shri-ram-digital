@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Directs - Premium MLM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --glass: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.1);
+    --text: #ffffff;
+    --muted: #a0cfcf;
+    --accent: #00ffcc;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+display:flex;
+background: radial-gradient(circle at top, #063d3d, #010909);
+color:white;
+overflow:hidden;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:230px;
+height:100vh;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(15px);
+border-right:1px solid var(--border);
+padding:20px;
+}
+
+.sidebar h2{color:#00ffcc;margin-bottom:20px;}
+
+.sidebar a{
+display:block;
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:var(--glass);
+}
+
+/* MAIN */
+.main{
+flex:1;
+padding:30px;
+position:relative;
+}
+
+/* FLOAT BG (DIFFERENT COLORS) */
+.orb1{
+position:absolute;
+width:200px;
+height:200px;
+background:#00aaff;
+filter:blur(80px);
+top:100px;
+left:60%;
+opacity:0.3;
+animation:float 8s infinite;
+}
+
+.orb2{
+position:absolute;
+width:150px;
+height:150px;
+background:#ff00cc;
+filter:blur(80px);
+bottom:50px;
+right:50px;
+opacity:0.3;
+animation:float 10s infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-40px)}
+100%{transform:translateY(0)}
+}
+
+/* GOLD COIN FIXED */
+.coin{
+position:absolute;
+top:40px;
+right:60px;
+width:90px;
+height:90px;
+border-radius:50%;
+background: radial-gradient(circle,#ffd700,#b8860b);
+box-shadow:0 0 40px rgba(255,215,0,0.8);
+animation:spin 4s linear infinite;
+z-index:999; /* FIX */
+}
+
+@keyframes spin{
+0%{transform:rotateY(0deg)}
+100%{transform:rotateY(360deg)}
+}
+
+/* HERO */
+.hero{
+background:linear-gradient(135deg,#0b5f5f,#012b2b);
+padding:30px;
+border-radius:20px;
+margin-bottom:25px;
+box-shadow:0 0 40px rgba(0,255,204,0.2);
+}
+
+.hero h1{font-size:36px;}
+.hero p{color:#a0cfcf;margin-top:10px;}
+
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:var(--glass);
+border:1px solid var(--border);
+padding:20px;
+border-radius:15px;
+backdrop-filter:blur(10px);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px) scale(1.05);
+}
+
+/* TABLE */
+.table{
+background:var(--glass);
+padding:20px;
+border-radius:15px;
+backdrop-filter:blur(10px);
+}
+
+table{width:100%;border-collapse:collapse;}
+
+th,td{padding:12px;text-align:left;}
+th{color:#00ffcc;}
+tr{border-bottom:1px solid var(--border);}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>MLM Panel</h2>
+<a href="dashboard.html">Dashboard</a>
+<a href="my-team.html">My Team</a>
+<a href="my-directs.html">My Directs</a>
+</div>
+
+<div class="main">
+
+<!-- FLOAT BG -->
+<div class="orb1"></div>
+<div class="orb2"></div>
+
+<!-- GOLD COIN -->
+<div class="coin"></div>
+
+<div class="hero">
+<h1>🔥 My Direct Members</h1>
+<p>Track your direct referrals, joining activity and performance in a clean SaaS dashboard view.</p>
+</div>
+
+<div class="stats">
+<div class="card"><h3>25</h3><span>Total Directs</span></div>
+<div class="card"><h3>18</h3><span>Active Members</span></div>
+<div class="card"><h3>7</h3><span>Inactive Members</span></div>
+<div class="card"><h3>₹12,500</h3><span>Direct Income</span></div>
+</div>
+
+<div class="table">
+<h2 style="margin-bottom:15px;">Direct Members List</h2>
+<table>
+<tr>
+<th>Name</th><th>ID</th><th>Status</th><th>Join Date</th><th>Income</th>
+</tr>
+
+<tr><td>Rahul Patil</td><td>#MLM1023</td><td>Active</td><td>12 Mar 2026</td><td>₹2500</td></tr>
+<tr><td>Priya Sharma</td><td>#MLM1024</td><td>Inactive</td><td>14 Mar 2026</td><td>₹0</td></tr>
+<tr><td>Amit Joshi</td><td>#MLM1025</td><td>Active</td><td>15 Mar 2026</td><td>₹3200</td></tr>
+
+</table>
+</div>
+
+</div>
+
+</body>
+</html>

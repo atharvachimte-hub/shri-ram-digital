@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShriRam Digital - Premium Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #062f2f;
+      --bg-darker: #021d1d;
+      --panel: rgba(255, 255, 255, 0.07);
+      --panel-strong: rgba(255, 255, 255, 0.1);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f5fffd;
+      --muted: #b9ddd6;
+      --primary: #0f766e;
+      --secondary: #10b981;
+      --accent: #34d399;
+      --accent-2: #6ee7b7;
+      --glow: rgba(52, 211, 153, 0.28);
+      --warning: #f59e0b;
+      --pink: #ec4899;
+      --blue-soft: #67e8f9;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(52, 211, 153, 0.12), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.12), transparent 24%),
+        linear-gradient(135deg, var(--bg-dark), var(--bg-darker));
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* FLOATING BG */
+    .floating-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(12px);
+      opacity: 0.18;
+      animation: drift 14s ease-in-out infinite;
+    }
+
+    .blob.one {
+      width: 220px;
+      height: 220px;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      top: 8%;
+      left: 8%;
+      animation-delay: 0s;
+    }
+
+    .blob.two {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, #0f766e, #6ee7b7);
+      top: 48%;
+      right: 8%;
+      animation-delay: 2s;
+    }
+
+    .blob.three {
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(135deg, #34d399, #67e8f9);
+      bottom: 10%;
+      left: 30%;
+      animation-delay: 4s;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(110, 231, 183, 0.45);
+      box-shadow: 0 0 12px rgba(110, 231, 183, 0.35);
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(24px, -16px) scale(1.06); }
+      50% { transform: translate(-14px, 18px) scale(0.96); }
+      75% { transform: translate(18px, 8px) scale(1.03); }
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    /* LAYOUT */
+    .layout {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 285px;
+      min-width: 285px;
+      background: rgba(8, 29, 29, 0.72);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--line);
+      padding: 24px 18px 28px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 25px rgba(52, 211, 153, 0.25);
+    }
+
+    .brand h2 {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .brand p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .menu-section {
+      margin-top: 18px;
+    }
+
+    .menu-title {
+      font-size: 11px;
+      letter-spacing: 1.8px;
+      color: #9fcfc5;
+      margin: 18px 12px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .menu-item,
+    .submenu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      color: #ecfffb;
+      transition: 0.28s ease;
+      margin-bottom: 6px;
+      position: relative;
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover,
+    .submenu-item:hover {
+      background: rgba(52, 211, 153, 0.13);
+      border-color: rgba(52, 211, 153, 0.14);
+      transform: translateX(4px);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(90deg, rgba(52, 211, 153, 0.22), rgba(15, 118, 110, 0.12));
+      border-color: rgba(52, 211, 153, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.05), 0 0 20px rgba(52, 211, 153, 0.08);
+    }
+
+    .icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
+    }
+
+    .i-blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+    .i-orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .i-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .i-green { background: linear-gradient(135deg, #10b981, #34d399); }
+    .i-purple { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+    .i-cyan { background: linear-gradient(135deg, #06b6d4, #67e8f9); }
+    .i-yellow { background: linear-gradient(135deg, #ca8a04, #fde047); color: #212121; }
+    .i-red { background: linear-gradient(135deg, #ef4444, #fb7185); }
+
+    .menu-text {
+      font-size: 14px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    details.group {
+      margin-bottom: 8px;
+    }
+
+    details.group summary {
+      list-style: none;
+      cursor: pointer;
+    }
+
+    details.group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .submenu {
+      margin-top: 5px;
+      padding-left: 14px;
+      border-left: 1px dashed rgba(255,255,255,0.1);
+      margin-left: 16px;
+    }
+
+    .submenu-item {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .submenu-item .menu-text {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .content {
+      flex: 1;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .welcome {
+      max-width: 70%;
+    }
+
+    .welcome h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: 0.28s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: #03231f;
+      box-shadow: 0 10px 28px rgba(52, 211, 153, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(52, 211, 153, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      color: #eafff9;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .hero-card,
+    .mini-panel,
+    .stat-card,
+    .wide-card,
+    .quick-action,
+    .referral-box {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+    }
+
+    .hero-card {
+      padding: 28px;
+      min-height: 240px;
+      background:
+        radial-gradient(circle at top right, rgba(110, 231, 183, 0.15), transparent 28%),
+        linear-gradient(135deg, rgba(15,118,110,0.65), rgba(6,47,47,0.7));
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -40px;
+      bottom: -30px;
+      border-radius: 50%;
+      background: rgba(110, 231, 183, 0.09);
+    }
+
+    .hero-card h2 {
+      font-size: 18px;
+      color: #d8ffef;
+      margin-bottom: 8px;
+    }
+
+    .hero-card h3 {
+      font-size: 44px;
+      line-height: 1.12;
+      max-width: 650px;
+      margin-bottom: 14px;
+      font-weight: 900;
+    }
+
+    .hero-card p {
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 680px;
+      color: #dcfff4;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .hero-tags span {
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.11);
+      color: #f4fffd;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .mini-panel {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at top left, rgba(52,211,153,0.12), transparent 25%),
+        rgba(255,255,255,0.06);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h4 {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .panel-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(110, 231, 183, 0.15);
+      color: #d8fff1;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(110, 231, 183, 0.18);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .mini-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .mini-box label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .mini-box strong {
+      font-size: 31px;
+      font-weight: 900;
+    }
+
+    .section {
+      margin-top: 10px;
+      margin-bottom: 24px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 14px;
+    }
+
+    .section-head h3 {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .section-head p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .section-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .section-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .section-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .stat-card {
+      padding: 20px;
+      min-height: 142px;
+      transition: 0.28s ease;
+    }
+
+    .stat-card:hover,
+    .wide-card:hover,
+    .quick-action:hover,
+    .referral-box:hover,
+    .mini-panel:hover,
+    .hero-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 14px 38px rgba(52, 211, 153, 0.15);
+      border-color: rgba(52,211,153,0.14);
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: 34px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .stat-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .bg1 { background: linear-gradient(135deg, rgba(52, 211, 153, 0.13), rgba(255,255,255,0.04)); }
+    .bg2 { background: linear-gradient(135deg, rgba(103, 232, 249, 0.13), rgba(255,255,255,0.04)); }
+    .bg3 { background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(255,255,255,0.04)); }
+    .bg4 { background: linear-gradient(135deg, rgba(236, 72, 153, 0.12), rgba(255,255,255,0.04)); }
+    .bg5 { background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(255,255,255,0.04)); }
+    .bg6 { background: linear-gradient(135deg, rgba(16, 185, 129, 0.13), rgba(255,255,255,0.04)); }
+
+    .wide-card {
+      padding: 22px;
+      min-height: 188px;
+    }
+
+    .wide-card h4 {
+      font-size: 17px;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    .progress-row {
+      margin-bottom: 14px;
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .bar {
+      width: 100%;
+      height: 11px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      box-shadow: 0 0 14px rgba(52,211,153,0.22);
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .quick-action {
+      padding: 20px;
+      min-height: 130px;
+      transition: 0.28s ease;
+    }
+
+    .quick-action h4 {
+      font-size: 16px;
+      margin: 16px 0 8px;
+      font-weight: 800;
+    }
+
+    .quick-action p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .qa-btn {
+      margin-top: 14px;
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(52,211,153,0.14);
+      color: #defff4;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(52,211,153,0.16);
+    }
+
+    .referral-box {
+      padding: 22px;
+    }
+
+    .link-card {
+      padding: 15px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-top: 12px;
+    }
+
+    .link-title {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .link-url {
+      font-size: 13px;
+      word-break: break-all;
+      color: #dffff5;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      color: rgba(220,255,244,0.65);
+      font-size: 12px;
+      padding-bottom: 12px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1400px) {
+      .section-grid-4,
+      .quick-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 250px;
+        min-width: 250px;
+      }
+
+      .welcome h1 {
+        font-size: 34px;
+      }
+
+      .section-grid-3,
+      .section-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .welcome {
+        max-width: 100%;
+      }
+
+      .section-grid-4,
+      .quick-grid,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card h3 {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-bg">
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="blob three"></div>
+
+    <span class="particle" style="left:6%; bottom:-20px; animation-duration:15s; animation-delay:0s;"></span>
+    <span class="particle" style="left:18%; bottom:-30px; animation-duration:11s; animation-delay:1s;"></span>
+    <span class="particle" style="left:29%; bottom:-10px; animation-duration:13s; animation-delay:2.5s;"></span>
+    <span class="particle" style="left:42%; bottom:-25px; animation-duration:16s; animation-delay:1.3s;"></span>
+    <span class="particle" style="left:56%; bottom:-30px; animation-duration:12s; animation-delay:3s;"></span>
+    <span class="particle" style="left:68%; bottom:-20px; animation-duration:17s; animation-delay:1.8s;"></span>
+    <span class="particle" style="left:79%; bottom:-15px; animation-duration:14s; animation-delay:2.2s;"></span>
+    <span class="particle" style="left:91%; bottom:-30px; animation-duration:18s; animation-delay:0.8s;"></span>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🔥</div>
+        <div>
+          <h2>MLM</h2>
+          <p>ShriRam Premium Panel</p>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Main</div>
+
+        <a href="/dashboard" class="menu-item active">
+          <div class="icon-box i-blue">▦</div>
+          <div class="menu-text">Dashboard</div>
+        </a>
+
+        <a href="registration.html" class="menu-item">
+          <div class="icon-box i-orange">👤</div>
+          <div class="menu-text">Registration</div>
+        </a>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Team</div>
+
+        <a href="team-overview.html" class="menu-item">
+          <div class="icon-box i-pink">👥</div>
+          <div class="menu-text">Team Overview</div>
+        </a>
+
+        <a href="/tree" class="menu-item">
+          <div class="icon-box i-cyan">🌳</div>
+          <div class="menu-text">Direct Tree</div>
+        </a>
+
+        <a href="my-directs.html" class="menu-item">
+          <div class="icon-box i-green">◎</div>
+          <div class="menu-text">My Directs</div>
+        </a>
+
+        <a href="my-team.html" class="menu-item">
+          <div class="icon-box i-yellow">▣</div>
+          <div class="menu-text">My Team</div>
+        </a>
+
+        <a href="tree-view.html" class="menu-item">
+          <div class="icon-box i-purple">⎇</div>
+          <div class="menu-text">Tree View</div>
+        </a>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Finance</div>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-blue">🔑</div>
+            <div class="menu-text">EPIN Manager</div>
+          </summary>
+          <div class="submenu">
+            <a href="epin-manager.html" class="submenu-item">
+              <div class="menu-text">EPIN Dashboard</div>
+            </a>
+            <a href="epin-request.html" class="submenu-item">
+              <div class="menu-text">EPIN Request</div>
+            </a>
+            <a href="request-history.html" class="submenu-item">
+              <div class="menu-text">Request History</div>
+            </a>
+            <a href="epin-report.html" class="submenu-item">
+              <div class="menu-text">EPIN Report</div>
+            </a>
+          </div>
+        </details>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-purple">⇄</div>
+            <div class="menu-text">Transfer</div>
+          </summary>
+          <div class="submenu">
+            <a href="transfer.html" class="submenu-item">
+              <div class="menu-text">Transfer Funds</div>
+            </a>
+            <a href="transfer-report.html" class="submenu-item">
+              <div class="menu-text">Transfer Report</div>
+            </a>
+          </div>
+        </details>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-yellow">◫</div>
+            <div class="menu-text">Topup Master</div>
+          </summary>
+          <div class="submenu">
+            <a href="topup-master.html" class="submenu-item">
+              <div class="menu-text">Topup Overview</div>
+            </a>
+            <a href="add-topup.html" class="submenu-item">
+              <div class="menu-text">Add Topup</div>
+            </a>
+            <a href="topup-report.html" class="submenu-item">
+              <div class="menu-text">Topup Report</div>
+            </a>
+          </div>
+        </details>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-red">🎁</div>
+            <div class="menu-text">Incentives</div>
+          </summary>
+          <div class="submenu">
+            <a href="incentives.html" class="submenu-item">
+              <div class="menu-text">Incentive Dashboard</div>
+            </a>
+            <a href="matching-bonus.html" class="submenu-item">
+              <div class="menu-text">Matching Bonus</div>
+            </a>
+            <a href="direct-incentive.html" class="submenu-item">
+              <div class="menu-text">Direct Incentive</div>
+            </a>
+          </div>
+        </details>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Account</div>
+
+        <a href="payout.html" class="menu-item">
+          <div class="icon-box i-orange">₹</div>
+          <div class="menu-text">Payout</div>
+        </a>
+
+        <a href="wallet.html" class="menu-item">
+          <div class="icon-box i-green">💼</div>
+          <div class="menu-text">Wallet</div>
+        </a>
+
+        <a href="profile.html" class="menu-item">
+          <div class="icon-box i-blue">🙂</div>
+          <div class="menu-text">Profile</div>
+        </a>
+
+        <a href="/login.html" class="menu-item">
+          <div class="icon-box i-red">↩</div>
+          <div class="menu-text">Logout</div>
+        </a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Welcome Atharva 🚀</h1>
+          <p>
+            Smart partner dashboard with premium SaaS feel, clean finance visibility,
+            network tracking, earning summary, and future-ready MLM growth structure.
+          </p>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="chip">Live Demo Ready</div>
+          <div class="chip">Teal Premium Theme</div>
+          <button class="btn btn-primary" onclick="window.location.href='/tree'">Open Tree</button>
+          <button class="btn btn-secondary">Export Summary</button>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div class="hero-card">
+          <h2>Partner Growth Dashboard</h2>
+          <h3>Grow With ShriRam Digital. Track Team, Earnings, Wallet & Incentives.</h3>
+          <p>
+            This premium demo dashboard is designed to give a strong SaaS product feel.
+            It presents your MLM business overview in a smarter, cleaner and more attractive way
+            than a normal basic panel.
+          </p>
+
+          <div class="hero-tags">
+            <span>Partner Earning Platform</span>
+            <span>Referral Growth View</span>
+            <span>Lead + Income Summary</span>
+            <span>Future Automation Ready</span>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary">Join Growth Track</button>
+            <button class="btn btn-secondary">View Program</button>
+          </div>
+        </div>
+
+        <div class="mini-panel">
+          <div class="panel-header">
+            <h4>Live Dashboard Preview</h4>
+            <div class="panel-pill">Premium Demo</div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-box">
+              <label>Total Leads</label>
+              <strong>18</strong>
+            </div>
+            <div class="mini-box">
+              <label>Approved Projects</label>
+              <strong>06</strong>
+            </div>
+            <div class="mini-box">
+              <label>Total Earnings</label>
+              <strong>₹24.5K</strong>
+            </div>
+            <div class="mini-box">
+              <label>Job Access</label>
+              <strong>12</strong>
+            </div>
+          </div>
+
+          <div class="link-card" style="margin-top:16px;">
+            <div class="link-title">Quick Note</div>
+            <div class="link-url">This premium layout helps partners manage leads, view opportunities, track earnings and use the system like a real SaaS panel.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Account Overview</h3>
+            <p>Main dashboard snapshot for account, status and wallet.</p>
+          </div>
+          <div class="chip">4 Items</div>
+        </div>
+
+        <div class="section-grid-4">
+          <div class="stat-card bg2">
+            <div class="stat-top">
+              <div class="stat-label">Package</div>
+              <div class="icon-box i-cyan">▣</div>
+            </div>
+            <div class="stat-value">350</div>
+            <div class="stat-sub">Current active plan / partner package summary.</div>
+          </div>
+
+          <div class="stat-card bg1">
+            <div class="stat-top">
+              <div class="stat-label">Activation Date</div>
+              <div class="icon-box i-green">📅</div>
+            </div>
+            <div class="stat-value" style="font-size:26px;">12/12/2025</div>
+            <div class="stat-sub">Member since activation date with premium status visibility.</div>
+          </div>
+
+          <div class="stat-card bg3">
+            <div class="stat-top">
+              <div class="stat-label">Status</div>
+              <div class="icon-box i-yellow">🛡</div>
+            </div>
+            <div class="stat-value">Silver</div>
+            <div class="stat-sub">Current account standing, level and progress snapshot.</div>
+          </div>
+
+          <div class="stat-card bg6">
+            <div class="stat-top">
+              <div class="stat-label">Wallet Balance</div>
+              <div class="icon-box i-green">💰</div>
+            </div>
+            <div class="stat-value">₹0</div>
+            <div class="stat-sub">Available wallet funds for payout, topup and transfer.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Team Performance</h3>
+            <p>Track network growth, directs and business sides.</p>
+          </div>
+          <div class="chip">4 Items</div>
+        </div>
+
+        <div class="section-grid-4">
+          <div class="stat-card bg5">
+            <div class="stat-top">
+              <div class="stat-label">Total Team</div>
+              <div class="icon-box i-purple">👥</div>
+            </div>
+            <div class="stat-value">194</div>
+            <div class="stat-sub">All network combined with active + inactive visibility.</div>
+          </div>
+
+          <div class="stat-card bg2">
+            <div class="stat-top">
+              <div class="stat-label">Direct Team</div>
+              <div class="icon-box i-blue">◎</div>
+            </div>
+            <div class="stat-value">2</div>
+            <div class="stat-sub">Directly sponsored users under your main account.</div>
+          </div>
+
+          <div class="wide-card bg2">
+            <h4>Total Business Volume</h4>
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Left</span>
+                <span>152</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:72%;"></div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Right</span>
+                <span>40</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:28%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wide-card bg6">
+            <h4>Total Carry Forward</h4>
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Left</span>
+                <span>111</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:62%;"></div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Right</span>
+                <span>0</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:5%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Earnings & Incentives</h3>
+            <p>Show total rewards, bonuses and payout visibility.</p>
+          </div>
+          <div class="chip">4 Items</div>
+        </div>
+
+        <div class="section-grid-2">
+          <div class="stat-card bg4" style="min-height:160px;">
+            <div class="stat-top">
+              <div class="stat-label">Total Incentive</div>
+              <div class="icon-box i-red">🎁</div>
+            </div>
+            <div class="stat-value">4000</div>
+            <div class="stat-sub">Cumulative incentive earned across direct and team performance growth.</div>
+          </div>
+
+          <div class="stat-card bg5" style="min-height:160px;">
+            <div class="stat-top">
+              <div class="stat-label">Award / Reward</div>
+              <div class="icon-box i-purple">🏆</div>
+            </div>
+            <div class="stat-value">0</div>
+            <div class="stat-sub">Milestone rewards earned from consistency, growth and premium performance.</div>
+          </div>
+        </div>
+
+        <div class="section-grid-4" style="margin-top:18px;">
+          <div class="stat-card bg6">
+            <div class="stat-top">
+              <div class="stat-label">Matching Incentive</div>
+              <div class="icon-box i-green">⇄</div>
+            </div>
+            <div class="stat-value">₹2000</div>
+            <div class="stat-sub">Matching bonus based on left-right side performance.</div>
+          </div>
+
+          <div class="stat-card bg1">
+            <div class="stat-top">
+              <div class="stat-label">Direct Incentive</div>
+              <div class="icon-box i-cyan">➜</div>
+            </div>
+            <div class="stat-value">₹2000</div>
+            <div class="stat-sub">Direct referral earning generated from sponsored members.</div>
+          </div>
+
+          <div class="stat-card bg3">
+            <div class="stat-top">
+              <div class="stat-label">Pending Payout</div>
+              <div class="icon-box i-yellow">₹</div>
+            </div>
+            <div class="stat-value">₹0</div>
+            <div class="stat-sub">Available payout amount pending for transfer or release.</div>
+          </div>
+
+          <div class="stat-card bg2">
+            <div class="stat-top">
+              <div class="stat-label">Referral Bonus</div>
+              <div class="icon-box i-blue">🔗</div>
+            </div>
+            <div class="stat-value">₹850</div>
+            <div class="stat-sub">Referral-based bonus generated through performance activity.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Quick Actions</h3>
+            <p>Important actions to make the panel look complete and professional.</p>
+          </div>
+          <div class="chip">Fast Access</div>
+        </div>
+
+        <div class="quick-grid">
+          <div class="quick-action">
+            <div class="icon-box i-green">👤</div>
+            <h4>New Registration</h4>
+            <p>Add a new user or partner entry quickly from the registration module.</p>
+            <a href="registration.html" class="qa-btn">Open Registration</a>
+          </div>
+
+          <div class="quick-action">
+            <div class="icon-box i-cyan">🌳</div>
+            <h4>Open Tree View</h4>
+            <p>See binary structure, member placement and deeper sponsor hierarchy.</p>
+            <a href="/tree" class="qa-btn">Open Tree</a>
+          </div>
+
+          <div class="quick-action">
+            <div class="icon-box i-purple">🔑</div>
+            <h4>Manage EPIN</h4>
+            <p>Handle EPIN requests, approvals, history and reporting from one place.</p>
+            <a href="epin-manager.html" class="qa-btn">Manage EPIN</a>
+          </div>
+
+          <div class="quick-action">
+            <div class="icon-box i-orange">💼</div>
+            <h4>Wallet & Payout</h4>
+            <p>Track wallet funds, payout visibility and future transfer operations.</p>
+            <a href="wallet.html" class="qa-btn">Open Wallet</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Your Referral Links</h3>
+            <p>Demo-ready referral cards for client presentation and product feel.</p>
+          </div>
+          <div class="chip">Share Ready</div>
+        </div>
+
+        <div class="section-grid-2">
+          <div class="referral-box">
+            <h4 style="font-size:18px; margin-bottom:6px;">Left Joining Link</h4>
+            <p style="font-size:13px; color:var(--muted); line-height:1.6;">
+              Share this link for users to join under your left side referral position.
+            </p>
+            <div class="link-card">
+              <div class="link-title">Referral URL</div>
+              <div class="link-url">https://shriramdigital.in/register?ref=AC982131&side=left</div>
+            </div>
+          </div>
+
+          <div class="referral-box">
+            <h4 style="font-size:18px; margin-bottom:6px;">Right Joining Link</h4>
+            <p style="font-size:13px; color:var(--muted); line-height:1.6;">
+              Share this link for users to join under your right side referral position.
+            </p>
+            <div class="link-card">
+              <div class="link-title">Referral URL</div>
+              <div class="link-url">https://shriramdigital.in/register?ref=AC982131&side=right</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note">
+        ShriRam Digital Premium MLM Dashboard • SaaS Style Demo • Future Ready for Live API Integration
+      </div>
+    </main>
+  </div>
+</body>
+</html>

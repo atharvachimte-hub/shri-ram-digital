@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShriRam Digital - My Team</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #041f1f;
+      --bg-darker: #021414;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel-strong: rgba(255, 255, 255, 0.1);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f5fffd;
+      --muted: #b9ddd6;
+      --primary: #0f766e;
+      --secondary: #10b981;
+      --accent: #34d399;
+      --accent-2: #6ee7b7;
+      --glow: rgba(52, 211, 153, 0.28);
+      --warning: #f59e0b;
+      --pink: #ec4899;
+      --blue-soft: #67e8f9;
+      --violet: #8b5cf6;
+      --danger: #ef4444;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(52, 211, 153, 0.14), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.12), transparent 25%),
+        linear-gradient(135deg, var(--bg-dark), var(--bg-darker));
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .floating-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(18px);
+      opacity: 0.22;
+      animation: drift 16s ease-in-out infinite;
+    }
+
+    .blob.one {
+      width: 260px;
+      height: 260px;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      top: 8%;
+      left: 8%;
+      animation-delay: 0s;
+    }
+
+    .blob.two {
+      width: 360px;
+      height: 360px;
+      background: linear-gradient(135deg, #0f766e, #67e8f9);
+      top: 46%;
+      right: 8%;
+      animation-delay: 2s;
+    }
+
+    .blob.three {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, #8b5cf6, #34d399);
+      bottom: 10%;
+      left: 34%;
+      animation-delay: 4s;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(110, 231, 183, 0.45);
+      box-shadow: 0 0 16px rgba(110, 231, 183, 0.45);
+      animation: floatUp linear infinite;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: pulseRing 10s ease-in-out infinite;
+    }
+
+    .ring.one {
+      width: 300px;
+      height: 300px;
+      top: 18%;
+      right: 14%;
+    }
+
+    .ring.two {
+      width: 180px;
+      height: 180px;
+      bottom: 12%;
+      left: 12%;
+      animation-delay: 2s;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(26px, -18px) scale(1.05); }
+      50% { transform: translate(-15px, 20px) scale(0.96); }
+      75% { transform: translate(20px, 10px) scale(1.03); }
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.6); opacity: 0; }
+    }
+
+    @keyframes pulseRing {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.12); opacity: 0.12; }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 285px;
+      min-width: 285px;
+      background: rgba(8, 29, 29, 0.72);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--line);
+      padding: 24px 18px 28px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: inset -1px 0 0 rgba(255,255,255,0.03);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 25px rgba(52, 211, 153, 0.25);
+    }
+
+    .brand h2 {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .brand p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .menu-section {
+      margin-top: 18px;
+    }
+
+    .menu-title {
+      font-size: 11px;
+      letter-spacing: 1.8px;
+      color: #9fcfc5;
+      margin: 18px 12px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .menu-item,
+    .submenu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      color: #ecfffb;
+      transition: 0.28s ease;
+      margin-bottom: 6px;
+      position: relative;
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover,
+    .submenu-item:hover {
+      background: rgba(52, 211, 153, 0.13);
+      border-color: rgba(52, 211, 153, 0.14);
+      transform: translateX(4px);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(90deg, rgba(52, 211, 153, 0.22), rgba(15, 118, 110, 0.12));
+      border-color: rgba(52, 211, 153, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.05), 0 0 20px rgba(52, 211, 153, 0.08);
+    }
+
+    .icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
+    }
+
+    .i-blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+    .i-orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .i-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .i-green { background: linear-gradient(135deg, #10b981, #34d399); }
+    .i-purple { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+    .i-cyan { background: linear-gradient(135deg, #06b6d4, #67e8f9); }
+    .i-yellow { background: linear-gradient(135deg, #ca8a04, #fde047); color: #212121; }
+    .i-red { background: linear-gradient(135deg, #ef4444, #fb7185); }
+
+    .menu-text {
+      font-size: 14px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    details.group {
+      margin-bottom: 8px;
+    }
+
+    details.group summary {
+      list-style: none;
+      cursor: pointer;
+    }
+
+    details.group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .submenu {
+      margin-top: 5px;
+      padding-left: 14px;
+      border-left: 1px dashed rgba(255,255,255,0.1);
+      margin-left: 16px;
+    }
+
+    .submenu-item {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .submenu-item .menu-text {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .content {
+      flex: 1;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+      animation: fadeUp 0.7s ease;
+    }
+
+    .welcome {
+      max-width: 70%;
+    }
+
+    .welcome h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.14);
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: 0.28s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: #03231f;
+      box-shadow: 0 10px 28px rgba(52, 211, 153, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(52, 211, 153, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      color: #eafff9;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.85fr 1fr;
+      gap: 22px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.9s ease;
+    }
+
+    .hero-card,
+    .preview-panel,
+    .stat-card,
+    .wide-card,
+    .team-table-wrap {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      border-radius: 26px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+    }
+
+    .hero-card {
+      padding: 30px;
+      min-height: 260px;
+      background:
+        radial-gradient(circle at top right, rgba(110, 231, 183, 0.16), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(103, 232, 249, 0.1), transparent 24%),
+        linear-gradient(135deg, rgba(15,118,110,0.62), rgba(6,47,47,0.74));
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, rgba(255,255,255,0.08), transparent 28%, transparent 72%, rgba(255,255,255,0.03));
+      pointer-events: none;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -50px;
+      bottom: -40px;
+      border-radius: 50%;
+      background: rgba(110, 231, 183, 0.08);
+      filter: blur(8px);
+    }
+
+    .hero-card h2 {
+      font-size: 18px;
+      color: #d8ffef;
+      margin-bottom: 8px;
+    }
+
+    .hero-card h3 {
+      font-size: 46px;
+      line-height: 1.07;
+      max-width: 720px;
+      margin-bottom: 14px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-card p {
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 720px;
+      color: #dcfff4;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .hero-tags span {
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.11);
+      color: #f4fffd;
+      font-size: 12px;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .float-chip {
+      position: absolute;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      animation: chipFloat 6s ease-in-out infinite;
+      backdrop-filter: blur(10px);
+    }
+
+    .float-chip.one {
+      top: 22px;
+      right: 28px;
+      color: #d8fff1;
+    }
+
+    .float-chip.two {
+      bottom: 26px;
+      right: 170px;
+      color: #fff1c9;
+      animation-delay: 1.2s;
+    }
+
+    .float-chip.three {
+      top: 120px;
+      right: 120px;
+      color: #e8e2ff;
+      animation-delay: 2.3s;
+    }
+
+    @keyframes chipFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .preview-panel {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at top left, rgba(139,92,246,0.14), transparent 26%),
+        rgba(255,255,255,0.06);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h4 {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .panel-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(110, 231, 183, 0.15);
+      color: #d8fff1;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(110, 231, 183, 0.18);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .mini-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .mini-box label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .mini-box strong {
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .link-card {
+      padding: 15px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-top: 16px;
+    }
+
+    .link-title {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .link-url {
+      font-size: 13px;
+      word-break: break-word;
+      color: #dffff5;
+      line-height: 1.6;
+    }
+
+    .section {
+      margin-bottom: 24px;
+      animation: fadeUp 1.05s ease;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 14px;
+    }
+
+    .section-head h3 {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .section-head p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .section-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .section-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .stat-card, .wide-card {
+      padding: 22px;
+      min-height: 148px;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .stat-card:hover,
+    .wide-card:hover,
+    .team-table-wrap:hover,
+    .hero-card:hover,
+    .preview-panel:hover {
+      box-shadow: 0 18px 42px rgba(52, 211, 153, 0.12);
+      border-color: rgba(52,211,153,0.14);
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: 34px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .stat-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .bg1 { background: linear-gradient(135deg, rgba(52, 211, 153, 0.13), rgba(255,255,255,0.04)); }
+    .bg2 { background: linear-gradient(135deg, rgba(103, 232, 249, 0.13), rgba(255,255,255,0.04)); }
+    .bg3 { background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(255,255,255,0.04)); }
+    .bg4 { background: linear-gradient(135deg, rgba(236, 72, 153, 0.12), rgba(255,255,255,0.04)); }
+    .bg5 { background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(255,255,255,0.04)); }
+    .bg6 { background: linear-gradient(135deg, rgba(16, 185, 129, 0.13), rgba(255,255,255,0.04)); }
+
+    .wide-card h4 {
+      font-size: 17px;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    .progress-row {
+      margin-bottom: 14px;
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .bar {
+      width: 100%;
+      height: 11px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      box-shadow: 0 0 14px rgba(52,211,153,0.22);
+    }
+
+    .team-table-wrap {
+      padding: 22px;
+      animation: fadeUp 1.15s ease;
+      background:
+        radial-gradient(circle at top right, rgba(52,211,153,0.09), transparent 24%),
+        rgba(255,255,255,0.05);
+    }
+
+    .table-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 16px 13px 42px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .search-box input::placeholder {
+      color: rgba(255,255,255,0.42);
+    }
+
+    .search-box span {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      opacity: 0.65;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 18px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #e8fffb;
+      background: linear-gradient(90deg, rgba(59,130,246,0.24), rgba(16,185,129,0.18));
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      letter-spacing: 0.4px;
+    }
+
+    tbody td {
+      padding: 16px;
+      font-size: 14px;
+      color: #ecfffb;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: 0.2s ease;
+    }
+
+    tbody tr {
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(52,211,153,0.08);
+      box-shadow: inset 0 0 0 1px rgba(52,211,153,0.08);
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      flex-shrink: 0;
+    }
+
+    .user-meta strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .user-meta span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status-active {
+      background: rgba(16,185,129,0.14);
+      color: #dffff3;
+    }
+
+    .status-inactive {
+      background: rgba(239,68,68,0.13);
+      color: #ffe6e6;
+    }
+
+    .status-silver {
+      background: rgba(103,232,249,0.14);
+      color: #e8fcff;
+    }
+
+    .table-btn {
+      display: inline-block;
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: rgba(52,211,153,0.14);
+      color: #defff4;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(52,211,153,0.16);
+      transition: 0.2s ease;
+    }
+
+    .table-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(52,211,153,0.22);
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      color: rgba(220,255,244,0.65);
+      font-size: 12px;
+      padding-bottom: 12px;
+    }
+
+    @media (max-width: 1400px) {
+      .section-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 250px;
+        min-width: 250px;
+      }
+
+      .welcome h1 {
+        font-size: 34px;
+      }
+
+      .section-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .welcome {
+        max-width: 100%;
+      }
+
+      .section-grid-4,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card h3 {
+        font-size: 34px;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-bg">
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="blob three"></div>
+    <div class="ring one"></div>
+    <div class="ring two"></div>
+
+    <span class="particle" style="left:6%; bottom:-20px; animation-duration:15s; animation-delay:0s;"></span>
+    <span class="particle" style="left:18%; bottom:-30px; animation-duration:11s; animation-delay:1s;"></span>
+    <span class="particle" style="left:29%; bottom:-10px; animation-duration:13s; animation-delay:2.5s;"></span>
+    <span class="particle" style="left:42%; bottom:-25px; animation-duration:16s; animation-delay:1.3s;"></span>
+    <span class="particle" style="left:56%; bottom:-30px; animation-duration:12s; animation-delay:3s;"></span>
+    <span class="particle" style="left:68%; bottom:-20px; animation-duration:17s; animation-delay:1.8s;"></span>
+    <span class="particle" style="left:79%; bottom:-15px; animation-duration:14s; animation-delay:2.2s;"></span>
+    <span class="particle" style="left:91%; bottom:-30px; animation-duration:18s; animation-delay:0.8s;"></span>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🔥</div>
+        <div>
+          <h2>MLM</h2>
+          <p>ShriRam Premium Panel</p>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Main</div>
+
+        <a href="/dashboard" class="menu-item">
+          <div class="icon-box i-blue">▦</div>
+          <div class="menu-text">Dashboard</div>
+        </a>
+
+        <a href="registration.html" class="menu-item">
+          <div class="icon-box i-orange">👤</div>
+          <div class="menu-text">Registration</div>
+        </a>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Team</div>
+
+        <a href="team-overview.html" class="menu-item">
+          <div class="icon-box i-pink">👥</div>
+          <div class="menu-text">Team Overview</div>
+        </a>
+
+        <a href="/tree" class="menu-item">
+          <div class="icon-box i-cyan">🌳</div>
+          <div class="menu-text">Direct Tree</div>
+        </a>
+
+        <a href="my-directs.html" class="menu-item">
+          <div class="icon-box i-green">◎</div>
+          <div class="menu-text">My Directs</div>
+        </a>
+
+        <a href="my-team.html" class="menu-item active">
+          <div class="icon-box i-yellow">▣</div>
+          <div class="menu-text">My Team</div>
+        </a>
+
+        <a href="tree-view.html" class="menu-item">
+          <div class="icon-box i-purple">⎇</div>
+          <div class="menu-text">Tree View</div>
+        </a>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Finance</div>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-blue">🔑</div>
+            <div class="menu-text">EPIN Manager</div>
+          </summary>
+          <div class="submenu">
+            <a href="epin-manager.html" class="submenu-item">
+              <div class="menu-text">EPIN Dashboard</div>
+            </a>
+            <a href="epin-request.html" class="submenu-item">
+              <div class="menu-text">EPIN Request</div>
+            </a>
+            <a href="request-history.html" class="submenu-item">
+              <div class="menu-text">Request History</div>
+            </a>
+            <a href="epin-report.html" class="submenu-item">
+              <div class="menu-text">EPIN Report</div>
+            </a>
+          </div>
+        </details>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-purple">⇄</div>
+            <div class="menu-text">Transfer</div>
+          </summary>
+          <div class="submenu">
+            <a href="transfer.html" class="submenu-item">
+              <div class="menu-text">Transfer Funds</div>
+            </a>
+            <a href="transfer-report.html" class="submenu-item">
+              <div class="menu-text">Transfer Report</div>
+            </a>
+          </div>
+        </details>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-yellow">◫</div>
+            <div class="menu-text">Topup Master</div>
+          </summary>
+          <div class="submenu">
+            <a href="topup-master.html" class="submenu-item">
+              <div class="menu-text">Topup Overview</div>
+            </a>
+            <a href="add-topup.html" class="submenu-item">
+              <div class="menu-text">Add Topup</div>
+            </a>
+            <a href="topup-report.html" class="submenu-item">
+              <div class="menu-text">Topup Report</div>
+            </a>
+          </div>
+        </details>
+
+        <details class="group" open>
+          <summary class="menu-item">
+            <div class="icon-box i-red">🎁</div>
+            <div class="menu-text">Incentives</div>
+          </summary>
+          <div class="submenu">
+            <a href="incentives.html" class="submenu-item">
+              <div class="menu-text">Incentive Dashboard</div>
+            </a>
+            <a href="matching-bonus.html" class="submenu-item">
+              <div class="menu-text">Matching Bonus</div>
+            </a>
+            <a href="direct-incentive.html" class="submenu-item">
+              <div class="menu-text">Direct Incentive</div>
+            </a>
+          </div>
+        </details>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Account</div>
+
+        <a href="payout.html" class="menu-item">
+          <div class="icon-box i-orange">₹</div>
+          <div class="menu-text">Payout</div>
+        </a>
+
+        <a href="wallet.html" class="menu-item">
+          <div class="icon-box i-green">💼</div>
+          <div class="menu-text">Wallet</div>
+        </a>
+
+        <a href="profile.html" class="menu-item">
+          <div class="icon-box i-blue">🙂</div>
+          <div class="menu-text">Profile</div>
+        </a>
+
+        <a href="/login.html" class="menu-item">
+          <div class="icon-box i-red">↩</div>
+          <div class="menu-text">Logout</div>
+        </a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>My Team Intelligence Hub 🚀</h1>
+          <p>
+            Premium team tracking page with growth summary, active member visibility,
+            floating motion design and a cleaner SaaS presentation that feels more valuable at first look.
+          </p>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="chip">Ultra Premium UI</div>
+          <div class="chip">Growth View Active</div>
+          <button class="btn btn-primary" type="button">Export Team</button>
+          <button class="btn btn-secondary" type="button">Open Tree</button>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div class="hero-card">
+          <div class="float-chip one">🔥 Live Growth</div>
+          <div class="float-chip two">💰 Incentive Ready</div>
+          <div class="float-chip three">👥 Team Depth</div>
+
+          <h2>Ultra Premium Team Dashboard</h2>
+          <h3>Track Team Expansion, Member Activity, Joining Flow & Business Performance.</h3>
+          <p>
+            This page is designed to feel like a real paid SaaS product. Instead of a plain team list,
+            it gives a luxury dashboard feel with depth, glow, movement and premium glass layout.
+          </p>
+
+          <div class="hero-tags">
+            <span>Team Overview Engine</span>
+            <span>Member Growth Analytics</span>
+            <span>Direct + Network View</span>
+            <span>Future API Ready</span>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="button">View All Members</button>
+            <button class="btn btn-secondary" type="button">Team Summary</button>
+          </div>
+        </div>
+
+        <div class="preview-panel">
+          <div class="panel-header">
+            <h4>Live Team Snapshot</h4>
+            <div class="panel-pill">Realtime Feel</div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-box">
+              <label>Total Team</label>
+              <strong>194</strong>
+            </div>
+            <div class="mini-box">
+              <label>Direct Team</label>
+              <strong>2</strong>
+            </div>
+            <div class="mini-box">
+              <label>Active IDs</label>
+              <strong>150</strong>
+            </div>
+            <div class="mini-box">
+              <label>Inactive IDs</label>
+              <strong>44</strong>
+            </div>
+          </div>
+
+          <div class="link-card">
+            <div class="link-title">Smart Note</div>
+            <div class="link-url">
+              This section gives instant premium trust to clients because the page looks like a modern product,
+              not a normal MLM admin panel.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Team Summary Cards</h3>
+            <p>High-impact cards for first-look premium trust and growth visibility.</p>
+          </div>
+          <div class="chip">6 Highlights</div>
+        </div>
+
+        <div class="section-grid-4">
+          <div class="stat-card bg5 tilt-card">
+            <div class="stat-top">
+              <div class="stat-label">Total Network</div>
+              <div class="icon-box i-purple">👥</div>
+            </div>
+            <div class="stat-value">194</div>
+            <div class="stat-sub">Complete member network including both active and inactive users.</div>
+          </div>
+
+          <div class="stat-card bg2 tilt-card">
+            <div class="stat-top">
+              <div class="stat-label">Direct Joinings</div>
+              <div class="icon-box i-blue">◎</div>
+            </div>
+            <div class="stat-value">2</div>
+            <div class="stat-sub">Directly sponsored members connected with your primary account.</div>
+          </div>
+
+          <div class="stat-card bg6 tilt-card">
+            <div class="stat-top">
+              <div class="stat-label">Active Members</div>
+              <div class="icon-box i-green">✔</div>
+            </div>
+            <div class="stat-value">150</div>
+            <div class="stat-sub">Members currently active and contributing to business visibility.</div>
+          </div>
+
+          <div class="stat-card bg4 tilt-card">
+            <div class="stat-top">
+              <div class="stat-label">Inactive Members</div>
+              <div class="icon-box i-red">⏸</div>
+            </div>
+            <div class="stat-value">44</div>
+            <div class="stat-sub">Members needing re-activation or further engagement follow-up.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h3>Business Team Insights</h3>
+            <p>Show deeper balance, side performance and network motion in a premium way.</p>
+          </div>
+          <div class="chip">Insight Zone</div>
+        </div>
+
+        <div class="section-grid-2">
+          <div class="wide-card bg2 tilt-card">
+            <h4>Side Business Distribution</h4>
+
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Left Team Strength</span>
+                <span>152</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:78%;"></div>
+              </div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Right Team Strength</span>
+                <span>42</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:34%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wide-card bg6 tilt-card">
+            <h4>Growth Opportunity Window</h4>
+
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Activation Potential</span>
+                <span>68%</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:68%;"></div>
+              </div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>Re-Engagement Scope</span>
+                <span>26%</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" style="width:26%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="team-table-wrap">
+        <div class="table-top">
+          <div>
+            <h3 style="font-size:20px; font-weight:800;">My Team Members</h3>
+            <p style="color:var(--muted); font-size:13px; margin-top:4px;">
+              Premium team listing with glass table feel, hover glow and professional data presentation.
+            </p>
+          </div>
+
+          <div class="table-actions">
+            <div class="search-box">
+              <span>🔍</span>
+              <input type="text" placeholder="Search member, ID or status..." />
+            </div>
+            <button class="btn btn-secondary" type="button">Filter</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Sr No</th>
+                <th>Member</th>
+                <th>Join Date</th>
+                <th>Mobile</th>
+                <th>Package</th>
+                <th>Status</th>
+                <th>Level</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar">A</div>
+                    <div class="user-meta">
+                      <strong>AC140138</strong>
+                      <span>Name: Aarohi</span>
+                    </div>
+                  </div>
+                </td>
+                <td>10-12-2025</td>
+                <td>9632587412</td>
+                <td>Silver Coupon Card</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td><span class="status-badge status-silver">Level 1</span></td>
+                <td><a href="#" class="table-btn">View</a></td>
+              </tr>
+
+              <tr>
+                <td>2</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar">A</div>
+                    <div class="user-meta">
+                      <strong>AC308857</strong>
+                      <span>Name: Aarohi</span>
+                    </div>
+                  </div>
+                </td>
+                <td>10-12-2025</td>
+                <td>9632587412</td>
+                <td>Silver Coupon Card</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td><span class="status-badge status-silver">Level 1</span></td>
+                <td><a href="#" class="table-btn">View</a></td>
+              </tr>
+
+              <tr>
+                <td>3</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar">R</div>
+                    <div class="user-meta">
+                      <strong>AC95544</strong>
+                      <span>Name: Rohit</span>
+                    </div>
+                  </div>
+                </td>
+                <td>12-12-2025</td>
+                <td>9876543210</td>
+                <td>Starter Package</td>
+                <td><span class="status-badge status-inactive">Inactive</span></td>
+                <td><span class="status-badge status-silver">Level 2</span></td>
+                <td><a href="#" class="table-btn">View</a></td>
+              </tr>
+
+              <tr>
+                <td>4</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar">S</div>
+                    <div class="user-meta">
+                      <strong>AC2510</strong>
+                      <span>Name: Sneha</span>
+                    </div>
+                  </div>
+                </td>
+                <td>13-12-2025</td>
+                <td>9988776655</td>
+                <td>Silver Coupon Card</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td><span class="status-badge status-silver">Level 3</span></td>
+                <td><a href="#" class="table-btn">View</a></td>
+              </tr>
+
+              <tr>
+                <td>5</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar">P</div>
+                    <div class="user-meta">
+                      <strong>AC95346</strong>
+                      <span>Name: Priya</span>
+                    </div>
+                  </div>
+                </td>
+                <td>14-12-2025</td>
+                <td>9123456780</td>
+                <td>Gold Upgrade</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td><span class="status-badge status-silver">Level 4</span></td>
+                <td><a href="#" class="table-btn">View</a></td>
+              </tr>
+
+              <tr>
+                <td>6</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar">K</div>
+                    <div class="user-meta">
+                      <strong>AC396732</strong>
+                      <span>Name: Kiran</span>
+                    </div>
+                  </div>
+                </td>
+                <td>15-12-2025</td>
+                <td>9011223344</td>
+                <td>Silver Coupon Card</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td><span class="status-badge status-silver">Level 4</span></td>
+                <td><a href="#" class="table-btn">View</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="footer-note">
+        ShriRam Digital Premium My Team Page • Ultra SaaS Style • Floating Motion • Future Ready for Live Data
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const tiltCards = document.querySelectorAll('.tilt-card');
+
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
+
+        card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      });
+    });
+  </script>
+</body>
+</html>

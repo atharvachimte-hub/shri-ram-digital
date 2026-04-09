@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPIN Manager - MLM SaaS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #fff;
+      background:
+        radial-gradient(circle at top left, rgba(91, 33, 182, 0.38), transparent 28%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 22%),
+        radial-gradient(circle at bottom, rgba(251, 191, 36, 0.12), transparent 24%),
+        linear-gradient(135deg, #08111f 0%, #0f172a 50%, #10192f 100%);
+      overflow-x: hidden;
+      padding: 28px;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      margin-bottom: 28px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      right: -120px;
+      top: -120px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent 65%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .badge {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #f8fafc;
+      font-size: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .token-main {
+      width: 230px;
+      height: 230px;
+      object-fit: contain;
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.35));
+      animation: floatMain 5s ease-in-out infinite, tiltMain 7s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .coin {
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 16px rgba(0,0,0,0.28));
+      animation: coinFloat 4.5s ease-in-out infinite;
+    }
+
+    .coin.c1 { top: 20px; left: 25px; animation-delay: 0s; }
+    .coin.c2 { top: 30px; right: 40px; animation-delay: 0.8s; }
+    .coin.c3 { bottom: 25px; left: 55px; animation-delay: 1.4s; }
+    .coin.c4 { bottom: 35px; right: 20px; animation-delay: 2.1s; }
+
+    @keyframes floatMain {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-14px); }
+    }
+
+    @keyframes tiltMain {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
+
+    @keyframes coinFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-16px) rotate(12deg); }
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.26);
+      backdrop-filter: blur(14px);
+    }
+
+    .card h3 {
+      color: rgba(255,255,255,0.72);
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .card .value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 24px;
+    }
+
+    .form-card h2,
+    .table-card h2 {
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.78);
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      outline: none;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      font-size: 15px;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255,255,255,0.42);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      box-shadow: 0 14px 28px rgba(59,130,246,0.28);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 32px rgba(59,130,246,0.35);
+    }
+
+    .btn.secondary {
+      margin-top: 12px;
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      box-shadow: 0 14px 28px rgba(34,197,94,0.18);
+    }
+
+    .topbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .topbar input,
+    .topbar select {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      min-width: 160px;
+      outline: none;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 15px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+    }
+
+    th {
+      color: rgba(255,255,255,0.75);
+      font-weight: 600;
+      background: rgba(255,255,255,0.05);
+    }
+
+    td {
+      color: #f8fafc;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .unused {
+      background: rgba(34,197,94,0.16);
+      color: #86efac;
+      border: 1px solid rgba(34,197,94,0.28);
+    }
+
+    .used {
+      background: rgba(244,63,94,0.16);
+      color: #fda4af;
+      border: 1px solid rgba(244,63,94,0.28);
+    }
+
+    .mini-note {
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(34,197,94,0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(34,197,94,0.22);
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(244,63,94,0.12);
+      color: #fecdd3;
+      border: 1px solid rgba(244,63,94,0.22);
+    }
+
+    @media (max-width: 1100px) {
+      .hero, .layout, .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div>
+        <h1>EPIN Manager</h1>
+        <p>
+          Generate, track and manage SD EPIN codes with a premium live dashboard feel.
+          This module is built for real MLM workflow — not just demo design.
+        </p>
+
+        <div class="hero-badges">
+          <div class="badge">SD Prefix Enabled</div>
+          <div class="badge">Generate / Use / Track</div>
+          <div class="badge">Premium Admin Control</div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <img class="token-main" alt="3D token"
+          src='data:image/svg+xml;utf8,
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="%238b5cf6"/>
+                <stop offset="100%" stop-color="%233b82f6"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="%23f59e0b"/>
+                <stop offset="100%" stop-color="%23fde68a"/>
+              </linearGradient>
+            </defs>
+            <rect x="96" y="88" width="320" height="336" rx="56" fill="url(%23g1)"/>
+            <circle cx="256" cy="256" r="102" fill="url(%23g2)"/>
+            <circle cx="256" cy="256" r="74" fill="%23fff2"/>
+            <text x="256" y="285" font-size="84" font-weight="700" text-anchor="middle" fill="%23ffffff">SD</text>
+          </svg>' />
+
+        <img class="coin c1" alt="coin"
+          src='data:image/svg+xml;utf8,
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <defs>
+              <linearGradient id="c1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="%23fde68a"/>
+                <stop offset="100%" stop-color="%23f59e0b"/>
+              </linearGradient>
+            </defs>
+            <circle cx="64" cy="64" r="54" fill="url(%23c1)"/>
+            <circle cx="64" cy="64" r="40" fill="%23fff2"/>
+            <text x="64" y="78" font-size="42" text-anchor="middle" fill="%23ffffff">$</text>
+          </svg>' />
+
+        <img class="coin c2" alt="coin"
+          src='data:image/svg+xml;utf8,
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <defs>
+              <linearGradient id="c2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="%2360a5fa"/>
+                <stop offset="100%" stop-color="%232563eb"/>
+              </linearGradient>
+            </defs>
+            <circle cx="64" cy="64" r="54" fill="url(%23c2)"/>
+            <circle cx="64" cy="64" r="40" fill="%23fff2"/>
+            <text x="64" y="78" font-size="42" text-anchor="middle" fill="%23ffffff">₹</text>
+          </svg>' />
+
+        <img class="coin c3" alt="coin"
+          src='data:image/svg+xml;utf8,
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <defs>
+              <linearGradient id="c3" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="%23c084fc"/>
+                <stop offset="100%" stop-color="%237c3aed"/>
+              </linearGradient>
+            </defs>
+            <circle cx="64" cy="64" r="54" fill="url(%23c3)"/>
+            <circle cx="64" cy="64" r="40" fill="%23fff2"/>
+            <text x="64" y="78" font-size="34" text-anchor="middle" fill="%23ffffff">SD</text>
+          </svg>' />
+
+        <img class="coin c4" alt="coin"
+          src='data:image/svg+xml;utf8,
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <defs>
+              <linearGradient id="c4" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="%2334d399"/>
+                <stop offset="100%" stop-color="%23059669"/>
+              </linearGradient>
+            </defs>
+            <circle cx="64" cy="64" r="54" fill="url(%23c4)"/>
+            <circle cx="64" cy="64" r="40" fill="%23fff2"/>
+            <text x="64" y="78" font-size="34" text-anchor="middle" fill="%23ffffff">EP</text>
+          </svg>' />
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="card">
+        <h3>Total EPINs</h3>
+        <div class="value" id="totalCount">0</div>
+      </div>
+      <div class="card">
+        <h3>Unused EPINs</h3>
+        <div class="value" id="unusedCount">0</div>
+      </div>
+      <div class="card">
+        <h3>Used EPINs</h3>
+        <div class="value" id="usedCount">0</div>
+      </div>
+      <div class="card">
+        <h3>Total Amount</h3>
+        <div class="value">₹<span id="totalAmount">0</span></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="card form-card">
+        <h2>Generate SD EPIN</h2>
+
+        <div class="form-group">
+          <label>How many EPINs?</label>
+          <input type="number" id="count" min="1" max="500" value="5" />
+        </div>
+
+        <div class="form-group">
+          <label>Amount per EPIN</label>
+          <input type="number" id="amount" min="0" value="500" />
+        </div>
+
+        <div class="form-group">
+          <label>Created By</label>
+          <input type="text" id="createdBy" value="admin" />
+        </div>
+
+        <button class="btn" onclick="generateEpins()">Generate EPINs</button>
+
+        <div class="mini-note">
+          Every generated EPIN will start with <strong>SD</strong>.  
+          Example: <strong>SD8KQ7PX2</strong>
+        </div>
+
+        <div id="generateMessage" class="message"></div>
+
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:22px 0;">
+
+        <h2>Use EPIN</h2>
+
+        <div class="form-group">
+          <label>EPIN Code</label>
+          <input type="text" id="useCode" placeholder="Enter SD code" />
+        </div>
+
+        <div class="form-group">
+          <label>User ID</label>
+          <input type="text" id="userId" placeholder="Enter user id" />
+        </div>
+
+        <div class="form-group">
+          <label>Used For</label>
+          <select id="usedFor">
+            <option value="account_activation">Account Activation</option>
+            <option value="wallet_topup">Wallet Topup</option>
+            <option value="package_upgrade">Package Upgrade</option>
+          </select>
+        </div>
+
+        <button class="btn secondary" onclick="useEpin()">Use EPIN</button>
+
+        <div id="useMessage" class="message"></div>
+      </div>
+
+      <div class="card table-card">
+        <h2>EPIN List</h2>
+
+        <div class="topbar">
+          <select id="statusFilter" onchange="loadEpins()">
+            <option value="">All Status</option>
+            <option value="unused">Unused</option>
+            <option value="used">Used</option>
+          </select>
+
+          <input type="text" id="searchInput" placeholder="Search SD code..." oninput="loadEpins()" />
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Used By</th>
+                <th>Used For</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody id="epinTableBody">
+              <tr>
+                <td colspan="7" style="text-align:center;color:rgba(255,255,255,0.6);">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    async function fetchJSON(url, options = {}) {
+      const response = await fetch(url, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      return response.json();
+    }
+
+    function showMessage(id, type, text) {
+      const el = document.getElementById(id);
+      el.className = `message ${type}`;
+      el.textContent = text;
+    }
+
+    async function loadStats() {
+      try {
+        const result = await fetchJSON("/api/epins/stats");
+        if (!result.success) return;
+
+        document.getElementById("totalCount").textContent = result.data.total || 0;
+        document.getElementById("unusedCount").textContent = result.data.unused || 0;
+        document.getElementById("usedCount").textContent = result.data.used || 0;
+        document.getElementById("totalAmount").textContent = result.data.totalAmount || 0;
+      } catch (error) {
+        console.error("Stats error:", error);
+      }
+    }
+
+    async function loadEpins() {
+      try {
+        const status = document.getElementById("statusFilter").value;
+        const search = document.getElementById("searchInput").value.trim();
+
+        const params = new URLSearchParams();
+        if (status) params.append("status", status);
+        if (search) params.append("search", search);
+
+        const result = await fetchJSON(`/api/epins?${params.toString()}`);
+
+        const tbody = document.getElementById("epinTableBody");
+
+        if (!result.success || !result.data.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align:center;color:rgba(255,255,255,0.6);">No EPINs found</td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = result.data.map(item => `
+          <tr>
+            <td><strong>${item.code}</strong></td>
+            <td>₹${item.amount}</td>
+            <td>
+              <span class="status ${item.status === "used" ? "used" : "unused"}">
+                ${item.status}
+              </span>
+            </td>
+            <td>${item.createdBy || "-"}</td>
+            <td>${item.usedBy || "-"}</td>
+            <td>${item.usedFor || "-"}</td>
+            <td>${new Date(item.createdAt).toLocaleString()}</td>
+          </tr>
+        `).join("");
+      } catch (error) {
+        console.error("Load EPIN error:", error);
+      }
+    }
+
+    async function generateEpins() {
+      try {
+        const count = document.getElementById("count").value;
+        const amount = document.getElementById("amount").value;
+        const createdBy = document.getElementById("createdBy").value.trim();
+
+        const result = await fetchJSON("/api/epins/generate", {
+          method: "POST",
+          body: JSON.stringify({ count, amount, createdBy })
+        });
+
+        if (result.success) {
+          showMessage("generateMessage", "success", result.message);
+          loadStats();
+          loadEpins();
+        } else {
+          showMessage("generateMessage", "error", result.message || "Failed to generate");
+        }
+      } catch (error) {
+        console.error("Generate error:", error);
+        showMessage("generateMessage", "error", "Something went wrong while generating EPINs");
+      }
+    }
+
+    async function useEpin() {
+      try {
+        const code = document.getElementById("useCode").value.trim();
+        const userId = document.getElementById("userId").value.trim();
+        const usedFor = document.getElementById("usedFor").value;
+
+        const result = await fetchJSON("/api/epins/use", {
+          method: "POST",
+          body: JSON.stringify({ code, userId, usedFor })
+        });
+
+        if (result.success) {
+          showMessage("useMessage", "success", result.message);
+          document.getElementById("useCode").value = "";
+          document.getElementById("userId").value = "";
+          loadStats();
+          loadEpins();
+        } else {
+          showMessage("useMessage", "error", result.message || "Failed to use EPIN");
+        }
+      } catch (error) {
+        console.error("Use error:", error);
+        showMessage("useMessage", "error", "Something went wrong while using EPIN");
+      }
+    }
+
+    loadStats();
+    loadEpins();
+  </script>
+</body>
+</html>

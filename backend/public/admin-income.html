@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Income Logs</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    background: #22c55e;
+    color: white;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background: #1e293b;
+}
+
+tr:nth-child(even) {
+    background: rgba(255,255,255,0.03);
+}
+
+.deposit { color: #22c55e; }
+.withdraw { color: #ef4444; }
+.bonus { color: #3b82f6; }
+</style>
+
+</head>
+
+<body>
+
+<h1>Income Logs</h1>
+
+<button onclick="exportCSV()">Export CSV</button>
+
+<table id="incomeTable">
+<thead>
+<tr>
+    <th>User ID</th>
+    <th>Type</th>
+    <th>Amount</th>
+    <th>Date</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+</table>
+
+<script>
+
+const API = "https://shri-ram-digital-1.onrender.com/api";
+let incomeData = [];
+
+async function loadIncomeLogs() {
+    const res = await fetch(`${API}/admin/income-logs`);
+    const data = await res.json();
+
+    incomeData = data;
+
+    const tbody = document.querySelector("#incomeTable tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(log => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${log.userId}</td>
+            <td class="${log.type}">${log.type}</td>
+            <td>₹${log.amount}</td>
+            <td>${new Date(log.date).toLocaleString()}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+// CSV Export
+function exportCSV() {
+    let csv = "User ID,Type,Amount,Date\n";
+
+    incomeData.forEach(log => {
+        csv += `${log.userId},${log.type},${log.amount},${new Date(log.date).toLocaleString()}\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "income_logs.csv";
+    a.click();
+}
+
+// auto refresh
+setInterval(loadIncomeLogs, 3000);
+
+// initial load
+loadIncomeLogs();
+
+</script>
+
+</body>
+</html>

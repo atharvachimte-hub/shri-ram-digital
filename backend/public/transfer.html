@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPIN Transfer - MLM SaaS</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:Inter, sans-serif;
+  background:linear-gradient(135deg,#050c1a,#0a1a33,#07111f);
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* glowing background orbs */
+.orb{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(60px);
+  opacity:.3;
+}
+.o1{width:300px;height:300px;background:#4da3ff;left:-100px;top:20%}
+.o2{width:300px;height:300px;background:#ffcf5a;right:-120px;top:40%}
+.o3{width:250px;height:250px;background:#9f7cff;left:40%;bottom:-100px}
+
+/* layout */
+.container{padding:20px;max-width:1400px;margin:auto}
+
+/* navbar */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(255,255,255,.05);
+  padding:15px 20px;border-radius:20px;
+  backdrop-filter:blur(15px);
+}
+
+.brand{font-weight:700}
+
+/* hero */
+.hero{
+  margin-top:20px;
+  background:rgba(255,255,255,.05);
+  border-radius:25px;
+  padding:30px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* flow animation */
+.flow-container{
+  position:relative;
+  height:250px;
+}
+
+.token{
+  width:50px;height:50px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ffcf5a,#fff);
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+  animation:move 3s linear infinite;
+  box-shadow:0 0 20px rgba(255,207,90,.8);
+}
+
+@keyframes move{
+  0%{left:0;opacity:0}
+  10%{opacity:1}
+  100%{left:90%;opacity:0}
+}
+
+.line{
+  position:absolute;
+  top:50%;
+  left:0;
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,#4da3ff,#65f0ff,#ffcf5a);
+}
+
+/* cards */
+.card{
+  background:rgba(255,255,255,.05);
+  padding:20px;
+  border-radius:20px;
+  margin-top:20px;
+  backdrop-filter:blur(10px);
+}
+
+/* form */
+input,select{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,.1);
+  color:#fff;
+}
+
+button{
+  margin-top:15px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ffcf5a,#fff);
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* table */
+table{width:100%;margin-top:15px;border-collapse:collapse}
+td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+
+</style>
+</head>
+
+<body>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<div class="container">
+
+<div class="topbar">
+  <div class="brand">MLM SaaS - EPIN Transfer</div>
+  <div>Live Transfer System</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <h1>Transfer EPIN Instantly ⚡</h1>
+    <p>Real-time EPIN transfer system with live flow animation</p>
+  </div>
+
+  <div class="flow-container">
+    <div class="line"></div>
+    <div class="token"></div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="card">
+  <h2>Send EPIN</h2>
+
+  <input placeholder="Sender ID" value="MLM10234">
+  <input placeholder="Receiver ID">
+  <input type="number" placeholder="Quantity">
+  <select>
+    <option>₹500</option>
+    <option selected>₹1000</option>
+  </select>
+
+  <button>Transfer EPIN 🚀</button>
+</div>
+
+<!-- HISTORY -->
+<div class="card">
+  <h2>Transfer History</h2>
+
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Qty</th>
+      <th>Status</th>
+    </tr>
+
+    <tr>
+      <td>#TRX101</td>
+      <td>MLM10234</td>
+      <td>MLM10190</td>
+      <td>10</td>
+      <td>Success</td>
+    </tr>
+
+    <tr>
+      <td>#TRX102</td>
+      <td>MLM10001</td>
+      <td>MLM10200</td>
+      <td>5</td>
+      <td>Pending</td>
+    </tr>
+  </table>
+
+</div>
+
+</div>
+
+</body>
+</html>
