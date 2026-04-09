@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shriram Digital Partner Program</title>
+  <meta name="description" content="Shriram Digital Partner Program - Earn with referrals, grow with websites, branding, jobs and digital business support." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+      scroll-behavior:smooth;
+    }
+
+    :root{
+      --primary:#0b7a6e;
+      --primary-dark:#075e55;
+      --lime:#84cc16;
+      --dark:#0f172a;
+      --dark-2:#111827;
+      --muted:#6b7280;
+      --bg:#f4f7f9;
+      --white:#ffffff;
+      --card-shadow:0 10px 30px rgba(15,23,42,0.08);
+      --radius:22px;
+      --maxw:1200px;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--dark-2);
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    img{
+      max-width:100%;
+      display:block;
+    }
+
+    .topbar{
+      background:var(--primary-dark);
+      color:#fff;
+      font-size:13px;
+    }
+
+    .topbar-wrap{
+      max-width:var(--maxw);
+      margin:auto;
+      padding:10px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .topbar-left,
+    .topbar-right{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .navbar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:rgba(255,255,255,0.96);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid #e5e7eb;
+    }
+
+    .nav-wrap{
+      max-width:var(--maxw);
+      margin:auto;
+      padding:16px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .logo{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+    }
+
+    .logo strong{
+      font-size:24px;
+      color:var(--primary);
+      font-weight:800;
+    }
+
+    .logo span{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:3px;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+
+    .nav-links a{
+      font-size:14px;
+      font-weight:500;
+      color:#1f2937;
+    }
+
+    .nav-links a:hover{
+      color:var(--primary);
+    }
+
+    .nav-cta{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .menu-btn{
+      display:none;
+      border:none;
+      background:var(--dark);
+      color:#fff;
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      font-size:22px;
+      cursor:pointer;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:13px 20px;
+      border-radius:14px;
+      font-size:14px;
+      font-weight:600;
+      border:none;
+      cursor:pointer;
+      transition:0.25s ease;
+    }
+
+    .btn-primary{
+      background:var(--lime);
+      color:#fff;
+      box-shadow:0 8px 20px rgba(132,204,22,0.25);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      background:#72b10e;
+    }
+
+    .btn-dark{
+      background:var(--dark);
+      color:#fff;
+    }
+
+    .btn-dark:hover{
+      transform:translateY(-2px);
+      background:#020617;
+    }
+
+    .btn-outline{
+      background:#fff;
+      color:var(--primary);
+      border:1px solid #cbd5e1;
+    }
+
+    .btn-outline:hover{
+      transform:translateY(-2px);
+      border-color:var(--primary);
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg, rgba(11,122,110,0.92), rgba(7,94,85,0.9)),
+        url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      color:#fff;
+    }
+
+    .hero-wrap{
+      max-width:var(--maxw);
+      margin:auto;
+      padding:80px 18px 70px;
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:30px;
+      align-items:center;
+    }
+
+    .hero-text h1{
+      font-size:52px;
+      line-height:1.1;
+      margin-bottom:16px;
+      font-weight:800;
+    }
+
+    .hero-text p{
+      font-size:16px;
+      line-height:1.8;
+      max-width:640px;
+      color:rgba(255,255,255,0.92);
+    }
+
+    .hero-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin:24px 0 28px;
+    }
+
+    .hero-badges span{
+      background:rgba(255,255,255,0.14);
+      border:1px solid rgba(255,255,255,0.14);
+      padding:11px 14px;
+      border-radius:999px;
+      font-size:13px;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+    }
+
+    .hero-card{
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+      backdrop-filter:blur(10px);
+      border-radius:28px;
+      padding:26px;
+      box-shadow:0 14px 30px rgba(0,0,0,0.18);
+    }
+
+    .hero-card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .hero-card-top h3{
+      font-size:22px;
+      font-weight:700;
+    }
+
+    .status-badge{
+      font-size:12px;
+      background:#dcfce7;
+      color:#166534;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:600;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .mini-card{
+      background:rgba(255,255,255,0.1);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .mini-card span{
+      display:block;
+      font-size:12px;
+      color:rgba(255,255,255,0.8);
+      margin-bottom:6px;
+    }
+
+    .mini-card strong{
+      font-size:24px;
+      font-weight:700;
+    }
+
+    .hero-note{
+      background:rgba(255,255,255,0.1);
+      border-radius:18px;
+      padding:18px;
+      line-height:1.7;
+      font-size:14px;
+      color:rgba(255,255,255,0.92);
+    }
+
+    .section{
+      padding:76px 18px;
+    }
+
+    .section-wrap{
+      max-width:var(--maxw);
+      margin:auto;
+    }
+
+    .section-head{
+      text-align:center;
+      max-width:760px;
+      margin:0 auto 38px;
+    }
+
+    .section-head .tag{
+      display:inline-block;
+      background:#dcfce7;
+      color:#166534;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+
+    .section-head h2{
+      font-size:38px;
+      line-height:1.2;
+      margin-bottom:14px;
+      color:#111827;
+    }
+
+    .section-head p{
+      font-size:15px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+
+    .info-card{
+      background:#fff;
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow:var(--card-shadow);
+      transition:0.25s ease;
+      border:1px solid #eef2f7;
+    }
+
+    .info-card:hover{
+      transform:translateY(-6px);
+    }
+
+    .icon-box{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      background:linear-gradient(135deg,var(--primary),#18b4a0);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      margin-bottom:18px;
+    }
+
+    .info-card h3{
+      font-size:20px;
+      margin-bottom:10px;
+    }
+
+    .info-card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+      margin-bottom:16px;
+    }
+
+    .info-card ul{
+      padding-left:18px;
+      color:#374151;
+      font-size:13px;
+      line-height:1.9;
+    }
+
+    .split{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:26px;
+      align-items:center;
+    }
+
+    .split-card{
+      background:#fff;
+      border-radius:28px;
+      padding:32px;
+      box-shadow:var(--card-shadow);
+    }
+
+    .split-card h3{
+      font-size:30px;
+      margin-bottom:14px;
+      color:#111827;
+    }
+
+    .split-card p{
+      color:var(--muted);
+      line-height:1.9;
+      font-size:15px;
+      margin-bottom:20px;
+    }
+
+    .feature-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .feature-item{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      background:#f8fafc;
+      padding:16px;
+      border-radius:16px;
+    }
+
+    .feature-item strong{
+      display:block;
+      font-size:15px;
+      margin-bottom:4px;
+      color:#111827;
+    }
+
+    .feature-item span{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .dashboard-preview{
+      background:linear-gradient(135deg,#0f172a,#1e293b);
+      color:#fff;
+      border-radius:28px;
+      padding:28px;
+      min-height:100%;
+    }
+
+    .preview-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:20px;
+    }
+
+    .preview-top h4{
+      font-size:22px;
+    }
+
+    .preview-pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:20px;
+    }
+
+    .preview-pills span{
+      font-size:12px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+    }
+
+    .preview-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .preview-box{
+      background:rgba(255,255,255,0.08);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .preview-box small{
+      display:block;
+      color:#cbd5e1;
+      margin-bottom:8px;
+      font-size:12px;
+    }
+
+    .preview-box strong{
+      font-size:24px;
+    }
+
+    .step-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:20px;
+    }
+
+    .step-card{
+      background:#fff;
+      border-radius:24px;
+      box-shadow:var(--card-shadow);
+      padding:28px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .step-num{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      background:linear-gradient(135deg,var(--primary),#18b4a0);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:20px;
+      font-weight:700;
+      margin-bottom:18px;
+    }
+
+    .step-card h3{
+      font-size:18px;
+      margin-bottom:10px;
+      color:#111827;
+    }
+
+    .step-card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .stats-band{
+      background:linear-gradient(135deg,var(--primary),#16a085);
+      color:#fff;
+      border-radius:28px;
+      padding:30px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+      box-shadow:0 20px 38px rgba(11,122,110,0.18);
+    }
+
+    .stat-box{
+      background:rgba(255,255,255,0.12);
+      padding:20px;
+      border-radius:20px;
+      text-align:center;
+    }
+
+    .stat-box strong{
+      display:block;
+      font-size:30px;
+      margin-bottom:6px;
+    }
+
+    .stat-box span{
+      font-size:13px;
+      color:rgba(255,255,255,0.9);
+    }
+
+    .testimonial-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+
+    .testimonial-card{
+      background:#fff;
+      padding:26px;
+      border-radius:24px;
+      box-shadow:var(--card-shadow);
+    }
+
+    .testimonial-card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.9;
+      margin-bottom:16px;
+    }
+
+    .testimonial-card strong{
+      display:block;
+      font-size:16px;
+      color:#111827;
+    }
+
+    .testimonial-card span{
+      font-size:12px;
+      color:#6b7280;
+    }
+
+    .cta-section{
+      padding:0 18px 80px;
+    }
+
+    .cta-wrap{
+      max-width:var(--maxw);
+      margin:auto;
+      background:linear-gradient(135deg,#0f172a,#1e293b);
+      color:#fff;
+      border-radius:32px;
+      padding:42px 32px;
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:24px;
+      align-items:center;
+      box-shadow:0 20px 40px rgba(15,23,42,0.16);
+    }
+
+    .cta-wrap h2{
+      font-size:38px;
+      line-height:1.2;
+      margin-bottom:14px;
+    }
+
+    .cta-wrap p{
+      font-size:15px;
+      color:#cbd5e1;
+      line-height:1.9;
+    }
+
+    .cta-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      justify-content:flex-end;
+    }
+
+    .footer{
+      background:#0b1220;
+      color:#fff;
+      padding:56px 18px 20px;
+    }
+
+    .footer-wrap{
+      max-width:var(--maxw);
+      margin:auto;
+      display:grid;
+      grid-template-columns:1.4fr 1fr 1fr 1fr;
+      gap:28px;
+    }
+
+    .footer-brand strong{
+      font-size:24px;
+      color:#fff;
+      display:block;
+      margin-bottom:12px;
+    }
+
+    .footer-brand p,
+    .footer-col a,
+    .footer-col div{
+      font-size:14px;
+      color:#cbd5e1;
+      line-height:1.9;
+    }
+
+    .footer-col h4{
+      margin-bottom:12px;
+      font-size:17px;
+    }
+
+    .footer-col{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .footer-bottom{
+      max-width:var(--maxw);
+      margin:28px auto 0;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      text-align:center;
+      font-size:13px;
+      color:#94a3b8;
+    }
+
+    @media (max-width:1100px){
+      .hero-wrap,
+      .split,
+      .cta-wrap{
+        grid-template-columns:1fr;
+      }
+
+      .card-grid,
+      .testimonial-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .step-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .stats-band{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .footer-wrap{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .cta-actions{
+        justify-content:flex-start;
+      }
+    }
+
+    @media (max-width:860px){
+      .menu-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .nav-links{
+        position:absolute;
+        top:78px;
+        left:0;
+        width:100%;
+        background:#fff;
+        border-bottom:1px solid #e5e7eb;
+        flex-direction:column;
+        align-items:flex-start;
+        padding:18px;
+        display:none;
+      }
+
+      .nav-links.show{
+        display:flex;
+      }
+
+      .nav-cta .btn{
+        display:none;
+      }
+
+      .hero-text h1{
+        font-size:40px;
+      }
+    }
+
+    @media (max-width:640px){
+      .topbar{
+        display:none;
+      }
+
+      .nav-wrap{
+        padding:14px 14px;
+      }
+
+      .logo strong{
+        font-size:20px;
+      }
+
+      .hero-wrap{
+        padding:62px 14px 54px;
+      }
+
+      .hero-text h1{
+        font-size:32px;
+      }
+
+      .hero-text p{
+        font-size:14px;
+      }
+
+      .section{
+        padding:58px 14px;
+      }
+
+      .section-head h2{
+        font-size:30px;
+      }
+
+      .card-grid,
+      .testimonial-grid,
+      .step-grid,
+      .stats-band,
+      .footer-wrap{
+        grid-template-columns:1fr;
+      }
+
+      .preview-grid,
+      .mini-grid{
+        grid-template-columns:1fr;
+      }
+
+      .cta-section{
+        padding:0 14px 64px;
+      }
+
+      .cta-wrap{
+        padding:32px 22px;
+      }
+
+      .cta-wrap h2{
+        font-size:30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-wrap">
+      <div class="topbar-left">
+        <span>📍 Pune, Maharashtra</span>
+        <span>⏰ Mon - Sat : 10:00 AM - 7:00 PM</span>
+      </div>
+      <div class="topbar-right">
+        <span>📧 support@shriramdigital.in</span>
+        <span>📞 +91 98765 43210</span>
+      </div>
+    </div>
+  </div>
+
+  <header class="navbar">
+    <div class="nav-wrap">
+      <a href="index.html" class="logo">
+        <strong>Shriram Digital</strong>
+        <span>Partner Program Platform</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="#services">Services</a>
+        <a href="#jobs">Jobs</a>
+        <a href="#partner">Partner Program</a>
+        <a href="#how">How It Works</a>
+        <a href="contact.html">Contact</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline">Login</a>
+        <a href="register.html" class="btn btn-primary">Join Now</a>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-wrap">
+      <div class="hero-text">
+        <h1>Grow With Us. Earn With Us. Build With Shriram Digital.</h1>
+        <p>
+          Shriram Digital Partner Program helps you earn through client referrals, showcase digital services,
+          access jobs, and build a powerful local business growth network with a premium platform feel.
+        </p>
+
+        <div class="hero-badges">
+          <span>Partner Earning Platform</span>
+          <span>Premium Website Services</span>
+          <span>Job Access Module</span>
+          <span>Lead Tracking Dashboard</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="register.html" class="btn btn-primary">Join Partner Program</a>
+          <a href="partner.html" class="btn btn-outline">Explore Program</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-top">
+          <h3>Partner Dashboard Preview</h3>
+          <div class="status-badge">Live Demo Ready</div>
+        </div>
+
+        <div class="mini-grid">
+          <div class="mini-card">
+            <span>Total Leads</span>
+            <strong>18</strong>
+          </div>
+          <div class="mini-card">
+            <span>Approved Projects</span>
+            <strong>06</strong>
+          </div>
+          <div class="mini-card">
+            <span>Total Earnings</span>
+            <strong>₹24.5K</strong>
+          </div>
+          <div class="mini-card">
+            <span>Job Access</span>
+            <strong>12</strong>
+          </div>
+        </div>
+
+        <div class="hero-note">
+          This premium demo dashboard helps partners manage leads, view opportunities,
+          track earnings, and use the Shriram Digital platform like a real SaaS system.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-wrap">
+      <div class="stats-band">
+        <div class="stat-box">
+          <strong>250+</strong>
+          <span>Business Growth Opportunities</span>
+        </div>
+        <div class="stat-box">
+          <strong>50+</strong>
+          <span>Premium Demo Use Cases</span>
+        </div>
+        <div class="stat-box">
+          <strong>100%</strong>
+          <span>Referral Based Expansion Vision</span>
+        </div>
+        <div class="stat-box">
+          <strong>24/7</strong>
+          <span>Future Automation Potential</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="section-wrap">
+      <div class="section-head">
+        <div class="tag">OUR SERVICES</div>
+        <h2>Premium Digital Services For Real Business Growth</h2>
+        <p>
+          We help local businesses with premium websites, smart branding assets and digital growth systems
+          so partners can close more clients and build recurring income.
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="info-card">
+          <div class="icon-box">🌐</div>
+          <h3>Premium Websites</h3>
+          <p>Modern, mobile friendly, premium looking websites for local businesses, agencies and professionals.</p>
+          <ul>
+            <li>Business websites</li>
+            <li>Landing pages</li>
+            <li>Demo websites for client closing</li>
+            <li>Premium presentation look</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box">🎨</div>
+          <h3>Marketing Assets</h3>
+          <p>Posters, service cards, menus, demo creatives and branding materials that help businesses stand out.</p>
+          <ul>
+            <li>Posters and banners</li>
+            <li>Visiting card design</li>
+            <li>Social media creatives</li>
+            <li>WhatsApp marketing visuals</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box">📈</div>
+          <h3>Growth Systems</h3>
+          <p>Referral-first systems, lead flow structure and future-ready automation thinking for scaling faster.</p>
+          <ul>
+            <li>Lead capture structure</li>
+            <li>Partner workflow</li>
+            <li>Job access integration</li>
+            <li>Future admin & automation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="jobs">
+    <div class="section-wrap">
+      <div class="split">
+        <div class="split-card">
+          <h3>Jobs & Opportunities Module</h3>
+          <p>
+            Shriram Digital is not only a service platform. It also creates an ecosystem where users can explore
+            relevant opportunities and use job access as an extra value layer in the platform.
+          </p>
+
+          <div class="feature-list">
+            <div class="feature-item">
+              <div>✅</div>
+              <div>
+                <strong>Fresh Job Access</strong>
+                <span>Partners can explore job opportunities through the jobs section inside the platform.</span>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div>✅</div>
+              <div>
+                <strong>Extra Value Add</strong>
+                <span>This makes the platform feel bigger than just a referral page and adds more utility.</span>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div>✅</div>
+              <div>
+                <strong>Future AI Job Hunter Ready</strong>
+                <span>Later this module can be upgraded into a smart AI Job Hunter system.</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:22px;">
+            <a href="jobs.html" class="btn btn-primary">View Jobs Section</a>
+          </div>
+        </div>
+
+        <div class="dashboard-preview">
+          <div class="preview-top">
+            <h4>Job Panel Preview</h4>
+            <div class="status-badge">Future Growth Module</div>
+          </div>
+
+          <div class="preview-pills">
+            <span>Daily Updates Ready</span>
+            <span>AI Upgrade Friendly</span>
+            <span>Partner Utility</span>
+          </div>
+
+          <div class="preview-grid">
+            <div class="preview-box">
+              <small>Available Roles</small>
+              <strong>12</strong>
+            </div>
+            <div class="preview-box">
+              <small>Categories</small>
+              <strong>05</strong>
+            </div>
+            <div class="preview-box">
+              <small>Applications</small>
+              <strong>48</strong>
+            </div>
+            <div class="preview-box">
+              <small>Status</small>
+              <strong>Active</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="partner">
+    <div class="section-wrap">
+      <div class="section-head">
+        <div class="tag">PARTNER PROGRAM</div>
+        <h2>Earn With Client Referrals And Build Your Own Growth Network</h2>
+        <p>
+          Join the Shriram Digital Partner Program and start referring businesses that need websites,
+          branding and digital support. As the platform grows, your earning opportunities grow too.
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="info-card">
+          <div class="icon-box">🤝</div>
+          <h3>Refer Businesses</h3>
+          <p>Find local businesses that need digital presence and send them into the Shriram Digital system.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box">💸</div>
+          <h3>Earn Commission</h3>
+          <p>When projects close, partners can track lead activity and commission-style earnings inside dashboard.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box">🚀</div>
+          <h3>Scale Faster</h3>
+          <p>As modules expand, the platform can later support more advanced referral tree and partner growth systems.</p>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:28px;">
+        <a href="partner.html" class="btn btn-dark">Explore Partner Program</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="section-wrap">
+      <div class="section-head">
+        <div class="tag">HOW IT WORKS</div>
+        <h2>Simple 4 Step Growth Flow</h2>
+        <p>
+          Keep the system simple: join, refer, track and grow. This is the strongest base for turning
+          a demo platform into a real digital business machine.
+        </p>
+      </div>
+
+      <div class="step-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3>Register</h3>
+          <p>Create your partner account and get access to the platform structure and dashboard flow.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3>Refer Clients</h3>
+          <p>Bring businesses who need websites, branding or digital support and submit them as leads.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3>Track Progress</h3>
+          <p>Use the dashboard, profile and leads section to see activity, updates and project movement.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <h3>Grow Earnings</h3>
+          <p>As projects close and modules expand, the platform becomes a stronger earning and service system.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-wrap">
+      <div class="section-head">
+        <div class="tag">WHY CHOOSE US</div>
+        <h2>Built For Smart Work, Local Business Growth And Future Scale</h2>
+        <p>
+          This platform is designed with a clear growth mindset: sell better, look premium, work faster and
+          prepare for future automation without overcomplicating the first version.
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="info-card">
+          <div class="icon-box">⚡</div>
+          <h3>Fast MVP Structure</h3>
+          <p>Clean static platform that looks premium and is easy to deploy, edit and grow later.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box">💼</div>
+          <h3>Client Closing Friendly</h3>
+          <p>Perfect for showing to prospects as a live working system instead of a random demo page.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box">🧠</div>
+          <h3>Future Ready Vision</h3>
+          <p>Can grow into leads, admin, referral tree, job hunter, automation and paid add-on modules.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-wrap">
+      <div class="section-head">
+        <div class="tag">TESTIMONIAL STYLE DEMO</div>
+        <h2>Business Trust Feel For Premium Presentation</h2>
+        <p>
+          Demo testimonials help the platform feel stronger during client showing and product pitching.
+        </p>
+      </div>
+
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <p>
+            “Shriram Digital style platform made it easy to imagine how our local business can look premium online.”
+          </p>
+          <strong>Rajmudra Computers</strong>
+          <span>Website + Billing Demo</span>
+        </div>
+
+        <div class="testimonial-card">
+          <p>
+            “The dashboard, partner flow and service positioning gave a real startup product feel.”
+          </p>
+          <strong>Business Demo Client</strong>
+          <span>Partner Program Preview</span>
+        </div>
+
+        <div class="testimonial-card">
+          <p>
+            “This kind of premium demo helps in client closing because it feels like a working system.”
+          </p>
+          <strong>Growth Network User</strong>
+          <span>Digital Service Platform</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-wrap">
+      <div>
+        <h2>Ready To Join The Shriram Digital Growth System?</h2>
+        <p>
+          Start as a partner, showcase premium services, use jobs as extra value and build a stronger digital
+          business future with a smart, scalable platform base.
+        </p>
+      </div>
+
+      <div class="cta-actions">
+        <a href="register.html" class="btn btn-primary">Register Now</a>
+        <a href="contact.html" class="btn btn-outline">Contact Team</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" id="contact">
+    <div class="footer-wrap">
+      <div class="footer-brand">
+        <strong>Shriram Digital</strong>
+        <p>
+          A premium partner program and digital growth platform focused on websites, branding,
+          referrals, jobs and future-ready systems.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="partner.html">Partner Program</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="leads.html">My Leads</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact Info</h4>
+        <div>Pune, Maharashtra</div>
+        <div>support@shriramdigital.in</div>
+        <div>+91 98765 43210</div>
+        <div>Mon - Sat : 10 AM - 7 PM</div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 Shriram Digital Partner Program — Premium Demo Platform
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu(){
+      document.getElementById("navLinks").classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partner Profile | ShriRam Digital</title>
+  <meta name="description" content="Premium partner profile page for ShriRam Digital Partner Program with account details, achievements and growth sections." />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#061019;
+      --bg2:#0b1722;
+      --card:#102031;
+      --card2:#13273a;
+      --line:rgba(255,255,255,0.08);
+      --text:#edf5ff;
+      --muted:#9bb1c7;
+      --gold:#efb14a;
+      --gold2:#ffd27e;
+      --blue:#62a8ff;
+      --green:#24c47e;
+      --shadow:0 20px 60px rgba(0,0,0,0.35);
+      --goldGlow:rgba(239,177,74,0.16);
+      --blueGlow:rgba(98,168,255,0.16);
+    }
+    body{
+      font-family:"Segoe UI",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(239,177,74,0.11), transparent 22%),
+        radial-gradient(circle at top left, rgba(98,168,255,0.09), transparent 24%),
+        linear-gradient(180deg,#061019 0%,#07131d 100%);
+      color:var(--text);
+      min-height:100vh;line-height:1.5;
+    }
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1220px,94%);margin:auto}
+    .topbar{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter:blur(12px);
+      background:rgba(5,12,19,0.78);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:20px;padding:16px 0;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-badge{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#fff0c9);
+      color:#08111a;display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:18px;box-shadow:0 10px 30px var(--goldGlow);
+      flex-shrink:0;
+    }
+    .brand-text h1{font-size:18px;line-height:1.1;font-weight:800}
+    .brand-text p{color:var(--muted);font-size:12px;margin-top:3px}
+    .nav-links{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .nav-links a{color:var(--muted);font-size:14px;transition:.25s}
+    .nav-links a:hover,.nav-links a.active{color:var(--text)}
+    .nav-cta{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:12px 18px;border-radius:999px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;font-weight:700;box-shadow:0 12px 28px var(--goldGlow);
+      transition:.25s;
+    }
+    .nav-cta:hover{transform:translateY(-2px)}
+
+    .hero{padding:34px 0 24px}
+    .profile-hero{
+      background:
+        radial-gradient(circle at top right, rgba(239,177,74,.18), transparent 24%),
+        linear-gradient(180deg,rgba(16,32,49,.95),rgba(10,21,31,.95));
+      border:1px solid var(--line);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:30px;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+      align-items:center;
+    }
+    .profile-main{
+      display:flex;gap:18px;align-items:center;
+    }
+    .avatar{
+      width:96px;height:96px;border-radius:28px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;display:flex;align-items:center;justify-content:center;
+      font-size:34px;font-weight:900;flex-shrink:0;
+      box-shadow:0 14px 32px var(--goldGlow);
+    }
+    .mini-badge{
+      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;
+      border-radius:999px;background:rgba(239,177,74,.08);
+      border:1px solid rgba(239,177,74,.18);color:#ffd992;font-size:13px;
+      margin-bottom:12px;
+    }
+    .profile-text h2{
+      font-size:38px;line-height:1.08;letter-spacing:-1px;margin-bottom:8px;
+    }
+    .profile-text p{color:var(--muted);font-size:15px;margin-bottom:14px}
+    .meta{
+      display:flex;flex-wrap:wrap;gap:10px;
+    }
+    .meta span{
+      padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      color:var(--muted);font-size:12px;
+    }
+    .hero-actions{
+      display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;
+    }
+    .btn-primary,.btn-secondary,.btn-small{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;font-weight:800;transition:.25s;
+    }
+    .btn-primary{
+      min-height:50px;padding:0 20px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;box-shadow:0 12px 28px var(--goldGlow);
+    }
+    .btn-secondary{
+      min-height:50px;padding:0 20px;
+      background:rgba(255,255,255,.03);color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .btn-primary:hover,.btn-secondary:hover,.btn-small:hover{transform:translateY(-2px)}
+    .hero-stats{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+    }
+    .stat-card,.panel,.achievement-card,.timeline-card{
+      background:linear-gradient(180deg,rgba(16,32,49,.95),rgba(10,21,31,.95));
+      border:1px solid var(--line);box-shadow:var(--shadow);
+    }
+    .stat-card{
+      border-radius:24px;padding:20px;text-align:center;
+    }
+    .stat-card h3{font-size:30px;color:#fff2cf;margin-bottom:8px}
+    .stat-card p{color:var(--muted);font-size:14px}
+
+    .section{padding:10px 0 28px}
+    .layout{
+      display:grid;grid-template-columns:.92fr 1.08fr;gap:20px;
+    }
+    .panel{
+      border-radius:26px;padding:22px;
+    }
+    .panel-head{margin-bottom:18px}
+    .panel-head h3{font-size:22px;margin-bottom:6px}
+    .panel-head p{color:var(--muted);font-size:14px}
+    .info-list,.timeline,.achievement-grid{display:grid;gap:14px}
+    .info-item,.timeline-card,.achievement-card{
+      padding:16px;border-radius:20px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .info-item h4,.timeline-card h4,.achievement-card h4{
+      font-size:16px;margin-bottom:6px;
+    }
+    .info-item p,.timeline-card p,.achievement-card p{
+      color:var(--muted);font-size:14px;
+    }
+    .progress-wrap{display:grid;gap:14px}
+    .progress-item{
+      padding:14px;border-radius:18px;background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .progress-top{
+      display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;font-size:14px;
+    }
+    .progress-top span:last-child{color:#fff2cf;font-weight:700}
+    .bar{
+      height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;
+    }
+    .fill{
+      height:100%;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));
+    }
+    .achievement-grid{grid-template-columns:repeat(2,1fr)}
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:34px;padding:0 12px;border-radius:999px;
+      background:rgba(239,177,74,.12);border:1px solid rgba(239,177,74,.16);
+      color:#ffe0a4;font-size:12px;font-weight:700;margin-top:8px;
+    }
+    .actions-row{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+    }
+    .btn-small{
+      min-height:42px;padding:0 16px;font-size:13px;
+    }
+    .btn-gold{
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;box-shadow:0 10px 24px var(--goldGlow);
+    }
+    .btn-dark{
+      background:rgba(255,255,255,.03);color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .footer{
+      border-top:1px solid rgba(255,255,255,.06);
+      background:rgba(5,12,19,.75);
+      margin-top:24px;
+    }
+    .footer-wrap{
+      padding:22px 0 30px;display:flex;justify-content:space-between;align-items:center;
+      gap:16px;flex-wrap:wrap;
+    }
+    .footer p,.footer-links a{color:var(--muted);font-size:13px}
+    .footer-links{display:flex;gap:14px;flex-wrap:wrap}
+    @media (max-width:1100px){
+      .profile-hero,.layout{grid-template-columns:1fr}
+    }
+    @media (max-width:860px){
+      .nav{flex-direction:column;align-items:flex-start}
+      .profile-main{align-items:flex-start;flex-direction:column}
+      .profile-text h2{font-size:32px}
+      .hero-stats,.achievement-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .profile-text h2{font-size:28px}
+      .btn-primary,.btn-secondary,.btn-small,.nav-cta{width:100%}
+      .hero-actions,.actions-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-badge">SR</div>
+        <div class="brand-text">
+          <h1>ShriRam Digital</h1>
+          <p>Partner Program Platform</p>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="partner.html">Partner Program</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="leads.html">Leads</a>
+        <a href="profile.html" class="active">Profile</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <a class="nav-cta" href="dashboard.html">Dashboard</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="profile-hero">
+        <div>
+          <div class="profile-main">
+            <div class="avatar">A</div>
+            <div class="profile-text">
+              <div class="mini-badge">✦ Premium Partner Profile</div>
+              <h2>Atharva Chimte</h2>
+              <p>Growth-focused digital partner profile with premium dashboard feel and smart opportunity tracking.</p>
+              <div class="meta">
+                <span>Pune, Maharashtra</span>
+                <span>Partner ID: SRP-1024</span>
+                <span>Active Member</span>
+                <span>Level: Gold</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#" class="btn-primary" onclick="event.preventDefault(); alert('Demo edit profile action only.');">Edit Profile</a>
+            <a href="leads.html" class="btn-secondary">View Leads</a>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-card">
+            <h3>24</h3>
+            <p>Total active leads connected</p>
+          </div>
+          <div class="stat-card">
+            <h3>₹82k</h3>
+            <p>Estimated pipeline value</p>
+          </div>
+          <div class="stat-card">
+            <h3>8</h3>
+            <p>Closed or warm conversations</p>
+          </div>
+          <div class="stat-card">
+            <h3>91%</h3>
+            <p>Profile completion score</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container layout">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Profile Information</h3>
+          <p>Simple data नाही. Trust-building partner profile style.</p>
+        </div>
+
+        <div class="info-list">
+          <div class="info-item">
+            <h4>Full Name</h4>
+            <p>Atharva Chimte</p>
+          </div>
+          <div class="info-item">
+            <h4>Email Address</h4>
+            <p>atharva@example.com</p>
+          </div>
+          <div class="info-item">
+            <h4>Phone Number</h4>
+            <p>+91 99999 99999</p>
+          </div>
+          <div class="info-item">
+            <h4>City / Region</h4>
+            <p>Pune, Maharashtra</p>
+          </div>
+          <div class="info-item">
+            <h4>Partner Type</h4>
+            <p>Growth Partner / Digital Reseller</p>
+          </div>
+          <div class="info-item">
+            <h4>Main Strength</h4>
+            <p>Website selling, premium visual pitch, local business opportunities and smart packaging.</p>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <a href="#" class="btn-small btn-gold" onclick="event.preventDefault(); alert('Demo save action only.');">Save Changes</a>
+          <a href="#" class="btn-small btn-dark" onclick="event.preventDefault(); alert('Demo document upload action only.');">Upload Documents</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Growth Progress</h3>
+          <p>Profile page ला SaaS style feel यावा म्हणून visual progress section ठेवली आहे.</p>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-item">
+            <div class="progress-top">
+              <span>Profile Completion</span>
+              <span>91%</span>
+            </div>
+            <div class="bar"><div class="fill" style="width:91%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-top">
+              <span>Lead Follow-Up Activity</span>
+              <span>76%</span>
+            </div>
+            <div class="bar"><div class="fill" style="width:76%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-top">
+              <span>Partner Performance Score</span>
+              <span>83%</span>
+            </div>
+            <div class="bar"><div class="fill" style="width:83%"></div></div>
+          </div>
+        </div>
+
+        <div class="panel-head" style="margin-top:22px;">
+          <h3>Recent Milestones</h3>
+          <p>Trust and progress दोन्ही visually दिसतं.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-card">
+            <h4>Joined Partner Program</h4>
+            <p>Initial registration completed and account activated successfully.</p>
+          </div>
+          <div class="timeline-card">
+            <h4>First 10 Leads Added</h4>
+            <p>Lead pipeline started and early business conversations opened.</p>
+          </div>
+          <div class="timeline-card">
+            <h4>Upgraded to Gold Partner Level</h4>
+            <p>Higher activity, better engagement and stronger profile quality.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Achievements & Opportunities</h3>
+          <p>Profile page ला boring ठेवायचं नाही म्हणून premium achievement blocks add केले आहेत.</p>
+        </div>
+
+        <div class="achievement-grid">
+          <div class="achievement-card">
+            <h4>Top Local Connector</h4>
+            <p>Strong business networking ability and local opportunity spotting.</p>
+            <div class="badge">Recognition Badge</div>
+          </div>
+          <div class="achievement-card">
+            <h4>Premium Pitch Strength</h4>
+            <p>Visual-first premium presentation style मुळे better business interest.</p>
+            <div class="badge">Sales Advantage</div>
+          </div>
+          <div class="achievement-card">
+            <h4>Growth Opportunity</h4>
+            <p>Website + branding + digital marketing combo packages push करण्याची strong scope.</p>
+            <div class="badge">Upsell Ready</div>
+          </div>
+          <div class="achievement-card">
+            <h4>Future Upgrade Path</h4>
+            <p>CRM, automated lead scoring, payout tracking हे later paid add-ons मध्ये add करू शकतो.</p>
+            <div class="badge">Future Add-On</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <p>© 2026 ShriRam Digital Partner Program. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="partner.html">Partner Program</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

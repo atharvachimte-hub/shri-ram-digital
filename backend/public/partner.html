@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partner Program | ShriRam Digital</title>
+  <meta name="description" content="Join ShriRam Digital Partner Program and grow with premium services, reseller opportunities, and business support." />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#061019;
+      --bg2:#0b1722;
+      --card:#102031;
+      --card2:#13273a;
+      --line:rgba(255,255,255,0.08);
+      --text:#edf5ff;
+      --muted:#9bb1c7;
+      --gold:#efb14a;
+      --gold2:#ffd27e;
+      --blue:#62a8ff;
+      --green:#25d366;
+      --shadow:0 20px 60px rgba(0,0,0,0.35);
+      --goldGlow:rgba(239,177,74,0.16);
+      --blueGlow:rgba(98,168,255,0.16);
+    }
+    body{
+      font-family:"Segoe UI",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(239,177,74,0.11), transparent 22%),
+        radial-gradient(circle at top left, rgba(98,168,255,0.09), transparent 24%),
+        linear-gradient(180deg,#061019 0%,#07131d 100%);
+      color:var(--text);
+      min-height:100vh;
+      line-height:1.5;
+    }
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1180px,92%);margin:auto}
+    .topbar{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter:blur(12px);
+      background:rgba(5,12,19,0.78);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:20px;padding:16px 0;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-badge{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#fff0c9);
+      color:#08111a;display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:18px;box-shadow:0 10px 30px var(--goldGlow);
+      flex-shrink:0;
+    }
+    .brand-text h1{font-size:18px;line-height:1.1;font-weight:800}
+    .brand-text p{color:var(--muted);font-size:12px;margin-top:3px}
+    .nav-links{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .nav-links a{color:var(--muted);font-size:14px;transition:.25s}
+    .nav-links a:hover,.nav-links a.active{color:var(--text)}
+    .nav-cta{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:12px 18px;border-radius:999px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;font-weight:700;box-shadow:0 12px 28px var(--goldGlow);
+      transition:.25s;
+    }
+    .nav-cta:hover{transform:translateY(-2px)}
+    .hero{padding:72px 0 36px}
+    .hero-wrap{
+      display:grid;grid-template-columns:1.08fr .92fr;gap:26px;align-items:stretch;
+    }
+    .hero-left,.hero-right-card,.section-card,.form-card,.cta-box{
+      background:linear-gradient(180deg,rgba(16,32,49,.95),rgba(10,21,31,.95));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+    }
+    .hero-left{
+      border-radius:32px;padding:38px;position:relative;overflow:hidden;
+    }
+    .hero-left::before{
+      content:"";position:absolute;right:-80px;top:-80px;width:220px;height:220px;
+      background:radial-gradient(circle,rgba(239,177,74,.18),transparent 60%);
+    }
+    .mini-badge{
+      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;
+      border-radius:999px;background:rgba(239,177,74,.08);
+      border:1px solid rgba(239,177,74,.18);color:#ffd992;font-size:13px;
+      margin-bottom:18px;
+    }
+    .hero-left h2{
+      font-size:48px;line-height:1.08;letter-spacing:-1px;margin-bottom:16px;
+    }
+    .hero-left h2 span{color:var(--gold2)}
+    .hero-left p{
+      color:var(--muted);font-size:17px;max-width:720px;margin-bottom:24px;
+    }
+    .hero-points{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;
+    }
+    .point{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:20px;padding:18px;
+    }
+    .point h3{font-size:15px;margin-bottom:6px;color:#fff2cf}
+    .point p{color:var(--muted);font-size:13px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:14px}
+    .btn-primary,.btn-secondary{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:52px;padding:0 22px;border-radius:999px;font-weight:800;transition:.25s;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;box-shadow:0 12px 30px var(--goldGlow);
+    }
+    .btn-secondary{
+      background:rgba(255,255,255,.03);color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .btn-primary:hover,.btn-secondary:hover{transform:translateY(-2px)}
+    .hero-right{display:grid;gap:18px}
+    .hero-right-card{border-radius:28px;padding:24px}
+    .hero-right-card h3{font-size:22px;margin-bottom:8px}
+    .hero-right-card p{color:var(--muted);font-size:14px;margin-bottom:16px}
+    .list{display:grid;gap:12px}
+    .list-item{
+      display:flex;gap:14px;align-items:flex-start;
+      padding:14px;border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .icon{
+      width:42px;height:42px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;font-size:18px;
+      background:linear-gradient(135deg,rgba(239,177,74,.20),rgba(255,255,255,.05));
+      flex-shrink:0;
+    }
+    .list-item h4{font-size:15px;margin-bottom:4px}
+    .list-item p{font-size:13px;margin:0}
+    .section{padding:24px 0 34px}
+    .section-title{margin-bottom:22px}
+    .section-title h2{font-size:34px;margin-bottom:8px}
+    .section-title p{color:var(--muted);max-width:760px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .section-card{border-radius:24px;padding:22px}
+    .section-card h3{font-size:18px;margin-bottom:8px}
+    .section-card p{color:var(--muted);font-size:14px}
+    .stats-card{text-align:center}
+    .stats-card h3{font-size:32px;color:#fff2cf;margin-bottom:8px}
+    .steps{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    }
+    .step-card{
+      background:linear-gradient(180deg,rgba(16,32,49,.92),rgba(10,21,31,.92));
+      border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);
+    }
+    .step-number{
+      width:48px;height:48px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;font-weight:900;margin-bottom:14px;
+    }
+    .step-card h3{font-size:18px;margin-bottom:8px}
+    .step-card p{color:var(--muted);font-size:14px}
+    .partner-layout{display:grid;grid-template-columns:1fr .92fr;gap:22px}
+    .form-card{border-radius:28px;padding:26px}
+    .form-card h3{font-size:24px;margin-bottom:10px}
+    .form-card p{color:var(--muted);margin-bottom:18px;font-size:14px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:8px}
+    .field.full{grid-column:1 / -1}
+    label{font-size:14px;color:#d8e8f9;font-weight:600}
+    input,select,textarea{
+      width:100%;border:none;outline:none;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--text);border-radius:16px;padding:15px 16px;font-size:14px;
+    }
+    textarea{min-height:130px;resize:vertical}
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(239,177,74,.35);
+      box-shadow:0 0 0 4px rgba(239,177,74,.08);
+    }
+    .submit-btn{
+      margin-top:18px;width:100%;min-height:54px;border:none;border-radius:999px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#08111a;font-weight:800;font-size:15px;cursor:pointer;
+      box-shadow:0 14px 34px var(--goldGlow);
+    }
+    .faq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .cta{padding:18px 0 44px}
+    .cta-box{
+      border-radius:32px;padding:34px;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+      background:
+        radial-gradient(circle at top right, rgba(239,177,74,.18), transparent 28%),
+        linear-gradient(180deg, rgba(16,32,49,.98), rgba(10,21,31,.98));
+    }
+    .cta-text h2{font-size:34px;margin-bottom:10px}
+    .cta-text p{color:var(--muted);max-width:720px}
+    .cta-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .footer{
+      border-top:1px solid rgba(255,255,255,.06);
+      background:rgba(5,12,19,.75);
+    }
+    .footer-wrap{
+      padding:22px 0 30px;display:flex;justify-content:space-between;align-items:center;
+      gap:16px;flex-wrap:wrap;
+    }
+    .footer p,.footer-links a{color:var(--muted);font-size:13px}
+    .footer-links{display:flex;gap:14px;flex-wrap:wrap}
+    @media (max-width:1100px){
+      .hero-wrap,.partner-layout{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:repeat(2,1fr)}
+      .grid-3,.steps,.faq-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:860px){
+      .nav{flex-direction:column;align-items:flex-start}
+      .hero-left{padding:26px}
+      .hero-left h2{font-size:36px}
+      .hero-points,.form-grid{grid-template-columns:1fr}
+      .section-title h2,.cta-text h2{font-size:28px}
+    }
+    @media (max-width:560px){
+      .hero{padding-top:40px}
+      .hero-left h2{font-size:30px}
+      .grid-4{grid-template-columns:1fr}
+      .btn-primary,.btn-secondary,.nav-cta,.submit-btn{width:100%}
+      .hero-actions,.cta-actions{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-badge">SR</div>
+        <div class="brand-text">
+          <h1>ShriRam Digital</h1>
+          <p>Partner Program Platform</p>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="partner.html" class="active">Partner Program</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="leads.html">Leads</a>
+        <a href="profile.html">Profile</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <a class="nav-cta" href="register.html">Join Now</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-wrap">
+      <div class="hero-left">
+        <div class="mini-badge">✦ Premium Growth Partnership</div>
+        <h2>Grow with <span>ShriRam Digital Partner Program</span></h2>
+        <p>
+          Reseller, business partner, local lead partner, service promoter किंवा digital growth collaborator म्हणून join होण्यासाठी हा premium partner page आहे.
+        </p>
+
+        <div class="hero-points">
+          <div class="point">
+            <h3>More Income</h3>
+            <p>Service referrals, partner deals आणि commission-based growth opportunities.</p>
+          </div>
+          <div class="point">
+            <h3>Business Support</h3>
+            <p>Brand, pitch, onboarding आणि demo support system feel.</p>
+          </div>
+          <div class="point">
+            <h3>Scale Faster</h3>
+            <p>Local network वापरून smart expansion model build करता येईल.</p>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#join-form" class="btn-primary">Apply as Partner</a>
+          <a href="contact.html" class="btn-secondary">Talk to Team</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-right-card">
+          <h3>Who can join?</h3>
+          <p>Only agencies नाहीत. Local network असलेला smart person सुद्धा join करू शकतो.</p>
+          <div class="list">
+            <div class="list-item">
+              <div class="icon">🏪</div>
+              <div>
+                <h4>Local Business Connectors</h4>
+                <p>ज्यांना local shops, offices, institutes, businesses पर्यंत पोहोच आहे.</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="icon">💼</div>
+              <div>
+                <h4>Freelancers & Sellers</h4>
+                <p>Sales, design, website, branding किंवा service selling मध्ये interest असलेले.</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="icon">🚀</div>
+              <div>
+                <h4>Growth Minded People</h4>
+                <p>Referral करून income build करायची mindset असलेले smart partners.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right-card">
+          <h3>Partner benefits</h3>
+          <p>Normal registration page feel नाही. Why join हे clear दिसतं.</p>
+          <div class="list">
+            <div class="list-item">
+              <div class="icon">₹</div>
+              <div>
+                <h4>Commission Opportunities</h4>
+                <p>Services sell/referral वर earning potential.</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="icon">🎯</div>
+              <div>
+                <h4>Ready Product Support</h4>
+                <p>Pitch easier व्हावं म्हणून structured offer positioning.</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="icon">🤝</div>
+              <div>
+                <h4>Long-Term Collaboration</h4>
+                <p>Simple leads पासून bigger business tie-ups पर्यंत scope.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why this partner model works</h2>
+        <p>Trust + income + growth हे तिन्ही clear झाले पाहिजेत म्हणून ही section important आहे.</p>
+      </div>
+      <div class="grid-3">
+        <div class="section-card">
+          <h3>Simple Entry</h3>
+          <p>Heavy technical knowledge लागणार नाही. Network आणि communication असेल तरी enough.</p>
+        </div>
+        <div class="section-card">
+          <h3>Service-Based Opportunity</h3>
+          <p>Website, branding, digital services, support offers partner level वर position करता येतील.</p>
+        </div>
+        <div class="section-card">
+          <h3>Scalable Model</h3>
+          <p>One-time referral नाही. Long-term partner ecosystem feel दिला आहे.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Partner Snapshot</h2>
+        <p>Stats section मुळे platform demo जास्त strong दिसतो.</p>
+      </div>
+      <div class="grid-4">
+        <div class="section-card stats-card">
+          <h3>250+</h3>
+          <p>Prospective partner leads in pipeline</p>
+        </div>
+        <div class="section-card stats-card">
+          <h3>40+</h3>
+          <p>Service categories available to promote</p>
+        </div>
+        <div class="section-card stats-card">
+          <h3>10x</h3>
+          <p>Stronger local reach through partner network</p>
+        </div>
+        <div class="section-card stats-card">
+          <h3>24/7</h3>
+          <p>Opportunity mindset for growth & expansion</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>How to become a partner</h2>
+        <p>User flow simple ठेवला आहे म्हणजे visitor ला confusion नको.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Submit Interest</h3>
+          <p>Basic details भरून partner interest submit करा.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Get Reviewed</h3>
+          <p>Role, city, network type आणि fit based प्राथमिक review.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Start Growing</h3>
+          <p>Approved झाल्यावर smart growth conversation आणि onboarding stage.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container partner-layout">
+      <div class="form-card" id="join-form">
+        <h3>Partner Application Form</h3>
+        <p>हा static premium MVP आहे. Submit वर demo alert आहे. Real backend नंतर add करू.</p>
+
+        <form onsubmit="event.preventDefault(); alert('Partner application submitted successfully! Backend integration will be added later.');">
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" placeholder="Enter full name" required>
+            </div>
+            <div class="field">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" placeholder="Enter phone number" required>
+            </div>
+            <div class="field">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" placeholder="Enter email address" required>
+            </div>
+            <div class="field">
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder="Enter your city" required>
+            </div>
+            <div class="field">
+              <label for="type">Partner Type</label>
+              <select id="type" required>
+                <option value="">Select partner type</option>
+                <option>Local Business Connector</option>
+                <option>Freelancer</option>
+                <option>Reseller</option>
+                <option>Sales Partner</option>
+                <option>Growth Collaborator</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="experience">Experience Level</label>
+              <select id="experience" required>
+                <option value="">Select experience</option>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Experienced</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="network">Your Network / Strength</label>
+              <input type="text" id="network" placeholder="Example: local shops, institutes, business owners, online clients" required>
+            </div>
+            <div class="field full">
+              <label for="message">Why do you want to join?</label>
+              <textarea id="message" placeholder="Write your short message here..." required></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Submit Partner Application</button>
+        </form>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-right-card">
+          <h3>What happens next?</h3>
+          <p>Form भरल्यावर पुढचा path visually clear केला आहे.</p>
+          <div class="list">
+            <div class="list-item">
+              <div class="icon">📞</div>
+              <div>
+                <h4>Initial Contact</h4>
+                <p>Your details review झाल्यावर discussion start होईल.</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="icon">🧾</div>
+              <div>
+                <h4>Fit Evaluation</h4>
+                <p>City, role, network आणि potential वर basic fit check.</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="icon">🚀</div>
+              <div>
+                <h4>Growth Opportunity</h4>
+                <p>Partner level collaboration आणि income model discussion.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right-card">
+          <h3>Need direct support?</h3>
+          <p>Immediate discussion साठी contact page वापर.</p>
+          <div class="hero-actions">
+            <a href="contact.html" class="btn-primary">Go to Contact Page</a>
+            <a href="jobs.html" class="btn-secondary">Explore Job Roles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Frequently Asked Questions</h2>
+        <p>Partner visitor ला doubts लगेच clear व्हायला हवेत.</p>
+      </div>
+      <div class="faq-grid">
+        <div class="section-card">
+          <h3>Do I need technical skills?</h3>
+          <p>नाही. Network, communication आणि basic business understanding असेल तरी join करता येईल.</p>
+        </div>
+        <div class="section-card">
+          <h3>Is this job or partnership?</h3>
+          <p>हा partner program आहे. काही roles jobs page वर आहेत, पण हा page growth partnership साठी आहे.</p>
+        </div>
+        <div class="section-card">
+          <h3>Will backend be added later?</h3>
+          <p>हो. आत्ता static MVP आहे. Later automation, CRM, lead routing हे paid add-ons मध्ये घेऊ.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <div class="cta-box">
+        <div class="cta-text">
+          <h2>Become a growth partner</h2>
+          <p>Local network आहे? Selling skill आहे? Referral power आहे? मग हा model strong income opportunity बनू शकतो.</p>
+        </div>
+        <div class="cta-actions">
+          <a href="#join-form" class="btn-primary">Apply Now</a>
+          <a href="register.html" class="btn-secondary">Create Account</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <p>© 2026 ShriRam Digital Partner Program. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="partner.html">Partner Program</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
