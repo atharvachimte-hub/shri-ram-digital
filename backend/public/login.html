@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      // Reset all sessions and cookies on login landing
+      localStorage.removeItem("user");
+      localStorage.removeItem("mlmAdminLoggedIn");
+      localStorage.removeItem("mlmAdminPassword");
+      document.cookie = "userAuth=; Path=/; Max-Age=0;";
+      document.cookie = "adminAuth=; Path=/; Max-Age=0;";
+    })();
+  </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - Shriram Digital</title>
@@ -107,27 +117,55 @@ opacity:0.7;
 Shriram Digital
 </div>
 
-<h1>Login Account</h1>
+<!-- Login Card -->
+<div id="loginCard">
+  <h1>Login Account</h1>
 
-<div class="input-box">
-<input type="text" placeholder="Enter User ID">
+  <div class="input-box">
+    <input type="text" id="userId" placeholder="Enter User ID">
+  </div>
+
+  <div class="input-box">
+    <input type="password" id="password" placeholder="Enter Password">
+  </div>
+
+  <button class="btn" onclick="login()">
+    Login
+  </button>
+
+  <div class="extra">
+    <a href="#" onclick="toggleCard('forgot')">Forgot Password?</a>
+  </div>
+
+  <div class="extra">
+    Don’t have an account?
+    <a href="register.html">Register</a>
+  </div>
 </div>
 
-<div class="input-box">
-<input type="password" placeholder="Enter Password">
-</div>
+<!-- Forgot Password Card -->
+<div id="forgotCard" style="display: none;">
+  <h1>Reset Password</h1>
 
-<button class="btn" onclick="login()">
-Login
-</button>
+  <div class="input-box">
+    <input type="text" id="forgotUserId" placeholder="Enter User ID">
+  </div>
 
-<div class="extra">
-<a href="#">Forgot Password?</a>
-</div>
+  <div class="input-box">
+    <input type="text" id="forgotContact" placeholder="Registered Email or Mobile">
+  </div>
 
-<div class="extra">
-Don’t have an account?
-<a href="register.html">Register</a>
+  <div class="input-box">
+    <input type="password" id="forgotNewPassword" placeholder="New Password">
+  </div>
+
+  <button class="btn" onclick="resetPassword()">
+    Reset Password
+  </button>
+
+  <div class="extra">
+    <a href="#" onclick="toggleCard('login')">Back to Login</a>
+  </div>
 </div>
 
 <div class="footer">
@@ -138,9 +176,83 @@ Don’t have an account?
 
 <script>
 
-function login(){
-alert("Login Successful (Demo)");
-window.location.href = "dashboard.html";
+async function login(){
+  const userIdInput = document.getElementById("userId").value.trim();
+  const passwordInput = document.getElementById("password").value;
+
+  if (!userIdInput || !passwordInput) {
+    alert("Please enter both User ID and Password.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ userId: userIdInput, password: passwordInput })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "dashboard.html";
+    } else {
+      alert(data.message || "Invalid credentials.");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    alert("Server error. Please try again later.");
+  }
+}
+
+function toggleCard(card) {
+  const loginCard = document.getElementById("loginCard");
+  const forgotCard = document.getElementById("forgotCard");
+  if (card === 'forgot') {
+    loginCard.style.display = "none";
+    forgotCard.style.display = "block";
+  } else {
+    loginCard.style.display = "block";
+    forgotCard.style.display = "none";
+  }
+}
+
+async function resetPassword() {
+  const userId = document.getElementById("forgotUserId").value.trim();
+  const contactInfo = document.getElementById("forgotContact").value.trim();
+  const newPassword = document.getElementById("forgotNewPassword").value;
+
+  if (!userId || !contactInfo || !newPassword) {
+    alert("All fields are required.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/auth/forgot-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ userId, contactInfo, newPassword })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      alert(data.message || "Password reset successful!");
+      toggleCard('login');
+      document.getElementById("forgotUserId").value = "";
+      document.getElementById("forgotContact").value = "";
+      document.getElementById("forgotNewPassword").value = "";
+    } else {
+      alert(data.message || "Password reset failed.");
+    }
+  } catch (error) {
+    console.error("Reset password error:", error);
+    alert("Server error. Please try again later.");
+  }
 }
 
 </script>

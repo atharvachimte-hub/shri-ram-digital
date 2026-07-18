@@ -3,6 +3,64 @@ const router = express.Router();
 const Epin = require("../models/Epin");
 const User = require("../models/User");
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+
+function getCookie(req, name) {
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) return null;
+  const cookies = cookieHeader.split(";");
+  for (let cookie of cookies) {
+    const [key, val] = cookie.trim().split("=");
+    if (key === name) return decodeURIComponent(val);
+  }
+  return null;
+}
+
+function adminAuthGuard(req, res, next) {
+  const authHeader = req.headers["x-admin-auth"];
+  const authCookie = getCookie(req, "adminAuth");
+  const auth = authHeader || authCookie;
+
+  if (auth !== ADMIN_PASSWORD) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized admin access",
+    });
+  }
+  next();
+}
+
+async function anyAuthGuard(req, res, next) {
+  const adminAuthHeader = req.headers["x-admin-auth"];
+  const adminAuthCookie = getCookie(req, "adminAuth");
+  const adminAuth = adminAuthHeader || adminAuthCookie;
+
+  if (adminAuth === ADMIN_PASSWORD) {
+    return next();
+  }
+
+  const authUserIdHeader = req.headers["x-user-auth"];
+  const authUserIdCookie = getCookie(req, "userAuth");
+  const authUserId = authUserIdHeader || authUserIdCookie;
+
+  if (authUserId) {
+    const cleanUserId = String(authUserId).trim().toUpperCase();
+    try {
+      const userExists = await User.findOne({ userId: cleanUserId }).lean();
+      if (userExists) {
+        return next();
+      }
+    } catch (e) {
+      console.error("anyAuthGuard DB error in epinRoutes:", e);
+    }
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "Unauthorized access",
+  });
+}
+
 // =========================
 // GENERATE UNIQUE SD CODE
 // =========================
@@ -23,7 +81,7 @@ async function generateUniqueSDCode() {
 // =========================
 // GENERATE EPIN
 // =========================
-router.post("/generate", async (req, res) => {
+router.post("/generate", adminAuthGuard, async (req, res) => {
   try {
     const { count = 1, amount = 0, createdBy = "admin" } = req.body;
 
@@ -37,10 +95,10 @@ router.post("/generate", async (req, res) => {
       });
     }
 
-    if (finalAmount < 0) {
+    if (finalAmount !== 500 && finalAmount !== 600) {
       return res.status(400).json({
         success: false,
-        message: "Amount cannot be negative",
+        message: "EPIN amount must be either 500 or 600",
       });
     }
 
@@ -74,7 +132,7 @@ router.post("/generate", async (req, res) => {
 // =========================
 // LIST EPIN
 // =========================
-router.get("/", async (req, res) => {
+router.get("/", adminAuthGuard, async (req, res) => {
   try {
     const { status = "", search = "" } = req.query;
 
@@ -107,7 +165,7 @@ router.get("/", async (req, res) => {
 // =========================
 // STATS
 // =========================
-router.get("/stats", async (req, res) => {
+router.get("/stats", adminAuthGuard, async (req, res) => {
   try {
     const total = await Epin.countDocuments();
     const unused = await Epin.countDocuments({ status: "unused" });
@@ -154,7 +212,7 @@ router.get("/stats", async (req, res) => {
 // =========================
 // USE EPIN (🔥 FINAL STABLE VERSION)
 // =========================
-router.post("/use", async (req, res) => {
+router.post("/use", anyAuthGuard, async (req, res) => {
   try {
     console.log("EPIN USE BODY:", req.body);
 
@@ -203,7 +261,6 @@ router.post("/use", async (req, res) => {
     const amount = Number(epin.amount || 0);
 
     user.walletBalance = Number(user.walletBalance || 0) + amount;
-    user.isActive = true;
 
     if (!Array.isArray(user.incomeLogs)) {
       user.incomeLogs = [];
@@ -221,7 +278,12 @@ router.post("/use", async (req, res) => {
     user.totalEpinUsed = Number(user.totalEpinUsed || 0) + 1;
     user.lastEpinAmount = amount;
 
+    // Save user before activation to ensure status starts fresh
     await user.save();
+
+    // Trigger full binary MLM calculations upline
+    const { processUserActivation } = require("../utils/mlmCalc");
+    await processUserActivation(cleanUserId, amount);
 
     // =========================
     // UPDATE EPIN

@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (user) {
+        try {
+          const parsed = JSON.parse(user);
+          if (parsed && parsed.userId) {
+            window.location.replace("dashboard.html");
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Premium MLM Admin Panel</title>
@@ -559,6 +572,10 @@
         </div>
 
         <div class="top-actions">
+          <a href="admin.html" class="btn">Dashboard</a>
+          <a href="admin-payments.html" class="btn secondary">Payment Verifications</a>
+          <a href="admin-payout.html" class="btn secondary">Payout Manager</a>
+          <a href="admin-ledger.html" class="btn secondary">Ledger Audit</a>
           <div class="badge-pill">REAL ADMIN CONTROL</div>
           <button id="logoutBtn" class="btn secondary" type="button">Logout</button>
         </div>
@@ -630,6 +647,30 @@
         <div class="card-label">Company Profit</div>
         <div id="companyProfit" class="card-value">₹0</div>
         <div class="card-note">Joining - payout</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Pending Payout</div>
+        <div id="totalPendingPayout" class="card-value">₹0</div>
+        <div class="card-note">Total pending payout requests</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Approved Payout</div>
+        <div id="totalApprovedPayout" class="card-value">₹0</div>
+        <div class="card-note">Total approved/withdrawn amount</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Rejected Payout</div>
+        <div id="totalRejectedPayout" class="card-value">₹0</div>
+        <div class="card-note">Total rejected payout requests</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Wallet Liability</div>
+        <div id="totalWalletLiability" class="card-value">₹0</div>
+        <div class="card-note">Sum of all users' wallet balances</div>
       </div>
     </div>
 
@@ -805,6 +846,10 @@
     const companyProfit = document.getElementById("companyProfit");
     const carryLeftBox = document.getElementById("carryLeftBox");
     const carryRightBox = document.getElementById("carryRightBox");
+    const totalPendingPayout = document.getElementById("totalPendingPayout");
+    const totalApprovedPayout = document.getElementById("totalApprovedPayout");
+    const totalRejectedPayout = document.getElementById("totalRejectedPayout");
+    const totalWalletLiability = document.getElementById("totalWalletLiability");
     const quickAdminNote = document.getElementById("quickAdminNote");
 
     const recentList = document.getElementById("recentList");
@@ -915,6 +960,7 @@
         }
 
         setAdminAuth(true);
+        localStorage.setItem("mlmAdminPassword", password);
         loginOverlay.classList.remove("show");
         adminApp.classList.remove("hidden");
 
@@ -931,6 +977,9 @@
 
     function logoutAdmin() {
       setAdminAuth(false);
+      localStorage.removeItem("mlmAdminPassword");
+      document.cookie = "adminAuth=; Path=/; Max-Age=0;";
+      document.cookie = "userAuth=; Path=/; Max-Age=0;";
       adminApp.classList.add("hidden");
       loginOverlay.classList.add("show");
       adminUsername.value = "";
@@ -938,8 +987,24 @@
       showMessage("Logged out successfully", "success");
     }
 
+    async function fetchAdmin(url, options = {}) {
+      const headers = {
+        "Content-Type": "application/json",
+        "X-Admin-Auth": localStorage.getItem("mlmAdminPassword") || ""
+      };
+      if (options.headers) {
+        Object.assign(headers, options.headers);
+      }
+      const response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        logoutAdmin();
+        throw new Error("Unauthorized admin access");
+      }
+      return response;
+    }
+
     async function loadAdminStats() {
-      const response = await fetch("/api/admin/stats");
+      const response = await fetchAdmin("/api/admin/stats");
       const data = await response.json();
 
       if (!response.ok || !data.success) {
@@ -958,6 +1023,10 @@
       companyProfit.textContent = formatCurrency(stats.companyProfit);
       carryLeftBox.textContent = stats.totalCarryLeft || 0;
       carryRightBox.textContent = stats.totalCarryRight || 0;
+      totalPendingPayout.textContent = formatCurrency(stats.totalPendingWithdraw);
+      totalApprovedPayout.textContent = formatCurrency(stats.totalWithdrawn);
+      totalRejectedPayout.textContent = formatCurrency(stats.totalRejectedWithdraw);
+      totalWalletLiability.textContent = formatCurrency(stats.totalWalletBalance);
 
       quickAdminNote.textContent =
         `System मध्ये ${stats.totalUsers} total users आहेत, त्यात ${stats.activeUsers} active आणि ${stats.inactiveUsers} inactive आहेत.`;
@@ -1005,7 +1074,7 @@
         params.append("search", search);
       }
 
-      const response = await fetch(`/api/admin/users?${params.toString()}`);
+      const response = await fetchAdmin(`/api/admin/users?${params.toString()}`);
       const data = await response.json();
 
       if (!response.ok || !data.success) {
@@ -1071,7 +1140,7 @@
 
     async function viewUserDetail(userId) {
       try {
-        const response = await fetch(`/api/admin/user/${encodeURIComponent(userId)}`);
+        const response = await fetchAdmin(`/api/admin/user/${encodeURIComponent(userId)}`);
         const data = await response.json();
 
         if (!response.ok || !data.success) {
@@ -1121,9 +1190,8 @@
 
     async function toggleUserStatus(userId, isActive) {
       try {
-        const response = await fetch(`/api/admin/user/${encodeURIComponent(userId)}/status`, {
+        const response = await fetchAdmin(`/api/admin/user/${encodeURIComponent(userId)}/status`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ isActive }),
         });
 

@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (user) {
+        try {
+          const parsed = JSON.parse(user);
+          if (parsed && parsed.userId) {
+            window.location.replace("dashboard.html");
+            return;
+          }
+        } catch(e) {}
+      }
+      if (localStorage.getItem("mlmAdminLoggedIn") !== "true") {
+        window.location.replace("admin.html");
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EPIN Manager - MLM SaaS</title>
@@ -297,6 +314,32 @@
       border: 1px solid rgba(244,63,94,0.28);
     }
 
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      margin-left: 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    .btn-copy:active {
+      transform: scale(0.95);
+    }
+
     .mini-note {
       color: rgba(255,255,255,0.65);
       font-size: 13px;
@@ -462,7 +505,10 @@
 
         <div class="form-group">
           <label>Amount per EPIN</label>
-          <input type="number" id="amount" min="0" value="500" />
+          <select id="amount">
+            <option value="500" selected>₹500</option>
+            <option value="600">₹600</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -545,12 +591,49 @@
   </div>
 
   <script>
+    function logoutAdmin() {
+      localStorage.removeItem("mlmAdminLoggedIn");
+      localStorage.removeItem("mlmAdminPassword");
+      document.cookie = "adminAuth=; Path=/; Max-Age=0;";
+      document.cookie = "userAuth=; Path=/; Max-Age=0;";
+      window.location.replace("admin.html");
+    }
+
     async function fetchJSON(url, options = {}) {
+      const headers = {
+        "Content-Type": "application/json",
+        "X-Admin-Auth": localStorage.getItem("mlmAdminPassword") || ""
+      };
+      if (options.headers) {
+        Object.assign(headers, options.headers);
+      }
       const response = await fetch(url, {
-        headers: { "Content-Type": "application/json" },
-        ...options
+        ...options,
+        headers
       });
+      if (response.status === 401) {
+        logoutAdmin();
+        throw new Error("Unauthorized admin access");
+      }
       return response.json();
+    }
+
+    function copyToClipboard(text, btnElement) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btnElement.textContent;
+        btnElement.textContent = "Copied!";
+        btnElement.style.background = "rgba(34, 197, 94, 0.2)";
+        btnElement.style.borderColor = "rgba(34, 197, 94, 0.4)";
+        btnElement.style.color = "#86efac";
+        setTimeout(() => {
+          btnElement.textContent = originalText;
+          btnElement.style.background = "";
+          btnElement.style.borderColor = "";
+          btnElement.style.color = "";
+        }, 1500);
+      }).catch(err => {
+        console.error("Failed to copy:", err);
+      });
     }
 
     function showMessage(id, type, text) {
@@ -597,7 +680,10 @@
 
         tbody.innerHTML = result.data.map(item => `
           <tr>
-            <td><strong>${item.code}</strong></td>
+            <td>
+              <strong>${item.code}</strong>
+              <button class="btn-copy" onclick="copyToClipboard('${item.code}', this)">Copy</button>
+            </td>
             <td>₹${item.amount}</td>
             <td>
               <span class="status ${item.status === "used" ? "used" : "unused"}">

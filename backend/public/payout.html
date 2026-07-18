@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        window.location.replace("login.html");
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          if (!parsed || !parsed.userId) {
+            localStorage.removeItem("user");
+            window.location.replace("login.html");
+          }
+        } catch(e) {
+          localStorage.removeItem("user");
+          window.location.replace("login.html");
+        }
+      }
+    })();
+  </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Payout - Premium MLM</title>
@@ -103,6 +122,32 @@ button{
 /* table */
 table{width:100%;margin-top:15px;border-collapse:collapse}
 td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+
+.status-pending { color: #fbbf24; font-weight: bold; }
+.status-approved { color: #34d399; font-weight: bold; }
+.status-rejected { color: #f87171; font-weight: bold; }
+
+.message {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  display: none;
+}
+
+.message.success {
+  display: block;
+  background: rgba(34,197,94,0.12);
+  color: #bbf7d0;
+  border: 1px solid rgba(34,197,94,0.22);
+}
+
+.message.error {
+  display: block;
+  background: rgba(244,63,94,0.12);
+  color: #fecdd3;
+  border: 1px solid rgba(244,63,94,0.22);
+}
 </style>
 </head>
 
@@ -123,21 +168,41 @@ td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.1)}
   <!-- FLOATING MONEY -->
   <div class="money m1"></div>
   <div class="money m2"></div>
-  <div class="money m3"></div>
+</div>
+
+<!-- BANK & UPI DETAILS -->
+<div class="card">
+  <h2>Bank & UPI Details</h2>
+  <p style="font-size:13px; color:rgba(255,255,255,0.7); margin-top:5px; margin-bottom:15px;">Add or update your bank account or UPI ID for withdrawals.</p>
+
+  <input id="accHolderName" placeholder="Account Holder Name">
+  <input id="bankName" placeholder="Bank Name">
+  <input id="accNumber" placeholder="Account Number">
+  <input id="ifscCode" placeholder="IFSC Code">
+  <input id="upiId" placeholder="UPI ID">
+
+  <button id="btnSaveDetails" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000;">Save Details 💾</button>
+  <div id="detailsMessage" class="message"></div>
 </div>
 
 <!-- FORM -->
 <div class="card">
   <h2>Withdraw Request</h2>
 
-  <input placeholder="User ID" value="MLM10234">
-  <input placeholder="Amount ₹">
-  <select>
-    <option>Bank Transfer</option>
-    <option>UPI</option>
+  <input id="withdrawUserId" placeholder="User ID" readonly disabled>
+  <div style="margin-top: 12px; font-size: 14px; color: #a7f3d0;">
+    Available Balance: <strong id="availableBalance">₹0</strong>
+  </div>
+  <input id="withdrawAmount" type="number" placeholder="Amount ₹ (Min. 100)">
+  <select id="paymentMethod">
+    <option value="BANK">Bank Transfer</option>
+    <option value="UPI">UPI</option>
   </select>
+  <input id="withdrawNote" placeholder="Enter remark/note (optional)" style="margin-top: 10px;">
 
-  <button>Request Withdraw 🚀</button>
+  <button id="btnRequest">Request Withdraw 🚀</button>
+  
+  <div id="payoutMessage" class="message"></div>
 </div>
 
 <!-- HISTORY -->
@@ -145,28 +210,209 @@ td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.1)}
   <h2>Payout History</h2>
 
   <table>
-    <tr>
-      <th>ID</th>
-      <th>Amount</th>
-      <th>Status</th>
-    </tr>
-
-    <tr>
-      <td>#PAY101</td>
-      <td>₹2000</td>
-      <td>Success</td>
-    </tr>
-
-    <tr>
-      <td>#PAY102</td>
-      <td>₹500</td>
-      <td>Pending</td>
-    </tr>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Details Snapshot</th>
+        <th>Status & Remark</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="withdrawHistoryBody">
+      <tr>
+        <td colspan="6" style="text-align:center;color:rgba(255,255,255,0.5);">Loading...</td>
+      </tr>
+    </tbody>
   </table>
 
 </div>
 
 </div>
+
+<script>
+  // Enforce login session
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  if (!loggedInUser || !loggedInUser.userId) {
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+  }
+
+  const userId = loggedInUser.userId;
+  document.getElementById("withdrawUserId").value = userId;
+
+  function showMessage(type, text) {
+    const el = document.getElementById("payoutMessage");
+    el.style.display = "block";
+    el.className = `message ${type}`;
+    el.textContent = text;
+  }
+
+  async function loadUserData() {
+    try {
+      const response = await fetch(`/api/user/${encodeURIComponent(userId)}`, {
+        headers: {
+          "X-User-Auth": userId
+        }
+      });
+      const data = await response.json();
+
+      if (!data.success || !data.user) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const user = data.user;
+      document.getElementById("availableBalance").textContent = `₹${user.availableWithdrawBalance.toLocaleString("en-IN")}`;
+      
+      // Render payout history
+      const tbody = document.getElementById("withdrawHistoryBody");
+      tbody.innerHTML = "";
+
+      const requests = user.withdrawRequests || [];
+      if (requests.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:rgba(255,255,255,0.5);">No withdrawal requests found</td></tr>`;
+        return;
+      }
+
+      requests.forEach((req, idx) => {
+        const dateStr = req.requestDate ? new Date(req.requestDate).toLocaleDateString() : "-";
+        const statusClass = req.status === "approved" ? "status-approved" : req.status === "rejected" ? "status-rejected" : "status-pending";
+        
+        let detailsText = "";
+        if (req.paymentMethod === "BANK") {
+          detailsText = `<strong>Holder:</strong> ${req.accountHolderName || "-"}<br><strong>Bank:</strong> ${req.bankName || "-"}<br><strong>A/C:</strong> ${req.accountNumber || "-"}<br><strong>IFSC:</strong> ${req.ifscCode || "-"}`;
+        } else {
+          detailsText = `<strong>UPI:</strong> ${req.upiId || "-"}`;
+        }
+
+        const remarkText = req.adminRemark ? `<div style="font-size:11px;color:#a9c4de;margin-top:4px;"><strong>Remark:</strong> ${req.adminRemark}</div>` : "";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>#${idx + 1}</td>
+          <td>₹${req.amount}</td>
+          <td>${req.paymentMethod}</td>
+          <td style="font-size:12px;text-align:left;">${detailsText}</td>
+          <td class="${statusClass}">${req.status.toUpperCase()}${remarkText}</td>
+          <td>${dateStr}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (error) {
+      console.error("Failed to load user data:", error);
+    }
+  }
+
+  async function loadPayoutDetails() {
+    try {
+      const response = await fetch(`/api/user/${encodeURIComponent(userId)}/payout-details`, {
+        headers: {
+          "X-User-Auth": userId
+        }
+      });
+      const data = await response.json();
+      
+      if (data.success && data.payoutDetails) {
+        document.getElementById("accHolderName").value = data.payoutDetails.accountHolderName || "";
+        document.getElementById("bankName").value = data.payoutDetails.bankName || "";
+        document.getElementById("accNumber").value = data.payoutDetails.accountNumber || "";
+        document.getElementById("ifscCode").value = data.payoutDetails.ifscCode || "";
+        document.getElementById("upiId").value = data.payoutDetails.upiId || "";
+      }
+    } catch (error) {
+      console.error("Failed to load payout details:", error);
+    }
+  }
+
+  async function savePayoutDetails() {
+    const accountHolderName = document.getElementById("accHolderName").value.trim();
+    const bankName = document.getElementById("bankName").value.trim();
+    const accountNumber = document.getElementById("accNumber").value.trim();
+    const ifscCode = document.getElementById("ifscCode").value.trim();
+    const upiId = document.getElementById("upiId").value.trim();
+
+    const msgEl = document.getElementById("detailsMessage");
+    msgEl.style.display = "none";
+
+    try {
+      const response = await fetch(`/api/user/${encodeURIComponent(userId)}/payout-details`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Auth": userId
+        },
+        body: JSON.stringify({ accountHolderName, bankName, accountNumber, ifscCode, upiId })
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        msgEl.textContent = "Payout details saved successfully!";
+        msgEl.className = "message success";
+        msgEl.style.display = "block";
+        loadUserData();
+      } else {
+        msgEl.textContent = data.message || "Failed to save details";
+        msgEl.className = "message error";
+        msgEl.style.display = "block";
+      }
+    } catch (error) {
+      console.error(error);
+      msgEl.textContent = "Server error saving details";
+      msgEl.className = "message error";
+      msgEl.style.display = "block";
+    }
+  }
+
+  async function requestWithdraw() {
+    const amountInput = document.getElementById("withdrawAmount");
+    const noteInput = document.getElementById("withdrawNote");
+    const amount = Number(amountInput.value);
+    const paymentMethod = document.getElementById("paymentMethod").value;
+    const note = noteInput.value.trim();
+
+    if (!amount || amount < 100) {
+      showMessage("error", "Minimum withdraw amount is ₹100");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/withdraw/request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Auth": userId
+        },
+        body: JSON.stringify({ userId, amount, paymentMethod, note })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        showMessage("success", "Withdrawal request submitted successfully!");
+        amountInput.value = "";
+        noteInput.value = "";
+        loadUserData();
+      } else {
+        showMessage("error", data.message || "Failed to submit request");
+      }
+    } catch (error) {
+      console.error(error);
+      showMessage("error", "Server error. Please try again later.");
+    }
+  }
+
+  // Bind events
+  document.getElementById("btnRequest").addEventListener("click", requestWithdraw);
+  document.getElementById("btnSaveDetails").addEventListener("click", savePayoutDetails);
+
+  // Initial load
+  loadUserData();
+  loadPayoutDetails();
+</script>
 
 </body>
 </html>

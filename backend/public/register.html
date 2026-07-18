@@ -86,7 +86,7 @@ body::after {
 }
 
 /* Inputs */
-input {
+input, select {
   width: 100%;
   padding: 12px;
   margin-top: 8px;
@@ -98,8 +98,13 @@ input {
   transition: 0.3s;
 }
 
-input:focus {
+input:focus, select:focus {
   background: rgba(255,255,255,0.2);
+}
+
+select option {
+  background: #0f2027;
+  color: white;
 }
 
 /* Button */
@@ -139,25 +144,90 @@ h2 {
 
   <!-- Sponsor -->
   <div class="section-title">SPONSOR INFO</div>
-  <input placeholder="Sponsor ID">
-  <input placeholder="Sponsor Name">
+  <input id="sponsorId" placeholder="Sponsor ID">
+  <input id="sponsorName" placeholder="Sponsor Name">
+
+  <!-- Placement -->
+  <div class="section-title">PLACEMENT INFO</div>
+  <input id="parentId" placeholder="Parent ID">
+  <select id="position">
+    <option value="" disabled selected>Select Position</option>
+    <option value="L">Left (L)</option>
+    <option value="R">Right (R)</option>
+  </select>
+  <input id="epinCode" placeholder="EPIN Code (Optional, starts with SD)">
 
   <!-- Personal -->
   <div class="section-title">PERSONAL DETAILS</div>
-  <input placeholder="Full Name">
-  <input placeholder="Date of Birth">
-  <input placeholder="Mobile">
-  <input placeholder="Email">
+  <input id="fullName" placeholder="Full Name">
+  <input id="dob" placeholder="Date of Birth">
+  <input id="mobile" placeholder="Mobile">
+  <input id="email" placeholder="Email">
 
   <!-- Security -->
   <div class="section-title">SECURITY</div>
-  <input placeholder="Password" type="password">
-  <input placeholder="Confirm Password" type="password">
+  <input id="password" placeholder="Password" type="password">
+  <input id="confirmPassword" placeholder="Confirm Password" type="password">
 
-  <button onclick="alert('Registered Successfully 🚀')">
+  <button onclick="register()">
     Register Member
   </button>
 </div>
+
+<script>
+async function register() {
+  const sponsorId = document.getElementById("sponsorId").value.trim();
+  const parentId = document.getElementById("parentId").value.trim();
+  const position = document.getElementById("position").value;
+  const epinCode = document.getElementById("epinCode").value.trim();
+  const fullName = document.getElementById("fullName").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (!fullName || !password || !confirmPassword) {
+    alert("Please fill in all required fields (Full Name, Password, Confirm Password).");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sponsorId,
+        parentId,
+        position,
+        epinCode,
+        fullName,
+        mobile,
+        email,
+        password
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert(`Registration Successful! Generated User ID: ${data.userId}`);
+      window.location.href = "login.html";
+    } else {
+      alert(data.message || "Registration failed.");
+    }
+  } catch (error) {
+    console.error("Register error:", error);
+    alert("Server error. Please try again later.");
+  }
+}
+</script>
 
 </body>
 </html>

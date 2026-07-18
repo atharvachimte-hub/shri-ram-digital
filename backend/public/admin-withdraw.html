@@ -74,6 +74,16 @@ button {
 
 <h1>Withdraw Requests</h1>
 
+<div style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center; justify-content: flex-end;">
+  <label for="statusFilter" style="font-size: 14px; font-weight: bold;">Filter by Status:</label>
+  <select id="statusFilter" onchange="loadWithdraws()" style="padding: 8px 12px; border-radius: 6px; background: #1e293b; color: white; border: 1px solid rgba(255,255,255,0.1); outline: none;">
+    <option value="all">All Requests</option>
+    <option value="pending" selected>Pending</option>
+    <option value="approved">Approved</option>
+    <option value="rejected">Rejected</option>
+  </select>
+</div>
+
 <table id="withdrawTable">
 <thead>
 <tr>
@@ -81,7 +91,7 @@ button {
     <th>Amount</th>
     <th>Method</th>
     <th>Details</th>
-    <th>Status</th>
+    <th>Status & Remarks</th>
     <th>Action</th>
 </tr>
 </thead>
@@ -92,51 +102,89 @@ button {
 
 <script>
 
-const API = "https://shri-ram-digital-1.onrender.com/api";
-
 // Fetch Withdraw Requests
 async function loadWithdraws() {
-    const res = await fetch(`${API}/admin/withdraws`);
-    const data = await res.json();
+    try {
+        const res = await fetch("/api/admin/withdraw-requests");
+        const result = await res.json();
+        
+        if (!result.success) return;
 
-    const tbody = document.querySelector("#withdrawTable tbody");
-    tbody.innerHTML = "";
+        const filterValue = document.getElementById("statusFilter").value;
+        const tbody = document.querySelector("#withdrawTable tbody");
+        tbody.innerHTML = "";
 
-    data.forEach(w => {
-        const tr = document.createElement("tr");
+        result.requests.forEach(w => {
+            if (filterValue !== "all" && w.status !== filterValue) return;
 
-        tr.innerHTML = `
-            <td>${w.userId}</td>
-            <td>₹${w.amount}</td>
-            <td>${w.method}</td>
-            <td>${w.details}</td>
-            <td class="${w.status}">${w.status}</td>
-            <td>
-                ${w.status === "pending" ? `
-                    <button class="approve" onclick="approve('${w._id}')">Approve</button>
-                    <button class="reject" onclick="reject('${w._id}')">Reject</button>
-                ` : "Done"}
-            </td>
-        `;
+            const tr = document.createElement("tr");
 
-        tbody.appendChild(tr);
-    });
+            let detailsHtml = "";
+            if (w.paymentMethod === "BANK") {
+                detailsHtml = `<strong>Holder:</strong> ${w.accountHolderName || "-"}<br><strong>Bank:</strong> ${w.bankName || "-"}<br><strong>A/C:</strong> ${w.accountNumber || "-"}<br><strong>IFSC:</strong> ${w.ifscCode || "-"}`;
+            } else {
+                detailsHtml = `<strong>UPI:</strong> ${w.upiId || "-"}`;
+            }
+
+            const remarkHtml = w.adminRemark ? `<div style="font-size: 11px; color: #ffb1b1; margin-top: 4px;"><strong>Remark:</strong> ${w.adminRemark}</div>` : "";
+            const dateStr = w.requestDate ? new Date(w.requestDate).toLocaleString() : "-";
+            const processedStr = w.processedDate ? `<div style="font-size: 11px; color: #a9c4de; margin-top: 4px;"><strong>Done:</strong> ${new Date(w.processedDate).toLocaleDateString()}</div>` : "";
+
+            tr.innerHTML = `
+                <td>${w.userId}</td>
+                <td>₹${w.amount}</td>
+                <td>${w.paymentMethod}</td>
+                <td style="text-align: left; font-size: 13px;">${detailsHtml}</td>
+                <td class="${w.status}">${w.status.toUpperCase()}${remarkHtml}${processedStr}</td>
+                <td>
+                    ${w.status === "pending" ? `
+                        <button class="approve" onclick="processAction('${w.userId}', ${w.index}, 'approve')">Approve</button>
+                        <button class="reject" onclick="processAction('${w.userId}', ${w.index}, 'reject')">Reject</button>
+                    ` : `<span style="font-size: 13px; color: #94a3b8;">Processed</span>`}
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Failed to load withdraws:", err);
+    }
 }
 
-// Approve
-async function approve(id) {
-    await fetch(`${API}/admin/approve/${id}`, { method: "POST" });
-    loadWithdraws();
+// Action processor
+async function processAction(userId, index, action) {
+    const adminRemark = prompt(`Enter optional admin remark/note for this ${action}:`);
+    if (adminRemark === null) return; // cancelled
+
+    try {
+        const response = await fetch("/api/admin/withdraw-action", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userId,
+                index,
+                action,
+                adminRemark: adminRemark.trim()
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(`Request successfully ${action}ed!`);
+            loadWithdraws();
+        } else {
+            alert(data.message || "Failed to process request");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Server error processing request");
+    }
 }
 
-// Reject
-async function reject(id) {
-    await fetch(`${API}/admin/reject/${id}`, { method: "POST" });
-    loadWithdraws();
-}
-
-// Auto refresh
-setInterval(loadWithdraws, 3000);
+// Auto refresh every 5 seconds
+setInterval(loadWithdraws, 5000);
 
 // Initial load
 loadWithdraws();

@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        window.location.replace("login.html");
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          if (!parsed || !parsed.userId) {
+            localStorage.removeItem("user");
+            window.location.replace("login.html");
+          }
+        } catch(e) {
+          localStorage.removeItem("user");
+          window.location.replace("login.html");
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Premium MLM Tree Dashboard</title>
@@ -1155,6 +1174,7 @@
 
         <button id="loadBtn" class="btn">Load Tree</button>
         <button id="reloadBtn" class="btn-outline" type="button">Reload Current</button>
+        <button class="btn-outline" type="button" onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
       </div>
     </div>
 
@@ -2142,7 +2162,11 @@
 
         showLoader();
 
-        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=2`);
+        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=2`, {
+          headers: {
+            "X-User-Auth": loggedInUser ? loggedInUser.userId : ""
+          }
+        });
         const data = await response.json();
 
         if (!response.ok || !data.success || !data.tree) {
@@ -2185,7 +2209,11 @@
         loadBtn.textContent = "Loading...";
         showLoader();
 
-        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=${depth}`);
+        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=${depth}`, {
+          headers: {
+            "X-User-Auth": loggedInUser ? loggedInUser.userId : ""
+          }
+        });
         const data = await response.json();
 
         if (!response.ok || !data.success) {
@@ -2270,8 +2298,18 @@
       }
     });
 
-    userIdInput.value = "AC1001";
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    const tempUser = localStorage.getItem("tempSearchUser");
+    if (tempUser) {
+      userIdInput.value = tempUser;
+      localStorage.removeItem("tempSearchUser");
+    } else if (loggedInUser && loggedInUser.userId) {
+      userIdInput.value = loggedInUser.userId;
+    } else {
+      userIdInput.value = "TESTUSER";
+    }
     resetDashboard();
+    loadTree();
 
     window.openUserPopup = openUserPopup;
   </script>

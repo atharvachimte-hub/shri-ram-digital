@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (user) {
+        try {
+          const parsed = JSON.parse(user);
+          if (parsed && parsed.userId) {
+            window.location.replace("dashboard.html");
+            return;
+          }
+        } catch(e) {}
+      }
+      if (localStorage.getItem("mlmAdminLoggedIn") !== "true") {
+        window.location.replace("admin.html");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MLM Master Ledger Audit Logs</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --bg-1: #06111d;
+      --bg-2: #0b1928;
+      --bg-3: #081624;
+      --text-main: #ffffff;
+      --text-soft: #a9c4de;
+      --line: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.05);
+      --glass-strong: rgba(255,255,255,0.08);
+      --blue-1: #00c6ff;
+      --blue-2: #0072ff;
+      --green-1: #00e676;
+      --green-2: #00c853;
+      --red-1: #ff6b6b;
+      --red-2: #ff1744;
+      --gold-1: #ffd166;
+      --gold-2: #ffb703;
+      --shadow: 0 12px 34px rgba(0,0,0,0.30);
+      --shadow-heavy: 0 20px 60px rgba(0,0,0,0.42);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(0,255,200,0.14), transparent 24%),
+        radial-gradient(circle at top right, rgba(0,140,255,0.14), transparent 24%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      color: var(--text-main);
+      padding: 24px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .shell {
+      max-width: 1450px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      padding: 22px;
+      border-radius: 26px;
+      background: var(--glass);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .badge-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      font-size: 12px;
+      font-weight: 800;
+      color: #dff1ff;
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .input,
+    .select,
+    .btn {
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      outline: none;
+      font-size: 14px;
+    }
+
+    .input,
+    .select {
+      min-width: 220px;
+      padding: 0 14px;
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .input::placeholder {
+      color: #9db8cf;
+    }
+
+    .select option {
+      color: #000;
+    }
+
+    .btn {
+      padding: 0 18px;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 10px 28px rgba(0,114,255,0.28);
+      transition: 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,0.06);
+      box-shadow: none;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dff1ff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #d6eaff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    td {
+      color: #e8f4ff;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .badge.credit {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #8bffb8;
+    }
+
+    .badge.debit {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ffb1b1;
+    }
+
+    .badge.info {
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fde047;
+    }
+
+    .amount-val {
+      font-weight: 800;
+    }
+
+    .amount-val.credit { color: #8bffb8; }
+    .amount-val.debit { color: #ffb1b1; }
+    .amount-val.info { color: #fde047; }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .message {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-weight: 800;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(0,230,118,0.10);
+      color: #98ffc1;
+      border: 1px solid rgba(0,230,118,0.22);
+    }
+
+    .message.error {
+      background: rgba(255,55,95,0.10);
+      color: #ffb0c1;
+      border: 1px solid rgba(255,55,95,0.22);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 12, 24, 0.65);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+      border-radius: 26px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: #bdd2e5;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ADMIN LOGIN OVERLAY -->
+  <div id="loginOverlay" class="overlay show">
+    <div class="login-card">
+      <div class="login-title">🔐 Admin Login</div>
+      <div class="login-subtitle">
+        Premium MLM ledger audit workspace. Login first to audit user transactions and system credits/debits.
+      </div>
+
+      <div class="form-grid">
+        <input id="adminUsername" class="input" type="text" placeholder="Admin username" />
+        <input id="adminPassword" class="input" type="password" placeholder="Admin password" />
+        <button id="adminLoginBtn" class="btn" type="button">Login to Audit Panel</button>
+      </div>
+
+      <div style="margin-top:12px;color:#b6cde3;font-size:12px;line-height:1.6;">
+        Default login: <strong>admin</strong> / <strong>admin123</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="shell hidden" id="adminApp">
+    <div class="topbar">
+      <div class="title-row">
+        <div>
+          <div class="title">👑 Master Ledger Audit</div>
+          <div class="subtitle">
+            Cross-system ledger audits • Transaction entries lookup • Search by User ID or Name • Deductions & payout ledger
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <a href="admin.html" class="btn secondary">Dashboard</a>
+          <a href="admin-payments.html" class="btn secondary">Payment Verifications</a>
+          <a href="admin-payout.html" class="btn secondary">Payout Manager</a>
+          <a href="admin-ledger.html" class="btn">Ledger Audit</a>
+          <div class="badge-pill">REAL ADMIN CONTROL</div>
+          <button id="logoutBtn" class="btn secondary" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="searchInput" class="input" type="text" placeholder="Search User ID / Name..." />
+        <select id="typeFilter" class="select" onchange="resetAndLoadLedger()">
+          <option value="all">All Types</option>
+          <option value="credit">Credits Only</option>
+          <option value="debit">Debits Only</option>
+          <option value="direct">Direct Referrals</option>
+          <option value="binary">Binary Matches</option>
+          <option value="payout">Payout Requests</option>
+          <option value="deduction">Deductions Only</option>
+        </select>
+        <button id="filterBtn" class="btn" type="button" onclick="resetAndLoadLedger()">Search / Load 🔍</button>
+        <button id="refreshBtn" class="btn secondary" type="button" onclick="resetAndLoadLedger()">Refresh Logs 🔄</button>
+      </div>
+    </div>
+
+    <div id="messageBox" class="message"></div>
+
+    <!-- LEDGER TABLE -->
+    <div class="table-wrap">
+      <div class="section-head">
+        <div class="section-title">Master Financial Ledger Logs</div>
+        <div class="chip">AUDIT TRAILS</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>User ID</th>
+            <th>Member Name</th>
+            <th>Transaction Type</th>
+            <th>Flow Type</th>
+            <th>Amount</th>
+            <th>Description / Audit Remark</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerTableBody">
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-soft); padding: 30px;">Loading master ledger logs...</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- PAGINATION -->
+      <div class="pagination">
+        <div id="paginationText">Page 1</div>
+        <div style="display:flex; gap:10px;">
+          <button id="prevPageBtn" class="btn secondary" type="button" onclick="changePage(-1)">Prev</button>
+          <button id="nextPageBtn" class="btn secondary" type="button" onclick="changePage(1)">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginOverlay = document.getElementById("loginOverlay");
+    const adminApp = document.getElementById("adminApp");
+    const adminUsername = document.getElementById("adminUsername");
+    const adminPassword = document.getElementById("adminPassword");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const messageBox = document.getElementById("messageBox");
+    const searchInput = document.getElementById("searchInput");
+    const typeFilter = document.getElementById("typeFilter");
+
+    const ledgerTableBody = document.getElementById("ledgerTableBody");
+    const paginationText = document.getElementById("paginationText");
+
+    let currentPage = 1;
+    let totalPages = 1;
+    const limit = 15;
+
+    function showMessage(text, type = "success") {
+      messageBox.textContent = text;
+      messageBox.className = `message show ${type}`;
+      setTimeout(() => {
+        messageBox.className = "message";
+      }, 3000);
+    }
+
+    function safeText(value, fallback = "--") {
+      if (value === null || value === undefined) return fallback;
+      const text = String(value).trim();
+      return text || fallback;
+    }
+
+    function formatCurrency(value) {
+      const num = Number(value) || 0;
+      return `₹${num.toLocaleString("en-IN", { minimumFractionDigits: 1, maximumFractionDigits: 2 })}`;
+    }
+
+    function getAdminAuth() {
+      return localStorage.getItem("mlmAdminLoggedIn") === "true";
+    }
+
+    function setAdminAuth(value) {
+      localStorage.setItem("mlmAdminLoggedIn", value ? "true" : "false");
+    }
+
+    async function adminLogin() {
+      try {
+        const username = adminUsername.value.trim();
+        const password = adminPassword.value.trim();
+
+        if (!username || !password) {
+          showMessage("Please enter admin credentials", "error");
+          return;
+        }
+
+        adminLoginBtn.disabled = true;
+        adminLoginBtn.textContent = "Logging in...";
+
+        const response = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          showMessage(data.message || "Admin login failed", "error");
+          return;
+        }
+
+        setAdminAuth(true);
+        localStorage.setItem("mlmAdminPassword", password);
+        loginOverlay.classList.remove("show");
+        adminApp.classList.remove("hidden");
+
+        await loadMasterLedger();
+        showMessage("Admin login successful", "success");
+      } catch (error) {
+        console.error(error);
+        showMessage("Admin login error", "error");
+      } finally {
+        adminLoginBtn.disabled = false;
+        adminLoginBtn.textContent = "Login to Audit Panel";
+      }
+    }
+
+    function logoutAdmin() {
+      setAdminAuth(false);
+      localStorage.removeItem("mlmAdminPassword");
+      document.cookie = "adminAuth=; Path=/; Max-Age=0;";
+      document.cookie = "userAuth=; Path=/; Max-Age=0;";
+      adminApp.classList.add("hidden");
+      loginOverlay.classList.add("show");
+      adminUsername.value = "";
+      adminPassword.value = "";
+      showMessage("Logged out successfully", "success");
+    }
+
+    async function fetchAdmin(url, options = {}) {
+      const headers = {
+        "Content-Type": "application/json",
+        "X-Admin-Auth": localStorage.getItem("mlmAdminPassword") || ""
+      };
+      if (options.headers) {
+        Object.assign(headers, options.headers);
+      }
+      const response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        logoutAdmin();
+        throw new Error("Unauthorized admin access");
+      }
+      return response;
+    }
+
+    async function loadMasterLedger() {
+      try {
+        const search = searchInput.value.trim();
+        const filter = typeFilter.value;
+
+        const params = new URLSearchParams({
+          page: String(currentPage),
+          limit: String(limit),
+          filter
+        });
+
+        if (search) {
+          params.append("search", search);
+        }
+
+        const response = await fetchAdmin(`/api/admin/ledger?${params.toString()}`);
+        const data = await response.json();
+
+        if (!data.success) {
+          ledgerTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; color: #ffb1b1;">Failed to load master ledger logs</td>
+            </tr>
+          `;
+          return;
+        }
+
+        currentPage = data.pagination.page;
+        totalPages = data.pagination.totalPages;
+        paginationText.textContent = `Page ${currentPage} of ${totalPages} • Total ${data.pagination.total} entries`;
+
+        const tbody = ledgerTableBody;
+        tbody.innerHTML = "";
+
+        const entries = data.entries || [];
+        if (entries.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-soft); padding: 30px;">No master ledger logs found</td>
+            </tr>
+          `;
+          return;
+        }
+
+        entries.forEach(e => {
+          const dateStr = e.date ? new Date(e.date).toLocaleString("en-IN") : "--";
+          const classColor = e.creditDebit === "credit" ? "credit" : e.creditDebit === "debit" ? "debit" : "info";
+          const sign = e.creditDebit === "credit" ? "+" : e.creditDebit === "debit" ? "-" : "";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><span style="font-size:12px; color:rgba(255,255,255,0.7);">${dateStr}</span></td>
+            <td><strong>${e.userId}</strong></td>
+            <td>${safeText(e.fullName, "No Name")}</td>
+            <td><strong>${e.type}</strong></td>
+            <td><span class="badge ${classColor}">${e.creditDebit}</span></td>
+            <td><span class="amount-val ${classColor}">${sign}${formatCurrency(e.amount)}</span></td>
+            <td style="font-size:13px; color:#d2e0ee; text-align:left; max-width:420px; word-break:break-word;">${e.remark}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (error) {
+        console.error("Master ledger fetch error:", error);
+        ledgerTableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: #ffb1b1;">Server error fetching master logs</td>
+          </tr>
+        `;
+      }
+    }
+
+    function resetAndLoadLedger() {
+      currentPage = 1;
+      loadMasterLedger();
+    }
+
+    function changePage(direction) {
+      const targetPage = currentPage + direction;
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        currentPage = targetPage;
+        loadMasterLedger();
+      }
+    }
+
+    // Bind events
+    adminLoginBtn.addEventListener("click", adminLogin);
+    logoutBtn.addEventListener("click", logoutAdmin);
+
+    adminPassword.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") adminLogin();
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") resetAndLoadLedger();
+    });
+
+    // Check existing auth
+    if (getAdminAuth()) {
+      loginOverlay.classList.remove("show");
+      adminApp.classList.remove("hidden");
+      loadMasterLedger();
+    }
+  </script>
+</body>
+</html>

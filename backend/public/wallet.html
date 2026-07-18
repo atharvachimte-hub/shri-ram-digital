@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        window.location.replace("login.html");
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          if (!parsed || !parsed.userId) {
+            localStorage.removeItem("user");
+            window.location.replace("login.html");
+          }
+        } catch(e) {
+          localStorage.removeItem("user");
+          window.location.replace("login.html");
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShriRam Digital - Premium Dashboard</title>
@@ -830,7 +849,7 @@
           <div class="menu-text">Dashboard</div>
         </a>
 
-        <a href="registration.html" class="menu-item">
+        <a href="register.html" class="menu-item">
           <div class="icon-box i-orange">👤</div>
           <div class="menu-text">Registration</div>
         </a>
@@ -974,7 +993,7 @@
             Smart partner dashboard with premium SaaS feel, clean finance visibility,
             network tracking, earning summary, and future-ready MLM growth structure.
           </p>
-          <button onclick="alert('Withdraw Request Sent')" style="padding:10px 20px; background:#00c896; border:none; border-radius:8px; color:white; cursor:pointer;">
+          <button onclick="window.location.href='payout.html'" style="padding:10px 20px; background:#00c896; border:none; border-radius:8px; color:white; cursor:pointer;">
             Withdraw Now
           </button>
         </div>
@@ -1057,10 +1076,10 @@
         <div class="section-grid-4">
           <div class="stat-card bg2">
             <div class="stat-top">
-              <div class="stat-label">Wallet Balance</div>
+              <div class="stat-label">Package</div>
               <div class="icon-box i-cyan">▣</div>
             </div>
-            <div class="stat-value">2500</div>
+            <div class="stat-value" id="userPackage">--</div>
             <div class="stat-sub">Current active plan / partner package summary.</div>
           </div>
 
@@ -1069,8 +1088,8 @@
               <div class="stat-label">Last Transaction</div>
               <div class="icon-box i-green">📅</div>
             </div>
-            <div class="stat-value" style="font-size:26px;">₹500 Credited</div>
-            <div class="stat-sub">Member since activation date with premium status visibility.</div>
+            <div class="stat-value" id="lastTransaction" style="font-size:20px;">No Transactions</div>
+            <div class="stat-sub">Latest transaction or payout log recorded on your ledger.</div>
           </div>
 
           <div class="stat-card bg3">
@@ -1078,7 +1097,7 @@
               <div class="stat-label">Status</div>
               <div class="icon-box i-yellow">🛡</div>
             </div>
-            <div class="stat-value">Silver</div>
+            <div class="stat-value" id="userStatus">--</div>
             <div class="stat-sub">Current account standing, level and progress snapshot.</div>
           </div>
 
@@ -1087,7 +1106,7 @@
               <div class="stat-label">Wallet Balance</div>
               <div class="icon-box i-green">💰</div>
             </div>
-            <div class="stat-value">₹0</div>
+            <div class="stat-value" id="walletBalance">₹0</div>
             <div class="stat-sub">Available wallet funds for payout, topup and transfer.</div>
           </div>
         </div>
@@ -1108,7 +1127,7 @@
               <div class="stat-label">Total Team</div>
               <div class="icon-box i-purple">👥</div>
             </div>
-            <div class="stat-value">194</div>
+            <div class="stat-value" id="totalTeam">0</div>
             <div class="stat-sub">All network combined with active + inactive visibility.</div>
           </div>
 
@@ -1117,7 +1136,7 @@
               <div class="stat-label">Direct Team</div>
               <div class="icon-box i-blue">◎</div>
             </div>
-            <div class="stat-value">2</div>
+            <div class="stat-value" id="directTeam">0</div>
             <div class="stat-sub">Directly sponsored users under your main account.</div>
           </div>
 
@@ -1126,19 +1145,19 @@
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Left</span>
-                <span>152</span>
+                <span id="businessLeft">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:72%;"></div>
+                <div id="barLeft" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Right</span>
-                <span>40</span>
+                <span id="businessRight">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:28%;"></div>
+                <div id="barRight" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
           </div>
@@ -1148,19 +1167,19 @@
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Left</span>
-                <span>111</span>
+                <span id="carryLeft">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:62%;"></div>
+                <div id="barCarryLeft" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Right</span>
-                <span>0</span>
+                <span id="carryRight">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:5%;"></div>
+                <div id="barCarryRight" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
           </div>
@@ -1182,17 +1201,17 @@
               <div class="stat-label">Total Incentive</div>
               <div class="icon-box i-red">🎁</div>
             </div>
-            <div class="stat-value">4000</div>
+            <div class="stat-value" id="totalIncentive">₹0</div>
             <div class="stat-sub">Cumulative incentive earned across direct and team performance growth.</div>
           </div>
 
           <div class="stat-card bg5" style="min-height:160px;">
             <div class="stat-top">
-              <div class="stat-label">Award / Reward</div>
-              <div class="icon-box i-purple">🏆</div>
+              <div class="stat-label">Total Deductions</div>
+              <div class="icon-box i-purple">⚙️</div>
             </div>
-            <div class="stat-value">0</div>
-            <div class="stat-sub">Milestone rewards earned from consistency, growth and premium performance.</div>
+            <div class="stat-value" id="totalDeductions">₹0</div>
+            <div class="stat-sub">Total MLM deductions (8% Admin, 2% TDS, 5% Repurchase).</div>
           </div>
         </div>
 
@@ -1202,7 +1221,7 @@
               <div class="stat-label">Matching Incentive</div>
               <div class="icon-box i-green">⇄</div>
             </div>
-            <div class="stat-value">₹2000</div>
+            <div class="stat-value" id="matchingIncentive">₹0</div>
             <div class="stat-sub">Matching bonus based on left-right side performance.</div>
           </div>
 
@@ -1211,7 +1230,7 @@
               <div class="stat-label">Direct Incentive</div>
               <div class="icon-box i-cyan">➜</div>
             </div>
-            <div class="stat-value">₹2000</div>
+            <div class="stat-value" id="directIncentive">₹0</div>
             <div class="stat-sub">Direct referral earning generated from sponsored members.</div>
           </div>
 
@@ -1220,16 +1239,16 @@
               <div class="stat-label">Pending Payout</div>
               <div class="icon-box i-yellow">₹</div>
             </div>
-            <div class="stat-value">₹0</div>
+            <div class="stat-value" id="pendingPayout">₹0</div>
             <div class="stat-sub">Available payout amount pending for transfer or release.</div>
           </div>
 
           <div class="stat-card bg2">
             <div class="stat-top">
-              <div class="stat-label">Referral Bonus</div>
+              <div class="stat-label">Sponsor Override</div>
               <div class="icon-box i-blue">🔗</div>
             </div>
-            <div class="stat-value">₹850</div>
+            <div class="stat-value" id="overrideIncentive">₹0</div>
             <div class="stat-sub">Referral-based bonus generated through performance activity.</div>
           </div>
         </div>
@@ -1249,7 +1268,7 @@
             <div class="icon-box i-green">👤</div>
             <h4>New Registration</h4>
             <p>Add a new user or partner entry quickly from the registration module.</p>
-            <a href="registration.html" class="qa-btn">Open Registration</a>
+            <a href="register.html" class="qa-btn">Open Registration</a>
           </div>
 
           <div class="quick-action">
@@ -1315,42 +1334,127 @@
     </main>
   </div>
   <script>
-  // Fix sidebar links (force navigation)
-  document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', function(e) {
+    // Enforce login session
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.userId) {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    } else {
+      loadDashboardData(loggedInUser.userId);
+    }
 
-      const link = this.getAttribute('href');
+    async function loadDashboardData(userId) {
+      try {
+        const response = await fetch(`/api/user/${encodeURIComponent(userId)}`, {
+          headers: {
+            "X-User-Auth": userId
+          }
+        });
+        const data = await response.json();
 
-      if (!link || link === '#') return;
+        if (!data.success || !data.user) {
+          alert("Session expired. Please login again.");
+          localStorage.removeItem("user");
+          window.location.href = "login.html";
+          return;
+        }
 
-      // handle routes
-      if (link === '/dashboard') {
-        window.location.href = '/dashboard';
-      } 
-      else if (link === '/tree') {
-        window.location.href = '/tree';
-      } 
-      else {
-        window.location.href = link; // wallet.html, profile.html etc
+        const user = data.user;
+
+        // Render values
+        document.getElementById("userPackage").innerText = `₹${user.lastEpinAmount || 500}`;
+        
+        if (user.incomeLogs && user.incomeLogs.length > 0) {
+          const lastLog = user.incomeLogs[user.incomeLogs.length - 1];
+          const typeMap = {
+            direct: "Direct Credit",
+            pair: "Pair Match",
+            override: "Override",
+            epin: "EPIN Use",
+            admin: "Admin Sync"
+          };
+          const typeName = typeMap[lastLog.type] || lastLog.type || "Incentive";
+          document.getElementById("lastTransaction").innerText = `₹${lastLog.amount} (${typeName})`;
+        } else {
+          document.getElementById("lastTransaction").innerText = "No Transactions";
+        }
+        
+        document.getElementById("userStatus").innerText = user.isActive ? "Active" : "Inactive";
+        document.getElementById("walletBalance").innerText = `₹${user.walletBalance.toLocaleString("en-IN")}`;
+        
+        const leftC = Number(user.leftCount || 0);
+        const rightC = Number(user.rightCount || 0);
+        document.getElementById("totalTeam").innerText = String(leftC + rightC);
+        document.getElementById("directTeam").innerText = String(user.referralCount || 0);
+
+        // Business Volume
+        document.getElementById("businessLeft").innerText = String(leftC);
+        document.getElementById("businessRight").innerText = String(rightC);
+        const totalB = Math.max(leftC + rightC, 1);
+        document.getElementById("barLeft").style.width = `${(leftC / totalB) * 100}%`;
+        document.getElementById("barRight").style.width = `${(rightC / totalB) * 100}%`;
+
+        // Carry Forward
+        const carryL = Number(user.carryLeft || 0);
+        const carryR = Number(user.carryRight || 0);
+        document.getElementById("carryLeft").innerText = String(carryL);
+        document.getElementById("carryRight").innerText = String(carryR);
+        const totalCF = Math.max(carryL + carryR, 1);
+        document.getElementById("barCarryLeft").style.width = `${(carryL / totalCF) * 100}%`;
+        document.getElementById("barCarryRight").style.width = `${(carryR / totalCF) * 100}%`;
+
+        // Earnings
+        document.getElementById("totalIncentive").innerText = `₹${Number(user.totalIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("matchingIncentive").innerText = `₹${Number(user.pairIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("directIncentive").innerText = `₹${Number(user.directIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("overrideIncentive").innerText = `₹${Number(user.overrideIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("pendingPayout").innerText = `₹${Number(user.walletBalance || 0).toLocaleString("en-IN")}`;
+
+        const adminDed = Number(user.adminDeduction || 0);
+        const tdsDed = Number(user.tdsDeduction || 0);
+        const repurchaseDed = Number(user.repurchaseDeduction || 0);
+        const totalDed = adminDed + tdsDed + repurchaseDed;
+        document.getElementById("totalDeductions").innerText = `₹${totalDed.toLocaleString("en-IN")}`;
+
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
       }
+    }
+
+    // Fix sidebar links (force navigation)
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        const link = this.getAttribute('href');
+        if (!link || link === '#') return;
+
+        // handle routes
+        if (link === '/dashboard') {
+          window.location.href = '/dashboard';
+        } 
+        else if (link === '/tree') {
+          window.location.href = '/tree';
+        } 
+        else {
+          window.location.href = link;
+        }
+      });
     });
-  });
 
-  // Button actions
-  document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const text = this.innerText;
+    // Button actions
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const text = this.innerText;
 
-      if (text.includes('Withdraw')) {
-        alert('Withdraw Request Sent ✅');
-      }
+        if (text.includes('Withdraw')) {
+          window.location.href = 'payout.html';
+        }
 
-      if (text.includes('Open Tree')) {
-        window.location.href = '/tree';
-      }
+        if (text.includes('Open Tree')) {
+          window.location.href = '/tree';
+        }
+      });
     });
-  });
-</script>
+  </script>
 
 <div class="coin" style="left:10%; animation-duration:10s;"></div>
 <div class="coin" style="left:30%; animation-duration:12s;"></div>

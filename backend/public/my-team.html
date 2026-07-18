@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        window.location.replace("login.html");
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          if (!parsed || !parsed.userId) {
+            localStorage.removeItem("user");
+            window.location.replace("login.html");
+          }
+        } catch(e) {
+          localStorage.removeItem("user");
+          window.location.replace("login.html");
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShriRam Digital - My Team</title>
@@ -1002,7 +1021,7 @@
           <div class="menu-text">Dashboard</div>
         </a>
 
-        <a href="registration.html" class="menu-item">
+        <a href="register.html" class="menu-item">
           <div class="icon-box i-orange">👤</div>
           <div class="menu-text">Registration</div>
         </a>
@@ -1357,119 +1376,9 @@
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="teamTableBody">
               <tr>
-                <td>1</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="avatar">A</div>
-                    <div class="user-meta">
-                      <strong>AC140138</strong>
-                      <span>Name: Aarohi</span>
-                    </div>
-                  </div>
-                </td>
-                <td>10-12-2025</td>
-                <td>9632587412</td>
-                <td>Silver Coupon Card</td>
-                <td><span class="status-badge status-active">Active</span></td>
-                <td><span class="status-badge status-silver">Level 1</span></td>
-                <td><a href="#" class="table-btn">View</a></td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="avatar">A</div>
-                    <div class="user-meta">
-                      <strong>AC308857</strong>
-                      <span>Name: Aarohi</span>
-                    </div>
-                  </div>
-                </td>
-                <td>10-12-2025</td>
-                <td>9632587412</td>
-                <td>Silver Coupon Card</td>
-                <td><span class="status-badge status-active">Active</span></td>
-                <td><span class="status-badge status-silver">Level 1</span></td>
-                <td><a href="#" class="table-btn">View</a></td>
-              </tr>
-
-              <tr>
-                <td>3</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="avatar">R</div>
-                    <div class="user-meta">
-                      <strong>AC95544</strong>
-                      <span>Name: Rohit</span>
-                    </div>
-                  </div>
-                </td>
-                <td>12-12-2025</td>
-                <td>9876543210</td>
-                <td>Starter Package</td>
-                <td><span class="status-badge status-inactive">Inactive</span></td>
-                <td><span class="status-badge status-silver">Level 2</span></td>
-                <td><a href="#" class="table-btn">View</a></td>
-              </tr>
-
-              <tr>
-                <td>4</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="avatar">S</div>
-                    <div class="user-meta">
-                      <strong>AC2510</strong>
-                      <span>Name: Sneha</span>
-                    </div>
-                  </div>
-                </td>
-                <td>13-12-2025</td>
-                <td>9988776655</td>
-                <td>Silver Coupon Card</td>
-                <td><span class="status-badge status-active">Active</span></td>
-                <td><span class="status-badge status-silver">Level 3</span></td>
-                <td><a href="#" class="table-btn">View</a></td>
-              </tr>
-
-              <tr>
-                <td>5</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="avatar">P</div>
-                    <div class="user-meta">
-                      <strong>AC95346</strong>
-                      <span>Name: Priya</span>
-                    </div>
-                  </div>
-                </td>
-                <td>14-12-2025</td>
-                <td>9123456780</td>
-                <td>Gold Upgrade</td>
-                <td><span class="status-badge status-active">Active</span></td>
-                <td><span class="status-badge status-silver">Level 4</span></td>
-                <td><a href="#" class="table-btn">View</a></td>
-              </tr>
-
-              <tr>
-                <td>6</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="avatar">K</div>
-                    <div class="user-meta">
-                      <strong>AC396732</strong>
-                      <span>Name: Kiran</span>
-                    </div>
-                  </div>
-                </td>
-                <td>15-12-2025</td>
-                <td>9011223344</td>
-                <td>Silver Coupon Card</td>
-                <td><span class="status-badge status-active">Active</span></td>
-                <td><span class="status-badge status-silver">Level 4</span></td>
-                <td><a href="#" class="table-btn">View</a></td>
+                <td colspan="8" style="text-align: center; padding: 30px;">Loading team data...</td>
               </tr>
             </tbody>
           </table>
@@ -1483,8 +1392,158 @@
   </div>
 
   <script>
-    const tiltCards = document.querySelectorAll('.tilt-card');
+    // Enforce login session
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.userId) {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    } else {
+      loadTeamData(loggedInUser.userId);
+    }
 
+    let allMembers = [];
+
+    async function loadTeamData(userId) {
+      try {
+        const response = await fetch(`/api/tree/${encodeURIComponent(userId)}?depth=10`, {
+          headers: {
+            "X-User-Auth": userId
+          }
+        });
+        const data = await response.json();
+
+        if (!data.success || !data.tree) {
+          document.getElementById("teamTableBody").innerHTML = `
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 30px; color: var(--muted);">Failed to load team data or session expired.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        // Flatten the tree structure to list all downline members
+        allMembers = flattenTree(data.tree, true);
+        renderTable(allMembers);
+
+      } catch (error) {
+        console.error("Failed to load team data:", error);
+        document.getElementById("teamTableBody").innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 30px; color: var(--muted);">Error fetching team data from server.</td>
+          </tr>
+        `;
+      }
+    }
+
+    function flattenTree(node, isRoot = true) {
+      if (!node) return [];
+      const list = [];
+      if (!isRoot) {
+        list.push({
+          userId: node.userId,
+          fullName: node.fullName,
+          createdAt: node.createdAt,
+          mobile: node.mobile,
+          joiningAmount: node.lastEpinAmount || node.joiningAmount || 500,
+          isActive: node.isActive,
+          position: node.position
+        });
+      }
+      if (node.left) {
+        list.push(...flattenTree(node.left, false));
+      }
+      if (node.right) {
+        list.push(...flattenTree(node.right, false));
+      }
+      return list;
+    }
+
+    function renderTable(members) {
+      const tbody = document.getElementById("teamTableBody");
+      if (members.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 30px; color: var(--muted);">No team members found in your downline yet.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = members.map((member, index) => {
+        const initial = member.fullName ? member.fullName[0].toUpperCase() : "U";
+        const dateStr = member.createdAt ? new Date(member.createdAt).toLocaleDateString() : "--";
+        const positionText = member.position === "L" ? "Left" : member.position === "R" ? "Right" : member.position || "--";
+        
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>
+              <div class="user-cell">
+                <div class="avatar">${initial}</div>
+                <div class="user-meta">
+                  <strong>${member.userId}</strong>
+                  <span>Name: ${member.fullName || "No Name"}</span>
+                </div>
+              </div>
+            </td>
+            <td>${dateStr}</td>
+            <td>${member.mobile || "--"}</td>
+            <td>₹${member.joiningAmount}</td>
+            <td>
+              <span class="status-badge ${member.isActive ? "status-active" : "status-inactive"}">
+                ${member.isActive ? "Active" : "Inactive"}
+              </span>
+            </td>
+            <td><span class="status-badge status-silver">${positionText} Node</span></td>
+            <td>
+              <a href="/tree" onclick="localStorage.setItem('tempSearchUser', '${member.userId}')" class="table-btn">
+                View Tree
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Search filter functionality
+    const searchInput = document.querySelector('.search-box input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+          renderTable(allMembers);
+          return;
+        }
+
+        const filtered = allMembers.filter(m => 
+          String(m.userId).toLowerCase().includes(query) ||
+          String(m.fullName).toLowerCase().includes(query) ||
+          String(m.position).toLowerCase().includes(query)
+        );
+        renderTable(filtered);
+      });
+    }
+
+    // Sidebar navigation click handler
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        const link = this.getAttribute('href');
+        if (!link || link === '#') return;
+
+        if (link === '/dashboard') {
+          window.location.href = '/dashboard';
+        } 
+        else if (link === '/tree') {
+          window.location.href = '/tree';
+        } 
+        else {
+          window.location.href = link;
+        }
+      });
+    });
+
+    // Tilt cards animation logic
+    const tiltCards = document.querySelectorAll('.tilt-card');
     tiltCards.forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();

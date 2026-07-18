@@ -115,6 +115,26 @@ const userSchema = new mongoose.Schema(
       default: 0,
     },
 
+    overrideIncome: {
+      type: Number,
+      default: 0,
+    },
+
+    adminDeduction: {
+      type: Number,
+      default: 0,
+    },
+
+    tdsDeduction: {
+      type: Number,
+      default: 0,
+    },
+
+    repurchaseDeduction: {
+      type: Number,
+      default: 0,
+    },
+
     carryLeft: {
       type: Number,
       default: 0,
@@ -123,6 +143,17 @@ const userSchema = new mongoose.Schema(
     carryRight: {
       type: Number,
       default: 0,
+    },
+
+    // 🔥 DAILY CAP TRACKING (Phase 2)
+    todayPairIncome: {
+      type: Number,
+      default: 0,
+    },
+
+    lastIncomeDate: {
+      type: Date,
+      default: null,
     },
 
     // 🔥 WALLET SYSTEM (UNCHANGED + SAFE)
@@ -148,6 +179,12 @@ const userSchema = new mongoose.Schema(
     },
 
     // 🔥 BANK / UPI DETAILS
+    accountHolderName: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     bankName: {
       type: String,
       default: "",
@@ -182,6 +219,38 @@ const userSchema = new mongoose.Schema(
           default: Date.now,
         },
         processedDate: Date,
+        paymentMethod: {
+          type: String,
+          default: "",
+        },
+        accountHolderName: {
+          type: String,
+          default: "",
+        },
+        bankName: {
+          type: String,
+          default: "",
+        },
+        accountNumber: {
+          type: String,
+          default: "",
+        },
+        ifscCode: {
+          type: String,
+          default: "",
+        },
+        upiId: {
+          type: String,
+          default: "",
+        },
+        note: {
+          type: String,
+          default: "",
+        },
+        adminRemark: {
+          type: String,
+          default: "",
+        },
       },
     ],
 
@@ -221,9 +290,8 @@ const userSchema = new mongoose.Schema(
 );
 
 // 🔥 AUTO STATUS SYNC (UNCHANGED)
-userSchema.pre("save", function (next) {
+userSchema.pre("save", function () {
   this.status = this.isActive ? "active" : "inactive";
-  next();
 });
 
 module.exports = mongoose.model("User", userSchema);

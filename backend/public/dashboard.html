@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        window.location.replace("login.html");
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          if (!parsed || !parsed.userId) {
+            localStorage.removeItem("user");
+            window.location.replace("login.html");
+          }
+        } catch(e) {
+          localStorage.removeItem("user");
+          window.location.replace("login.html");
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShriRam Digital - Premium Dashboard</title>
@@ -767,6 +786,13 @@
         font-size: 34px;
       }
     }
+    
+    /* Package Selected Card State */
+    .pkg-card-selected {
+      border-color: var(--secondary) !important;
+      background: rgba(16, 185, 129, 0.1) !important;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2) !important;
+    }
   </style>
 </head>
 <body>
@@ -798,12 +824,12 @@
       <div class="menu-section">
         <div class="menu-title">Main</div>
 
-        <a href="/dashboard" class="menu-item active">
+        <a href="dashboard.html" class="menu-item active">
           <div class="icon-box i-blue">▦</div>
           <div class="menu-text">Dashboard</div>
         </a>
 
-        <a href="registration.html" class="menu-item">
+        <a href="register.html" class="menu-item">
           <div class="icon-box i-orange">👤</div>
           <div class="menu-text">Registration</div>
         </a>
@@ -922,6 +948,11 @@
           <div class="menu-text">Payout</div>
         </a>
 
+        <a href="ledger.html" class="menu-item">
+          <div class="icon-box i-cyan">🧾</div>
+          <div class="menu-text">Income Ledger</div>
+        </a>
+
         <a href="wallet.html" class="menu-item">
           <div class="icon-box i-green">💼</div>
           <div class="menu-text">Wallet</div>
@@ -932,7 +963,7 @@
           <div class="menu-text">Profile</div>
         </a>
 
-        <a href="/login.html" class="menu-item">
+        <a href="login.html" onclick="localStorage.removeItem('user')" class="menu-item">
           <div class="icon-box i-red">↩</div>
           <div class="menu-text">Logout</div>
         </a>
@@ -942,7 +973,7 @@
     <main class="content">
       <div class="topbar">
         <div class="welcome">
-          <h1>Welcome Atharva 🚀</h1>
+          <h1 id="welcomeUser">Welcome User 🚀</h1>
           <p>
             Smart partner dashboard with premium SaaS feel, clean finance visibility,
             network tracking, earning summary, and future-ready MLM growth structure.
@@ -957,6 +988,147 @@
         </div>
       </div>
 
+    <!-- Activation Onboarding Module -->
+    <div id="activationModule" style="display: none;">
+      <div class="hero-card" style="margin-bottom: 24px; min-height: auto; background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.15), transparent 28%), linear-gradient(135deg, rgba(15,118,110,0.85), rgba(6,47,47,0.9));">
+        <h2 style="color: #fbbf24;">⚠️ Account Activation Required</h2>
+        <h3>Complete your manual payment onboarding to activate your MLM income eligibility.</h3>
+        <p>
+          Your account is currently inactive. Select a package, complete the UPI payment, and submit the UTR number for verification. Once approved by the administrator, your account will be fully activated.
+        </p>
+      </div>
+
+      <div id="paymentStatusBox" style="display: none; margin-bottom: 24px; padding: 20px; border-radius: 20px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25);">
+        <h4 id="paymentStatusTitle" style="font-size: 18px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">Request Status: Pending</h4>
+        <p id="paymentStatusDesc" style="color: var(--muted); font-size: 14px; line-height: 1.6;"></p>
+      </div>
+
+      <div id="paymentFormContainer" class="section-grid-2" style="margin-bottom: 24px;">
+        <!-- Left: Payment Instructions -->
+        <div class="mini-panel" style="padding: 24px; background: rgba(255,255,255,0.04);">
+          <div class="panel-header">
+            <h4>1. Make UPI Payment</h4>
+            <div class="panel-pill">Scan & Pay</div>
+          </div>
+          
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; margin: 20px 0;">
+            <!-- Beautiful SVG QR Code Placeholder -->
+            <div style="background: white; padding: 12px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+              <svg width="150" height="150" viewBox="0 0 100 100" style="display: block;">
+                <!-- QR border -->
+                <rect x="5" y="5" width="25" height="25" fill="#0f766e" />
+                <rect x="8" y="8" width="19" height="19" fill="white" />
+                <rect x="12" y="12" width="11" height="11" fill="#0f766e" />
+                
+                <rect x="70" y="5" width="25" height="25" fill="#0f766e" />
+                <rect x="73" y="8" width="19" height="19" fill="white" />
+                <rect x="77" y="12" width="11" height="11" fill="#0f766e" />
+                
+                <rect x="5" y="70" width="25" height="25" fill="#0f766e" />
+                <rect x="8" y="73" width="19" height="19" fill="white" />
+                <rect x="12" y="77" width="11" height="11" fill="#0f766e" />
+                
+                <!-- Random QR code bits -->
+                <rect x="35" y="5" width="5" height="10" fill="#0f766e" />
+                <rect x="45" y="10" width="10" height="5" fill="#0f766e" />
+                <rect x="60" y="5" width="5" height="15" fill="#0f766e" />
+                
+                <rect x="35" y="20" width="15" height="5" fill="#0f766e" />
+                <rect x="55" y="25" width="10" height="10" fill="#0f766e" />
+                
+                <rect x="5" y="35" width="10" height="5" fill="#0f766e" />
+                <rect x="20" y="40" width="5" height="15" fill="#0f766e" />
+                
+                <rect x="35" y="45" width="20" height="5" fill="#0f766e" />
+                <rect x="45" y="55" width="5" height="15" fill="#0f766e" />
+                <rect x="60" y="45" width="10" height="10" fill="#0f766e" />
+                
+                <rect x="75" y="35" width="15" height="5" fill="#0f766e" />
+                <rect x="85" y="45" width="10" height="15" fill="#0f766e" />
+                
+                <rect x="35" y="70" width="5" height="20" fill="#0f766e" />
+                <rect x="45" y="80" width="15" height="5" fill="#0f766e" />
+                <rect x="60" y="70" width="5" height="15" fill="#0f766e" />
+                <rect x="75" y="70" width="15" height="10" fill="#0f766e" />
+                <rect x="80" y="85" width="15" height="10" fill="#0f766e" />
+                
+                <!-- Center logo overlay -->
+                <rect x="42" y="42" width="16" height="16" rx="4" fill="#10b981" />
+                <text x="50" y="52" fill="white" font-size="10" font-weight="bold" text-anchor="middle">SRD</text>
+              </svg>
+            </div>
+            <div style="text-align: center;">
+              <p style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Company UPI ID</p>
+              <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line);">
+                <strong style="font-size: 16px; color: var(--accent); letter-spacing: 0.5px;" id="companyUpi">shriramdigital@upi</strong>
+                <button onclick="copyCompanyUpi()" class="btn btn-secondary" style="padding: 4px 8px; border-radius: 6px; font-size: 11px; margin: 0; cursor: pointer;">Copy</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="link-card" style="margin-top: auto;">
+            <div class="link-title">Important Note:</div>
+            <div class="link-url" style="color: var(--muted); line-height: 1.5;">Make sure to copy the UPI ID correctly. Keep the 12-digit UTR transaction reference number handy after payment to submit in the form.</div>
+          </div>
+        </div>
+
+        <!-- Right: Payment Submission Form -->
+        <div class="mini-panel" style="padding: 24px; background: rgba(255,255,255,0.04);">
+          <div class="panel-header">
+            <h4>2. Submit Verification Details</h4>
+            <div class="panel-pill">Manual Request</div>
+          </div>
+
+          <!-- Form Details -->
+          <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+            <!-- Package selection -->
+            <div>
+              <label style="font-size: 13px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 8px;">Select Package</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div onclick="selectPkg(500)" id="pkgCard500" class="mini-box pkg-card-selected" style="cursor: pointer; text-align: center; border-color: var(--line); transition: 0.28s ease;">
+                  <strong style="display: block; font-size: 24px; color: #fff;">₹500</strong>
+                  <span style="font-size: 11px; color: var(--muted);">Basic Package</span>
+                </div>
+                <div onclick="selectPkg(600)" id="pkgCard600" class="mini-box" style="cursor: pointer; text-align: center; border-color: var(--line); transition: 0.28s ease;">
+                  <strong style="display: block; font-size: 24px; color: #fff;">₹600</strong>
+                  <span style="font-size: 11px; color: var(--muted);">Premium Package</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Amount (Read Only) -->
+            <div>
+              <label style="font-size: 13px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 6px;">Payment Amount (₹)</label>
+              <input type="number" id="payAmount" readonly style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0,0,0,0.25); color: #fff; outline: none; font-size: 15px; font-weight: 700;" value="500">
+            </div>
+
+            <!-- UTR Number -->
+            <div>
+              <label style="font-size: 13px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 6px;">12-Digit UTR / Transaction Reference Number</label>
+              <input type="text" id="payUtr" placeholder="Enter 12-digit UTR number" maxlength="12" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: #fff; outline: none; font-size: 15px;">
+            </div>
+
+            <!-- Screenshot upload -->
+            <div>
+              <label style="font-size: 13px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 6px;">Upload Payment Screenshot (Optional)</label>
+              <input type="file" id="payScreenshot" accept="image/*" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: #fff; outline: none; font-size: 13px;">
+              <div id="screenshotPreviewContainer" style="display: none; margin-top: 10px; align-items: center; gap: 10px;">
+                <img id="screenshotPreview" src="" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line);">
+                <span style="font-size: 12px; color: var(--secondary);">Image compressed successfully!</span>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button onclick="submitPaymentRequest()" class="btn btn-primary" style="margin-top: 10px; width: 100%; padding: 14px; font-size: 15px; cursor: pointer;">
+              Submit Payment Verification
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div id="dashboardMainContent">
       <section class="hero">
         <div class="hero-card">
           <h2>Partner Growth Dashboard</h2>
@@ -1027,7 +1199,7 @@
               <div class="stat-label">Package</div>
               <div class="icon-box i-cyan">▣</div>
             </div>
-            <div class="stat-value">350</div>
+            <div class="stat-value" id="userPackage">--</div>
             <div class="stat-sub">Current active plan / partner package summary.</div>
           </div>
 
@@ -1036,7 +1208,7 @@
               <div class="stat-label">Activation Date</div>
               <div class="icon-box i-green">📅</div>
             </div>
-            <div class="stat-value" style="font-size:26px;">12/12/2025</div>
+            <div class="stat-value" id="userActivationDate" style="font-size:24px;">--</div>
             <div class="stat-sub">Member since activation date with premium status visibility.</div>
           </div>
 
@@ -1045,7 +1217,7 @@
               <div class="stat-label">Status</div>
               <div class="icon-box i-yellow">🛡</div>
             </div>
-            <div class="stat-value">Silver</div>
+            <div class="stat-value" id="userStatus">--</div>
             <div class="stat-sub">Current account standing, level and progress snapshot.</div>
           </div>
 
@@ -1054,7 +1226,7 @@
               <div class="stat-label">Wallet Balance</div>
               <div class="icon-box i-green">💰</div>
             </div>
-            <div class="stat-value">₹0</div>
+            <div class="stat-value" id="walletBalance">₹0</div>
             <div class="stat-sub">Available wallet funds for payout, topup and transfer.</div>
           </div>
         </div>
@@ -1075,7 +1247,7 @@
               <div class="stat-label">Total Team</div>
               <div class="icon-box i-purple">👥</div>
             </div>
-            <div class="stat-value">194</div>
+            <div class="stat-value" id="totalTeam">0</div>
             <div class="stat-sub">All network combined with active + inactive visibility.</div>
           </div>
 
@@ -1084,7 +1256,7 @@
               <div class="stat-label">Direct Team</div>
               <div class="icon-box i-blue">◎</div>
             </div>
-            <div class="stat-value">2</div>
+            <div class="stat-value" id="directTeam">0</div>
             <div class="stat-sub">Directly sponsored users under your main account.</div>
           </div>
 
@@ -1093,19 +1265,19 @@
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Left</span>
-                <span>152</span>
+                <span id="businessLeft">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:72%;"></div>
+                <div id="barLeft" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Right</span>
-                <span>40</span>
+                <span id="businessRight">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:28%;"></div>
+                <div id="barRight" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
           </div>
@@ -1115,19 +1287,19 @@
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Left</span>
-                <span>111</span>
+                <span id="carryLeft">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:62%;"></div>
+                <div id="barCarryLeft" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
             <div class="progress-row">
               <div class="progress-meta">
                 <span>Right</span>
-                <span>0</span>
+                <span id="carryRight">0</span>
               </div>
               <div class="bar">
-                <div class="bar-fill" style="width:5%;"></div>
+                <div id="barCarryRight" class="bar-fill" style="width:0%;"></div>
               </div>
             </div>
           </div>
@@ -1149,7 +1321,7 @@
               <div class="stat-label">Total Incentive</div>
               <div class="icon-box i-red">🎁</div>
             </div>
-            <div class="stat-value">4000</div>
+            <div class="stat-value" id="totalIncentive">₹0</div>
             <div class="stat-sub">Cumulative incentive earned across direct and team performance growth.</div>
           </div>
 
@@ -1169,7 +1341,7 @@
               <div class="stat-label">Matching Incentive</div>
               <div class="icon-box i-green">⇄</div>
             </div>
-            <div class="stat-value">₹2000</div>
+            <div class="stat-value" id="matchingIncentive">₹0</div>
             <div class="stat-sub">Matching bonus based on left-right side performance.</div>
           </div>
 
@@ -1178,7 +1350,7 @@
               <div class="stat-label">Direct Incentive</div>
               <div class="icon-box i-cyan">➜</div>
             </div>
-            <div class="stat-value">₹2000</div>
+            <div class="stat-value" id="directIncentive">₹0</div>
             <div class="stat-sub">Direct referral earning generated from sponsored members.</div>
           </div>
 
@@ -1187,16 +1359,16 @@
               <div class="stat-label">Pending Payout</div>
               <div class="icon-box i-yellow">₹</div>
             </div>
-            <div class="stat-value">₹0</div>
+            <div class="stat-value" id="pendingPayout">₹0</div>
             <div class="stat-sub">Available payout amount pending for transfer or release.</div>
           </div>
 
           <div class="stat-card bg2">
             <div class="stat-top">
-              <div class="stat-label">Referral Bonus</div>
+              <div class="stat-label">Sponsor Override</div>
               <div class="icon-box i-blue">🔗</div>
             </div>
-            <div class="stat-value">₹850</div>
+            <div class="stat-value" id="overrideIncentive">₹0</div>
             <div class="stat-sub">Referral-based bonus generated through performance activity.</div>
           </div>
         </div>
@@ -1216,7 +1388,7 @@
             <div class="icon-box i-green">👤</div>
             <h4>New Registration</h4>
             <p>Add a new user or partner entry quickly from the registration module.</p>
-            <a href="registration.html" class="qa-btn">Open Registration</a>
+            <a href="register.html" class="qa-btn">Open Registration</a>
           </div>
 
           <div class="quick-action">
@@ -1274,12 +1446,243 @@
             </div>
           </div>
         </div>
-      </section>
+    </div>
 
-      <div class="footer-note">
+    <div class="footer-note">
         ShriRam Digital Premium MLM Dashboard • SaaS Style Demo • Future Ready for Live API Integration
       </div>
     </main>
   </div>
+
+  <script>
+    // Enforce login session
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.userId) {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    } else {
+      loadDashboardData(loggedInUser.userId);
+    }
+
+    let selectedPackage = 500;
+    let compressedScreenshotBase64 = "";
+
+    function copyCompanyUpi() {
+      const upi = document.getElementById("companyUpi").innerText;
+      navigator.clipboard.writeText(upi).then(() => {
+        alert("Company UPI ID copied to clipboard!");
+      }).catch(err => {
+        console.error("Failed to copy UPI ID: ", err);
+      });
+    }
+
+    function selectPkg(amount) {
+      selectedPackage = amount;
+      document.getElementById("payAmount").value = amount;
+      
+      document.getElementById("pkgCard500").classList.remove("pkg-card-selected");
+      document.getElementById("pkgCard600").classList.remove("pkg-card-selected");
+      
+      document.getElementById(`pkgCard${amount}`).classList.add("pkg-card-selected");
+    }
+
+    // Handle Screenshot compression
+    document.addEventListener("DOMContentLoaded", () => {
+      const fileInput = document.getElementById("payScreenshot");
+      if (fileInput) {
+        fileInput.addEventListener("change", handleScreenshotUpload);
+      }
+    });
+
+    function handleScreenshotUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 800;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to JPEG with 0.7 quality
+          compressedScreenshotBase64 = canvas.toDataURL("image/jpeg", 0.7);
+
+          // Show preview
+          document.getElementById("screenshotPreview").src = compressedScreenshotBase64;
+          document.getElementById("screenshotPreviewContainer").style.display = "flex";
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function submitPaymentRequest() {
+      const utr = document.getElementById("payUtr").value.trim().toUpperCase();
+      const amount = selectedPackage;
+
+      if (!utr) {
+        alert("Please enter your transaction UTR number.");
+        return;
+      }
+
+      if (utr.length !== 12) {
+        alert("UTR must be exactly 12 digits.");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/payment/request", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-User-Auth": loggedInUser.userId
+          },
+          body: JSON.stringify({
+            userId: loggedInUser.userId,
+            amount: amount,
+            utr: utr,
+            screenshot: compressedScreenshotBase64,
+            packageSelected: amount
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert("Payment request submitted successfully!");
+          window.location.reload();
+        } else {
+          alert(data.message || "Failed to submit request.");
+        }
+      } catch (error) {
+        console.error("Submit payment error:", error);
+        alert("Server error. Please try again later.");
+      }
+    }
+
+    async function loadDashboardData(userId) {
+      try {
+        const response = await fetch(`/api/user/${encodeURIComponent(userId)}`, {
+          headers: {
+            "X-User-Auth": userId
+          }
+        });
+        const data = await response.json();
+
+        if (!data.success || !data.user) {
+          alert("Session expired. Please login again.");
+          localStorage.removeItem("user");
+          window.location.href = "login.html";
+          return;
+        }
+
+        const user = data.user;
+
+        // Render values
+        document.getElementById("welcomeUser").innerHTML = `Welcome ${user.fullName || user.userId} 🚀`;
+        document.getElementById("userPackage").innerText = `₹${user.lastEpinAmount || 500}`;
+        
+        const dateString = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "--";
+        document.getElementById("userActivationDate").innerText = dateString;
+        
+        document.getElementById("userStatus").innerText = user.isActive ? "Active" : "Inactive";
+        document.getElementById("walletBalance").innerText = `₹${user.walletBalance.toLocaleString("en-IN")}`;
+        
+        const leftC = Number(user.leftCount || 0);
+        const rightC = Number(user.rightCount || 0);
+        document.getElementById("totalTeam").innerText = String(leftC + rightC);
+        document.getElementById("directTeam").innerText = String(user.referralCount || 0);
+
+        // Business Volume
+        document.getElementById("businessLeft").innerText = String(leftC);
+        document.getElementById("businessRight").innerText = String(rightC);
+        const totalB = Math.max(leftC + rightC, 1);
+        document.getElementById("barLeft").style.width = `${(leftC / totalB) * 100}%`;
+        document.getElementById("barRight").style.width = `${(rightC / totalB) * 100}%`;
+
+        // Carry Forward
+        const carryL = Number(user.carryLeft || 0);
+        const carryR = Number(user.carryRight || 0);
+        document.getElementById("carryLeft").innerText = String(carryL);
+        document.getElementById("carryRight").innerText = String(carryR);
+        const totalCF = Math.max(carryL + carryR, 1);
+        document.getElementById("barCarryLeft").style.width = `${(carryL / totalCF) * 100}%`;
+        document.getElementById("barCarryRight").style.width = `${(carryR / totalCF) * 100}%`;
+
+        // Earnings
+        document.getElementById("totalIncentive").innerText = `₹${Number(user.totalIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("matchingIncentive").innerText = `₹${Number(user.pairIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("directIncentive").innerText = `₹${Number(user.directIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("overrideIncentive").innerText = `₹${Number(user.overrideIncome || 0).toLocaleString("en-IN")}`;
+        document.getElementById("pendingPayout").innerText = `₹${Number(user.walletBalance || 0).toLocaleString("en-IN")}`;
+
+        // Toggle visibility based on user.isActive
+        if (!user.isActive) {
+          document.getElementById("activationModule").style.display = "block";
+          document.getElementById("dashboardMainContent").style.display = "none";
+          
+          // Fetch payment request status
+          try {
+            const statusResponse = await fetch(`/api/payment/status/${encodeURIComponent(userId)}`, {
+              headers: {
+                "X-User-Auth": userId
+              }
+            });
+            const statusData = await statusResponse.json();
+            if (statusData.success && statusData.request) {
+              const req = statusData.request;
+              const statusBox = document.getElementById("paymentStatusBox");
+              const statusTitle = document.getElementById("paymentStatusTitle");
+              const statusDesc = document.getElementById("paymentStatusDesc");
+              const formContainer = document.getElementById("paymentFormContainer");
+              
+              statusBox.style.display = "block";
+              
+              if (req.status === "pending") {
+                formContainer.style.display = "none";
+                statusBox.style.background = "rgba(245, 158, 11, 0.1)";
+                statusBox.style.borderColor = "rgba(245, 158, 11, 0.25)";
+                statusTitle.innerText = "Payment Verification: Pending Approval";
+                statusTitle.style.color = "#fbbf24";
+                statusDesc.innerText = `Your request for Package ₹${req.packageSelected} (UTR: ${req.utr}) was submitted on ${new Date(req.createdAt).toLocaleString()}. It is currently pending admin verification.`;
+              } else if (req.status === "rejected") {
+                formContainer.style.display = "grid";
+                statusBox.style.background = "rgba(239, 68, 68, 0.1)";
+                statusBox.style.borderColor = "rgba(239, 68, 68, 0.25)";
+                statusTitle.innerText = "Payment Verification: Rejected";
+                statusTitle.style.color = "#fb7185";
+                statusDesc.innerText = `Your request for Package ₹${req.packageSelected} (UTR: ${req.utr}) was rejected by admin. Reason: "${req.adminRemark || 'No remark provided.'}". Please verify payment details and submit a new request below.`;
+              }
+            }
+          } catch (statusErr) {
+            console.error("Failed to load payment status:", statusErr);
+          }
+        } else {
+          document.getElementById("activationModule").style.display = "none";
+          document.getElementById("dashboardMainContent").style.display = "block";
+        }
+
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
+      }
+    }
+  </script>
 </body>
 </html>
